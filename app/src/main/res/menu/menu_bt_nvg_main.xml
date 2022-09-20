@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btMenuStory"
+        android:icon="@drawable/ic_story"
+        android:title="@string/btStory"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuFilter"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/btFilter"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuStoryFollow"
+        android:icon="@drawable/ic_follow"
+        android:title="@string/btFollow"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuAccount"
+        android:icon="@drawable/ic_account"
+        android:title="@string/btAccount"
+        app:showAsAction="always"/>
+</menu>

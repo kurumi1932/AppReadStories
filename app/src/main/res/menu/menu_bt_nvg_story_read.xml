@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/btMenuBack"
+        android:icon="@drawable/ic_back"
+        android:title=""
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuListChapter"
+        android:icon="@drawable/ic_list"
+        android:title=""
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuComment"
+        android:icon="@drawable/ic_comment"
+        android:iconTint="@color/white"
+        android:title=""
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuPrevious"
+        android:icon="@drawable/ic_previous"
+        android:iconTint="@color/white"
+        android:title=""
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/btMenuNext"
+        android:icon="@drawable/ic_next"
+        android:iconTint="@color/white"
+        android:title=""
+        app:showAsAction="always"/>
+</menu>

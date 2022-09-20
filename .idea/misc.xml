@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/bg_corner_pink.xml" value="0.142" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_account.xml" value="0.3333333333333333" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_app_background.xml" value="0.26145833333333335" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_app_foreground.xml" value="0.26145833333333335" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_bo_tron_4_goc.xml" value="0.192" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_bo_tron_4_goc_1.xml" value="0.34074074074074073" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_bo_tron_4_goc_2.xml" value="0.34074074074074073" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable-v24/ic_bo_tron_4_goc_3.xml" value="0.34074074074074073" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_border_bottom.xml" value="0.142" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_corner_no_color_10dp.xml" value="0.1525" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_corner_no_color_16dp.xml" value="0.142" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_corner_white_10dp.xml" value="0.172" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_corner_yellow_10dp.xml" value="0.176" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_corner_yellow_16dp_topleft_topright.xml" value="0.176" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/bg_yellow_corner.xml" value="0.176" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/gradient.xml" value="0.192" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_back.xml" value="0.26145833333333335" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_boder_filter_click.xml" value="0.20625" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_border.xml" value="0.20625" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_border_filter_linear.xml" value="0.20625" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_border_filter_linearlayout.xml" value="0.20625" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_contact_info.xml" value="0.1525" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_display_name.xml" value="0.4036458333333333" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_email.xml" value="0.4036458333333333" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_password.xml" value="0.4036458333333333" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_previous.xml" value="0.26145833333333335" />
+        <entry key="..\:/AppReadStories/app/src/main/res/drawable/ic_vien.xml" value="0.23802083333333332" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout-v26/activity_account_login.xml" value="0.1431159420289855" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/a.xml" value="0.192481884057971" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_account_create.xml" value="0.21770833333333334" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_account_edit.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_account_login.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_account_update.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_chapter_item.xml" value="0.3016304347826087" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_chapter_list.xml" value="0.22239583333333332" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_chapter_read.xml" value="0.3117782909930716" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_comment_item.xml" value="0.3875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_comment_list.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_contact_infor.xml" value="0.2453125" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_follow_item.xml" value="0.28020833333333334" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_interface.xml" value="0.28894927536231885" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_item.xml" value="0.33" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_read.xml" value="0.2171875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_search.xml" value="0.33" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_account.xml" value="0.33" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_story.xml" value="0.21666666666666667" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_story_filter.xml" value="0.33106884057971014" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_story_follow.xml" value="0.25" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_chapter_item.xml" value="0.5" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_chapter_list.xml" value="0.1634963768115942" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_comment_delete.xml" value="0.33" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_comment_notify_delete.xml" value="0.24230072463768115" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_comment_update_delete.xml" value="0.3734375" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/layout_dialog_list_chapter.xml" value="0.19429347826086957" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.14479166666666668" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_bottom_navigation.xml" value="0.2171875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_bt_nvg_main.xml" value="0.3875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_bt_nvg_story_read.xml" value="0.3875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_previous_next.xml" value="0.2171875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_search.xml" value="0.3875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_search_chapter.xml" value="0.31666666666666665" />
+        <entry key="..\:/AppReadStories/app/src/main/res/menu/menu_search_story.xml" value="0.221875" />
+        <entry key="..\:/AppReadStories/app/src/main/res/mipmap-anydpi-v26/ic_app.xml" value="0.174" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.22239583333333332" />
+      </ProjectState>
+    </option>
+  </component>
+</project>
