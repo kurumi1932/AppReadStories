@@ -166,6 +166,8 @@ public class ChapterReadActivity extends AppCompatActivity {
         final Dialog dialogListChapter = new Dialog(this);
         dialogListChapter.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogListChapter.setContentView(R.layout.layout_dialog_chapter_list);
+        //hiệu ứng di chuyển dialog
+        dialogListChapter.getWindow().getAttributes().windowAnimations = R.style.DialogChapterListAnimation;
 
         Window window = dialogListChapter.getWindow();
         if (window == null) {
@@ -181,7 +183,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         // vị trí dialog
         windowAttributes.gravity = Gravity.LEFT;
         //hiệu ứng di chuyển dialog
-        windowAttributes.windowAnimations = R.style.DialogChapterListAnimation;
+//        windowAttributes.windowAnimations = R.style.DialogChapterListAnimation;
         window.setAttributes(windowAttributes);
 
         // click bên ngoài dialog có thể out
