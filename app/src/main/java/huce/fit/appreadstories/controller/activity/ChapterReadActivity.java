@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -194,6 +195,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         ImageView ivReverse = dialogListChapter.findViewById(R.id.ivReverse);
         TextView tvStoryName = dialogListChapter.findViewById(R.id.tvStoryName);
         TextView tvAuthor = dialogListChapter.findViewById(R.id.tvAuthor);
+        SearchView svChapter = dialogListChapter.findViewById(R.id.svChapter);
 
         //getDataStory
         Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
@@ -255,7 +257,33 @@ public class ChapterReadActivity extends AppCompatActivity {
             rcViewChapter.setAdapter(chapterDialogAdapter);
         });
 
+        svChapter.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Api.apiInterface().searchChapter(idStory, newText).enqueue(new Callback<List<ChuongTruyen>>() {
+                    @Override
+                    public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
+                        if (response.isSuccessful() && response.body().toString() != null) {
+                            listChapter.clear();
+                            listChapter.addAll(response.body());
+                            chapterDialogAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+                        Log.e("Err_DialogChapterList", t.toString());
+                    }
+                });
+                return false;
+            }
+        });
+
         dialogListChapter.show();
     }
-
 }

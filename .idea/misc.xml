@@ -74,6 +74,7 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/bg_corner_white_10dp.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/gradient.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_back.xml" value="0.13" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_boder_filter_click.xml" value="0.133" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_border_filter_linearlayout.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_check.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_clear.xml" value="0.13" />
@@ -84,9 +85,11 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_email.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_list.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_logout.xml" value="0.13" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_chapter_list.xml" value="0.17255434782608695" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_comment_item.xml" value="0.3875" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_comment_list.xml" value="0.18642350557244175" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_interface.xml" value="0.3875" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_search.xml" value="0.17255434782608695" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/layout_dialog_chapter_list.xml" value="0.2653985507246377" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.172" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.172" />
