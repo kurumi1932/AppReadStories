@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,15 +24,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.controller.adapters.ChapterDialogAdapter;
+import huce.fit.appreadstories.model.ChuongTruyen;
+import huce.fit.appreadstories.model.Truyen;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +47,7 @@ public class ChapterReadActivity extends AppCompatActivity {
     private TextView tvChapterName, tvPostPerson, tvPostDay, tvContent, tv1, tv2;
     private int idStory, idChapter;
     private AtomicInteger status = new AtomicInteger(1);
+    Handler handler = new Handler();
 
     public void setIdChapter(int idChapter) {
         this.idChapter = idChapter;
@@ -113,7 +118,9 @@ public class ChapterReadActivity extends AppCompatActivity {
                     finish();
                     break;
                 case R.id.btMenuListChapter:
-                    openDialogListChapter(idStory);
+                    handler.postDelayed(() -> {
+                        openDialogListChapter();
+                    }, 300);
                     break;
                 case R.id.btMenuComment:
                     Intent intent2 = new Intent(ChapterReadActivity.this, CommentListActivity.class);
@@ -121,7 +128,7 @@ public class ChapterReadActivity extends AppCompatActivity {
                     startActivity(intent2);
                     break;
                 case R.id.btMenuPrevious:
-                    Log.e("idChapter_pre.", "pre");
+                    Log.e("idChapter_pre.", "previous");
                     getData(idStory, idChapter, 1, "Đây là chương đầu!");
                     break;
                 case R.id.btMenuNext:
@@ -148,7 +155,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         });
     }
 
-    private void openDialogListChapter(int idStory) {
+    private void openDialogListChapter() {
         List<ChuongTruyen> listChapter = new ArrayList<>();
         ChapterDialogAdapter chapterDialogAdapter;
         RecyclerView rcViewChapter;
@@ -165,16 +172,43 @@ public class ChapterReadActivity extends AppCompatActivity {
             return;
         }
 
-        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.MATCH_PARENT);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        // vị trí dialog
         WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        //setLayout
+        windowAttributes.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        windowAttributes.height = WindowManager.LayoutParams.MATCH_PARENT;
+        // vị trí dialog
         windowAttributes.gravity = Gravity.LEFT;
+        //hiệu ứng di chuyển dialog
+        windowAttributes.windowAnimations = R.style.DialogChapterListAnimation;
         window.setAttributes(windowAttributes);
 
         // click bên ngoài dialog có thể out
-        dialogListChapter.setCancelable(true);
+//        dialogListChapter.setCancelable(true);
+        dialogListChapter.setCanceledOnTouchOutside(true);
+
+        ImageView ivStory = dialogListChapter.findViewById(R.id.ivStory);
+        ImageView ivReverse = dialogListChapter.findViewById(R.id.ivReverse);
+        TextView tvStoryName = dialogListChapter.findViewById(R.id.tvStoryName);
+        TextView tvAuthor = dialogListChapter.findViewById(R.id.tvAuthor);
+
+        //getDataStory
+        Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
+            @Override
+            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+                Truyen tc = response.body();
+                tvStoryName.setText(tc.getTentruyen());
+                tvAuthor.setText(tc.getTacgia());
+                Picasso.get().load(tc.getAnh())
+                        .into(ivStory);
+            }
+
+            @Override
+            public void onFailure(Call<Truyen> call, Throwable t) {
+                Log.e("Err_DialogChapterList", t.toString());
+            }
+        });
 
         //RecyclerView
         rcViewChapter = dialogListChapter.findViewById(R.id.rcListChapterOnChapterRead);
@@ -184,11 +218,10 @@ public class ChapterReadActivity extends AppCompatActivity {
             Log.e("getIdChapter", String.valueOf(listChapter.get(position).getMachuong()));
             setIdChapter(listChapter.get(position).getMachuong());
 
-            Handler handler = new Handler();
             handler.postDelayed(() -> {
                 getData(idStory, idChapter, 2, "Không tìm thấy chương!");
                 pbReLoad.setVisibility(View.GONE);
-            }, 2000);
+            }, 1500);
 
             dialogListChapter.dismiss();
         });//Đổ dữ liệu lên adpter
@@ -197,7 +230,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         rcViewChapter.addItemDecoration(itemDecoration);
 
-        //getData
+        //getDataListChapter
         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
             public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
@@ -210,8 +243,14 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                Log.e("Err_ChapterList", t.toString());
+                Log.e("Err_DialogChapterList", t.toString());
             }
+        });
+
+        //event
+        ivReverse.setOnClickListener(view -> {
+            Collections.reverse(listChapter);// đảo ngược dánh sách
+            rcViewChapter.setAdapter(chapterDialogAdapter);
         });
 
         dialogListChapter.show();

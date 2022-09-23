@@ -13,4 +13,10 @@
     <style name="AppReadStories" parent="Theme.Design.Light.NoActionBar">
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
     </style>
+
+    <!--    animation dialog chapter list-->
+    <style name="DialogChapterListAnimation">
+        <item name="android:windowEnterAnimation">@anim/move_show_dialog_chapter_list</item>
+        <item name="android:windowExitAnimation">@anim/move_hide_dialog_chapter_list</item>
+    </style>
 </resources>

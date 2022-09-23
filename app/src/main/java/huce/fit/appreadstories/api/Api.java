@@ -8,8 +8,8 @@ public class Api {
 
     private static Retrofit retrofit = null;
     //đt: 192.168.43.78
-    //wifi: 192.168.1.11
-    private static final String BASE_URL = "http://192.168.43.78/appreadstories/";
+    //wifi: 192.168.1.21
+    private static final String BASE_URL = "http://192.168.1.21/appreadstories/";
 
     public static final String URL_LOGIN = "login.php";//oke
     public static final String URL_REGISTER = "register.php";//oke
