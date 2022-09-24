@@ -50,11 +50,11 @@ public class ChapterListActivity extends AppCompatActivity {
         svChapter.setMaxWidth(Integer.MAX_VALUE);
 
         processEvents();
-        getData(idStory);
-        rcView(listChapter);
+        getData();
+        rcView();
     }
 
-    private void rcView(List<ChuongTruyen> listChapter) {
+    private void rcView() {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
         chapterAdapter = new ChapterAdapter(listChapter, (position, view1) -> {
             idChapter = listChapter.get(position).getMachuong();
@@ -85,13 +85,13 @@ public class ChapterListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getData(idStory,newText);
+                getData(newText);
                 return false;
             }
         });
     }
 
-    private void getData(int idStory) {
+    private void getData() {
         pbReload.setVisibility(View.VISIBLE);
         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
@@ -112,7 +112,7 @@ public class ChapterListActivity extends AppCompatActivity {
         });
     }
 
-    private void getData(int idStory, String numberChapter) {
+    private void getData(String numberChapter) {
         pbReload.setVisibility(View.VISIBLE);
         Api.apiInterface().searchChapter(idStory, numberChapter).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override

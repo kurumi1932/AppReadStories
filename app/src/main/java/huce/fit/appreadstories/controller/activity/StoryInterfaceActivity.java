@@ -10,11 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.squareup.picasso.Picasso;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.controller.adapters.ViewPagerStoryInterfaceAdapter;
 import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.model.TruyenTheoDoi;
@@ -25,11 +29,12 @@ import retrofit2.Response;
 
 public class StoryInterfaceActivity extends AppCompatActivity {
     private ImageView ivBack, ivStory;
-    private TextView tvStoryName, tvAuthor, tvStatus, tvChapter, tvSpecies, tvIntroduce;
-    private Button btListChapter, btReadStory, btFollow, btComment;
+    private TextView tvStoryName, tvAuthor, tvStatus, tvChapter, tvSpecies, tvListChapter;
+    private Button btReadStory, btFollow, btComment;
     private int idStory, idAccount, idChapter;
-    private String checkFollow;
-
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ViewPagerStoryInterfaceAdapter viewPagerStoryInterfaceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +53,27 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.tvStatus);
         tvChapter = findViewById(R.id.tvChapter);
         tvSpecies = findViewById(R.id.tvSpecies);
-        tvIntroduce = findViewById(R.id.tvIntroduce);
 
-        btListChapter = findViewById(R.id.btListChapter);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+
+        tvListChapter = findViewById(R.id.tvListChapter);
         btReadStory = findViewById(R.id.btReadStory);// chưa làm
         btFollow = findViewById(R.id.btFollow);
         btComment = findViewById(R.id.btComment);
+
+        viewPagerStoryInterfaceAdapter = new ViewPagerStoryInterfaceAdapter(this, idStory);
+        viewPager.setAdapter(viewPagerStoryInterfaceAdapter);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Giới thiệu");
+                    break;
+                case 1:
+                    tab.setText("Bình luận");
+                    break;
+            }
+        }).attach();
 
         checkFollow();
         getData();
@@ -72,12 +92,15 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             public void onResponse(Call<TruyenTheoDoi> call, Response<TruyenTheoDoi> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getSuccess() == 1) {
-                        checkFollow = "Đang theo dõi";
+                        btFollow.setText("Đang theo dõi");
+                        btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_follow, 0, 0);
+                        btFollow.setTextColor(getResources().getColor(R.color.medium_sea_green));
                     }
                     if (response.body().getSuccess() == 2) {
-                        checkFollow = "Theo dõi";
+                        btFollow.setText("Theo dõi");
+                        btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_unfollow, 0, 0);
+                        btFollow.setTextColor(getResources().getColor(R.color.dim_gray));
                     }
-                    btFollow.setText(checkFollow);
                 }
             }
 
@@ -97,18 +120,18 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                 tvAuthor.setText(tc.getTacgia());
                 tvStatus.setText(tc.getTrangthai());
                 tvChapter.setText(String.valueOf(tc.getSochuong()));
-                if (tc.getTheloai().equals(1)) {
-                    tvSpecies.setText("Đô thị");
-                } else if (tc.getTheloai().equals(2)) {
-                    tvSpecies.setText("Tu tiên");
-                } else if (tc.getTheloai().equals(3)) {
-                    tvSpecies.setText("Mạt thế");
-                } else if (tc.getTheloai().equals(4)) {
-                    tvSpecies.setText("Trùng sinh");
-                } else {
-                    tvSpecies.setText("Ngôn tình");
-                }
-                tvIntroduce.setText(tc.getGioithieu());
+                tvSpecies.setText(tc.getTheloai());
+//                if (tc.getTheloai().equals(1)) {
+//                    tvSpecies.setText("Đô thị");
+//                } else if (tc.getTheloai().equals(2)) {
+//                    tvSpecies.setText("Tu tiên");
+//                } else if (tc.getTheloai().equals(3)) {
+//                    tvSpecies.setText("Mạt thế");
+//                } else if (tc.getTheloai().equals(4)) {
+//                    tvSpecies.setText("Trùng sinh");
+//                } else {
+//                    tvSpecies.setText("Ngôn tình");
+//                }
                 Picasso.get().load(tc.getAnh())
                         .into(ivStory);
             }
@@ -131,7 +154,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                 intent.putExtra("idChapter", idChapter);
                 startActivity(intent);
             });
-            btListChapter.setOnClickListener(v -> {
+            tvListChapter.setOnClickListener(v -> {
                 Intent intent = new Intent(StoryInterfaceActivity.this, ChapterListActivity.class);
                 intent.putExtra("idStory", idStory);
                 startActivity(intent);
@@ -150,7 +173,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         }
     }
 
-    private void readStory(int idStory){
+    private void readStory(int idStory) {
         Api.apiInterface().firstChapter(idStory).enqueue(new Callback<ChuongTruyen>() {
             @Override
             public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
@@ -161,7 +184,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ChuongTruyen> call, Throwable t) {
-                Log.e("Err_StoryInterface",t.toString());
+                Log.e("Err_StoryInterface", t.toString());
             }
         });
     }
@@ -177,20 +200,21 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                         public void onResponse(Call<TruyenTheoDoi> call1, Response<TruyenTheoDoi> response1) {
                             if (response1.isSuccessful() && response1.body() != null) {
                                 if (response1.body().getSuccess() == 1) {
-                                    checkFollow = "Đang theo dõi";
-                                    Toast.makeText(StoryInterfaceActivity.this, "Đã theo dõi!", Toast.LENGTH_SHORT).show();
+                                    btFollow.setText("Đang theo dõi");
+                                    btFollow.setTextColor(getResources().getColor(R.color.medium_sea_green));
+                                    btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_follow, 0, 0);
                                 }
                                 if (response1.body().getSuccess() == 2) {
-                                    checkFollow = "Theo dõi";
-                                    Toast.makeText(StoryInterfaceActivity.this, "Đã hủy theo dõi!", Toast.LENGTH_SHORT).show();
+                                    btFollow.setText("Theo dõi");
+                                    btFollow.setTextColor(getResources().getColor(R.color.dim_gray));
+                                    btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_unfollow, 0, 0);
                                 }
-                                btFollow.setText(checkFollow);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<TruyenTheoDoi> call1, Throwable t1) {
-                            Log.e("Err_StoryInterface",t1.toString());
+                            Log.e("Err_StoryInterface", t1.toString());
                         }
                     });
 
@@ -199,7 +223,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_StoryInterface",t.toString());
+                Log.e("Err_StoryInterface", t.toString());
             }
         });
     }

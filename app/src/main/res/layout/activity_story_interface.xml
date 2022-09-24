@@ -143,18 +143,75 @@
             android:textSize="17sp" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="95dp"
-        android:gravity="center">
+        android:layout_height="1dp"
+        android:background="@color/silver" />
+
+    <TextView
+        android:id="@+id/tvListChapter"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:drawableRight="@drawable/ic_continue"
+        android:drawableTint="@color/black"
+        android:gravity="left|center"
+        android:text="@string/btListChap"
+        android:textColor="@color/black"
+        android:textSize="19sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/silver" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/silver" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="61dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="-61dp"
+        android:background="@color/silver" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btFollow"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableTop="@drawable/ic_unfollow"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/btFollow"
+            android:textColor="@color/dim_gray"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btReadStory"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="1"
             android:background="@color/red"
             android:gravity="center"
             android:text="@string/btRead"
@@ -163,68 +220,20 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btListChapter"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/btReadStory"
-            android:background="#3EC47C"
-            android:gravity="center"
-            android:text="@string/btListChap"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
-
-        <Button
-            android:id="@+id/btFollow"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/btListChapter"
-            android:background="#23A8F2"
-            android:gravity="center"
-            android:text="@string/btFollow"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            tools:ignore="TextContrastCheck" />
-
-        <Button
             android:id="@+id/btComment"
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/btFollow"
-            android:background="#FF577B"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableTop="@drawable/ic_comment"
+            android:drawableTint="@color/dim_gray"
             android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="@string/btComment"
-            android:textColor="@color/white"
+            android:textColor="@color/dim_gray"
             android:textSize="15sp"
             android:textStyle="bold" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tvlblIntroduce"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:paddingLeft="5dp"
-        android:text="@string/text6"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tvIntroduce"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginBottom="7dp"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-    </ScrollView>
+    </LinearLayout>
 
 </LinearLayout>

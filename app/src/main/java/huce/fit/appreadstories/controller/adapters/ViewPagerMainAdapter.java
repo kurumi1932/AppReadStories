@@ -10,9 +10,9 @@ import huce.fit.appreadstories.controller.fragment.StoryFilterFragment;
 import huce.fit.appreadstories.controller.fragment.StoryFollowFragment;
 import huce.fit.appreadstories.controller.fragment.StoryFragment;
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
+public class ViewPagerMainAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ViewPagerMainAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 

@@ -8,13 +8,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.controller.adapters.ViewPagerAdapter;
+import huce.fit.appreadstories.controller.adapters.ViewPagerMainAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private BottomNavigationView btNavigationView;
-    private ViewPagerAdapter viewPagerAdapter;
+    private ViewPagerMainAdapter viewPagerMainAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager2);
         btNavigationView = findViewById(R.id.btNavigationView);
 
-        viewPagerAdapter = new ViewPagerAdapter(this);
-        viewPager2.setAdapter(viewPagerAdapter);
+        viewPagerMainAdapter = new ViewPagerMainAdapter(this);
+        viewPager2.setAdapter(viewPagerMainAdapter);
         viewPager2.setUserInputEnabled(false);//tắt thao tac vuốt viewpager2
 
         processEvents();

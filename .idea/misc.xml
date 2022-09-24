@@ -85,12 +85,20 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_email.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_list.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_logout.xml" value="0.13" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_unfollow.xml" value="0.1495" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_chapter_list.xml" value="0.17255434782608695" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_comment_item.xml" value="0.3875" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_comment_list.xml" value="0.18642350557244175" />
-        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_interface.xml" value="0.3875" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_main.xml" value="0.2418478260869565" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_interface.xml" value="0.25" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_search.xml" value="0.17255434782608695" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_account.xml" value="0.2418478260869565" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_story_follow.xml" value="0.3875" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_story_interface_chapter_list.xml" value="0.25" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_story_interface_content.xml" value="0.3875" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/layout_dialog_chapter_list.xml" value="0.2653985507246377" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/menu/menu_bt_nvg_main.xml" value="0.20208333333333334" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/menu/menu_search.xml" value="0.20208333333333334" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.172" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.172" />
       </map>

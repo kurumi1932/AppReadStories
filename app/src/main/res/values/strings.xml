@@ -37,7 +37,7 @@
     <string name="text18">Ngôn tình</string>
     <string name="text19">Sắp xếp</string>
     <string name="text20">Mới cập nhật</string>
-<!--    <string name="text21">Số chương</string>-->
+    <!--    <string name="text21">Số chương</string>-->
     <string name="text22">Đăng ký</string>
     <string name="hint5">Nhập lại mật khẩu</string>
     <string name="btOk">Xác nhận</string>
@@ -72,4 +72,6 @@
     <string name="text43">Nhập số chương cần tìm</string>
     <string name="btUpdate">-> Sửa</string>
     <string name="btDelete">-> Xóa</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
