@@ -92,7 +92,7 @@ public class AccountFragment extends Fragment {
             @Override
             public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getSuccess() == 1) {
+                    if (response.body().getAccountsuccess() == 1) {
                         tvName.setText(response.body().getTenhienthi());
                     } else {
                         Toast.makeText(getActivity(), "Không tìm thấy tài khoản!", Toast.LENGTH_SHORT).show();

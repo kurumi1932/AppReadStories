@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="360dp"
     android:layout_height="wrap_content"
-    android:background="@color/dim_gray"
+    android:background="@color/medium_sea_green"
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_gravity="center">
@@ -14,7 +14,8 @@
         android:gravity="center|left"
         android:text="@string/CommentDelete"
         android:textColor="@color/white"
-        android:textSize="19sp" />
+        android:textStyle="bold"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tvContent"
@@ -37,7 +38,7 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:text="@string/yes"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/yellow"
             android:background="?android:attr/selectableItemBackground"/>
 
         <TextView
@@ -46,7 +47,7 @@
             android:layout_height="40dp"
             android:gravity="center"
             android:text="@string/no"
-            android:textColor="@color/white_smoke"
+            android:textColor="@color/yellow"
             android:background="?android:attr/selectableItemBackground"/>
 
     </LinearLayout>

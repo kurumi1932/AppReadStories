@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
@@ -39,7 +41,9 @@ public class CommentListActivity extends AppCompatActivity {
     private RecyclerView rcViewComment;
     private ImageView ivBack, ivSent;
     private EditText etComment;
+    private TextView tvCommentLength;
     private int idStory, idAccount, idComment;
+    private String comment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class CommentListActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBack);
         ivSent = findViewById(R.id.ivSent);
         etComment = findViewById(R.id.etComment);
+        tvCommentLength = findViewById(R.id.tvCommentLength);
 
         getData();
         rcView();
@@ -68,8 +73,7 @@ public class CommentListActivity extends AppCompatActivity {
     private void rcView() {
         commentAdapter = new CommentAdapter(listComment, (position, view) -> {
             Log.e("position_cmt", String.valueOf(position));
-            idComment = position;
-            checkCommentOfAccount();
+            checkCommentOfAccount(position);
         });//Đổ dữ liệu lên adpter
         rcViewComment.setHasFixedSize(true);
         rcViewComment.setLayoutManager(new LinearLayoutManager(this));
@@ -83,7 +87,7 @@ public class CommentListActivity extends AppCompatActivity {
         Api.apiInterface().getListComment(idStory).enqueue(new Callback<List<BinhLuan>>() {
             @Override
             public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     listComment.clear();
                     listComment.addAll(response.body());
                     commentAdapter.notifyDataSetChanged();
@@ -92,7 +96,7 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
-                Toast.makeText(CommentListActivity.this, "Lỗi hiển thị bình luận!", Toast.LENGTH_SHORT).show();
+                Log.e("Err_CommentList", t.toString());
             }
         });
     }
@@ -102,11 +106,32 @@ public class CommentListActivity extends AppCompatActivity {
             finish();
         });
         ivSent.setOnClickListener(v -> {
-            if (etComment.length() > 1200) {
-                Toast.makeText(CommentListActivity.this, "Quá số lượng từ giới hạn " + etComment.length() + "/840!", Toast.LENGTH_SHORT).show();
-            } else {
+            if(idComment==0){
                 addComment();
-                etComment.setText("");
+            }else {
+                updateComment();
+                idComment=0;
+            }
+            etComment.setText("");
+        });
+        etComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(etComment.getLineCount()>31){
+                    Toast.makeText(CommentListActivity.this, "Vượt quá sô dòng giới hạn đánh giá!", Toast.LENGTH_SHORT).show();
+                    etComment.getText().delete(etComment.getText().length() - 1, etComment.getText().length());
+                }
+                tvCommentLength.setText(s.toString().length() + "/2400");
             }
         });
     }
@@ -121,7 +146,7 @@ public class CommentListActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<BinhLuan> call1, Response<BinhLuan> response1) {
                             if (response1.isSuccessful() && response1.body() != null) {
-                                if (response1.body().getSuccess() == 1) {
+                                if (response1.body().getCommentsuccess() == 1) {
                                     getData();
                                 } else {
                                     Toast.makeText(CommentListActivity.this, "Lỗi! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
@@ -131,7 +156,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<BinhLuan> call1, Throwable t1) {
-                            Log.e("Err_addComment", t1.toString());
+                            Log.e("Err_CommentList", t1.toString());
                             Toast.makeText(CommentListActivity.this, "Lỗi đường dẫn đăng bình luận!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -145,13 +170,14 @@ public class CommentListActivity extends AppCompatActivity {
         });
     }
 
-    private void checkCommentOfAccount() {
-        Api.apiInterface().checkCommentOfAccount(idComment, idAccount).enqueue(new Callback<BinhLuan>() {
+    private void checkCommentOfAccount(int position) {
+        Api.apiInterface().checkCommentOfAccount(position, idAccount).enqueue(new Callback<BinhLuan>() {
             @Override
             public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getSuccess() == 1) {
-                        openDialogCommentUpdateDelete();
+                    if (response.body().getCommentsuccess() == 1) {
+                        comment = response.body().getBinhluan();
+                        openDialogCommentUpdateDelete(position);
                     }
                 }
             }
@@ -163,10 +189,10 @@ public class CommentListActivity extends AppCompatActivity {
         });
     }
 
-    private void openDialogCommentUpdateDelete() {
+    private void openDialogCommentUpdateDelete(int position) {
         final Dialog dialogCommentDelete = new Dialog(this);
         dialogCommentDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogCommentDelete.setContentView(R.layout.layout_dialog_comment_update_delete);
+        dialogCommentDelete.setContentView(R.layout.dialog_comment_update_delete);
 
         Window window = dialogCommentDelete.getWindow();
         if (window == null) {
@@ -188,21 +214,22 @@ public class CommentListActivity extends AppCompatActivity {
         TextView tvDelete = dialogCommentDelete.findViewById(R.id.tvDelete);
 
         tvUpdate.setOnClickListener(view -> {
-//            deleteComment(position);
+            etComment.setText(comment);
+            idComment=position;
             dialogCommentDelete.dismiss();
         });
         tvDelete.setOnClickListener(view -> {
-            openDialogCommentNotifyDelete();
+            openDialogCommentNotifyDelete(position);
             dialogCommentDelete.dismiss();
         });
 
         dialogCommentDelete.show();
     }
 
-    private void openDialogCommentNotifyDelete() {
+    private void openDialogCommentNotifyDelete(int position) {
         final Dialog dialogCommentDelete = new Dialog(this);
         dialogCommentDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogCommentDelete.setContentView(R.layout.layout_dialog_comment_notify_delete);
+        dialogCommentDelete.setContentView(R.layout.dialog_comment_notify_delete);
 
         Window window = dialogCommentDelete.getWindow();
         if (window == null) {
@@ -224,7 +251,7 @@ public class CommentListActivity extends AppCompatActivity {
         TextView tvNo = dialogCommentDelete.findViewById(R.id.tvNo);
 
         tvYes.setOnClickListener(view -> {
-            deleteComment();
+            deleteComment(position);
             dialogCommentDelete.dismiss();
         });
         tvNo.setOnClickListener(view -> {
@@ -234,16 +261,16 @@ public class CommentListActivity extends AppCompatActivity {
         dialogCommentDelete.show();
     }
 
-    private void deleteComment() {
-        Api.apiInterface().deleteComment(idComment).enqueue(new Callback<BinhLuan>() {
+    private void deleteComment(int position) {
+        Api.apiInterface().deleteComment(position).enqueue(new Callback<BinhLuan>() {
             @Override
             public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getSuccess() == 1) {
+                    if (response.body().getCommentsuccess() == 1) {
                         Toast.makeText(CommentListActivity.this, "Bình luận đã được xóa", Toast.LENGTH_SHORT).show();
                         getData();
                     }
-                    if (response.body().getSuccess() == 2) {
+                    if (response.body().getCommentsuccess() == 2) {
                         Toast.makeText(CommentListActivity.this, "Lỗi xóa bình luận!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -251,7 +278,29 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BinhLuan> call, Throwable t) {
-                Toast.makeText(CommentListActivity.this, "lỗi đuòng đẫn xóa bình luận!", Toast.LENGTH_SHORT).show();
+                Log.e("Err_DialogComment", t.toString());
+            }
+        });
+    }
+
+    private void updateComment() {
+        Api.apiInterface().updateCommnet(idComment,etComment.getText().toString()).enqueue(new Callback<BinhLuan>() {
+            @Override
+            public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getCommentsuccess() == 1) {
+                        Toast.makeText(CommentListActivity.this, "Bình luận đã được sửa", Toast.LENGTH_SHORT).show();
+                        getData();
+                    }
+                    if (response.body().getCommentsuccess() == 2) {
+                        Toast.makeText(CommentListActivity.this, "Lỗi sửa bình luận!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BinhLuan> call, Throwable t) {
+                Log.e("Err_DialogComment", t.toString());
             }
         });
     }

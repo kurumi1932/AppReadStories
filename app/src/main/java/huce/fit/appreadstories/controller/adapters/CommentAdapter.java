@@ -70,7 +70,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
                     Log.e("LineCount2", String.valueOf(tvComment.length()));
                 }
                 if (tvComment.getLineCount() == 4) {
-                    tvComment.setMaxLines(30);
+                    tvComment.setMaxLines(31);
                 }
             });
 

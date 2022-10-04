@@ -1,7 +1,9 @@
 package huce.fit.appreadstories.controller.activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -46,7 +48,7 @@ public class ChapterReadActivity extends AppCompatActivity {
     private BottomNavigationView btNavigationView;
     private ProgressBar pbReLoad;
     private TextView tvChapterName, tvPostPerson, tvPostDay, tvContent, tv1, tv2;
-    private int idStory, idChapter;
+    private int idAccount, idStory, idChapter;
     private AtomicInteger status = new AtomicInteger(1);
     Handler handler = new Handler();
 
@@ -58,6 +60,8 @@ public class ChapterReadActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapter_read);
+
+        getSharedPreferences();
 
         Intent intent = getIntent();
         idStory = intent.getIntExtra("idStory", 0);
@@ -78,13 +82,19 @@ public class ChapterReadActivity extends AppCompatActivity {
         tv2.setVisibility(View.GONE);
 
         btNavigationView.setVisibility(View.GONE);
-        getData(idStory, idChapter, 2, "Không tìm thấy chương!");
+        getData( 2, "Không tìm thấy chương!");
         processEvents();
     }
 
-    public void getData(int idStory, int idChapter, int chapter_change, String text) {
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        idAccount = sharedPreferences.getInt("idAccount", 0);
+        Log.e("idFragmentAccount",String.valueOf(idAccount));
+    }
+
+    public void getData(int chapter_change, String text) {
         pbReLoad.setVisibility(View.VISIBLE);
-        Api.apiInterface().getChapter(idStory, idChapter, chapter_change).enqueue(new Callback<ChuongTruyen>() {
+        Api.apiInterface().getChapter(idStory, idChapter, chapter_change, idAccount).enqueue(new Callback<ChuongTruyen>() {
             @Override
             public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -130,12 +140,12 @@ public class ChapterReadActivity extends AppCompatActivity {
                     break;
                 case R.id.btMenuPrevious:
                     Log.e("idChapter_pre.", "previous");
-                    getData(idStory, idChapter, 1, "Đây là chương đầu!");
+                    getData(1, "Đây là chương đầu!");
                     break;
                 case R.id.btMenuNext:
                     Log.e("idChapter_pre.", "next");
                     pbReLoad.setVisibility(View.VISIBLE);
-                    getData(idStory, idChapter, 3, "Đây là chương cuối!");
+                    getData(3, "Đây là chương cuối!");
                     break;
                 default:
                     break;
@@ -166,7 +176,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         final Dialog dialogListChapter = new Dialog(this);
         dialogListChapter.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogListChapter.setContentView(R.layout.layout_dialog_chapter_list);
+        dialogListChapter.setContentView(R.layout.dialog_chapter_list);
         //hiệu ứng di chuyển dialog
         dialogListChapter.getWindow().getAttributes().windowAnimations = R.style.DialogChapterListAnimation;
 
@@ -223,7 +233,7 @@ public class ChapterReadActivity extends AppCompatActivity {
             setIdChapter(listChapter.get(position).getMachuong());
 
             handler.postDelayed(() -> {
-                getData(idStory, idChapter, 2, "Không tìm thấy chương!");
+                getData(2, "Không tìm thấy chương!");
                 pbReLoad.setVisibility(View.GONE);
             }, 1500);
 

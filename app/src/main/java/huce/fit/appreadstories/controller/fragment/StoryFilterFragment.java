@@ -64,8 +64,8 @@ public class StoryFilterFragment extends Fragment {
         pbReload = view.findViewById(R.id.pbReLoad);
         rcViewStory = view.findViewById(R.id.rcViewStory);
 
-        tvSpecies.setBackgroundResource(R.drawable.ic_boder_filter_click);
-        tvStatus.setBackgroundResource(R.drawable.ic_boder_filter_click);
+        tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
+        tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
 
         getData(clickSpecies,clickStatus);
         rcView(listStory);
@@ -107,56 +107,56 @@ public class StoryFilterFragment extends Fragment {
     private void processEvents() {
         tvSpecies.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Tất cả";
             getData(clickSpecies,clickStatus);
         });
         tvSpecies1.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies1.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies1.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Đô thị";
             getData(clickSpecies,clickStatus);
         });
         tvSpecies2.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies2.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies2.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Tu tiên";
             getData(clickSpecies,clickStatus);
         });
         tvSpecies3.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies3.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies3.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Huyền huyễn";
             getData(clickSpecies,clickStatus);
         });
         tvSpecies4.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies4.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies4.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Trùng sinh";
             getData(clickSpecies,clickStatus);
         });
         tvSpecies5.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies5.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvSpecies5.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Ngôn tình";
             getData(clickSpecies,clickStatus);
         });
 
         tvStatus.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Tất cả";
             getData(clickSpecies,clickStatus);
         });
         tvStatus1.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus1.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvStatus1.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Đang ra";
             getData(clickSpecies,clickStatus);
         });
         tvStatus2.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus2.setBackgroundResource(R.drawable.ic_boder_filter_click);
+            tvStatus2.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Hoàn thành";
             getData(clickSpecies,clickStatus);
         });

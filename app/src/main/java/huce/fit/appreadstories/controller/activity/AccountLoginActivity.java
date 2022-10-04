@@ -73,15 +73,16 @@ public class AccountLoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        if (response.body().getSuccess() == 1) {
+                        if (response.body().getAccountsuccess() == 1) {
                             int idAccount = response.body().getMataikhoan();
+                            String name = response.body().getTenhienthi();
+                            //lưu vào bộ nhớ tạm của máy
+                            setSharedPreferences(idAccount, name);
+
                             Intent intent = new Intent(AccountLoginActivity.this, MainActivity.class);
                             startActivity(intent);
 
-                            //lưu vào bộ nhớ tạm của máy
-                            setSharedPreferences(idAccount);
                             finish();
-
                             Toast.makeText(AccountLoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(AccountLoginActivity.this, "Tài khoản hoặc mật khẩu không chính xác!", Toast.LENGTH_SHORT).show();
@@ -97,11 +98,12 @@ public class AccountLoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setSharedPreferences(int idAccount) {
+    private void setSharedPreferences(int idAccount, String name) {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         SharedPreferences.Editor myedit = sharedPreferences.edit();
 
         myedit.putInt("idAccount", idAccount);
+        myedit.putString("name", name);
         myedit.commit();
     }
 

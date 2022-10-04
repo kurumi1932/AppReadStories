@@ -66,7 +66,7 @@ public class AccountCreateActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    int status = response.body().getSuccess();
+                    int status = response.body().getAccountsuccess();
                     if (status == 0) {
                         Toast.makeText(AccountCreateActivity.this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
                     } else if (status == 1) {

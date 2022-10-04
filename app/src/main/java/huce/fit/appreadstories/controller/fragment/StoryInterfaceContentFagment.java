@@ -18,11 +18,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoryInterfaceFagmentContent extends Fragment {
+public class StoryInterfaceContentFagment extends Fragment {
     private TextView tvIntroduce;
     private int idStory;
 
-    public StoryInterfaceFagmentContent(int idStory) {
+    public StoryInterfaceContentFagment(int idStory) {
         this.idStory = idStory;
     }
 

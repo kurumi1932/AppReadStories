@@ -4,6 +4,7 @@ import static huce.fit.appreadstories.api.Api.URL_ACCOUNT;
 import static huce.fit.appreadstories.api.Api.URL_CHAPTER;
 import static huce.fit.appreadstories.api.Api.URL_COMMENT;
 import static huce.fit.appreadstories.api.Api.URL_LOGIN;
+import static huce.fit.appreadstories.api.Api.URL_RATE;
 import static huce.fit.appreadstories.api.Api.URL_REGISTER;
 import static huce.fit.appreadstories.api.Api.URL_STORY;
 import static huce.fit.appreadstories.api.Api.URL_STORY_FILTER;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import huce.fit.appreadstories.model.BinhLuan;
 import huce.fit.appreadstories.model.ChuongTruyen;
+import huce.fit.appreadstories.model.DanhGia;
 import huce.fit.appreadstories.model.TaiKhoan;
 import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.model.TruyenTheoDoi;
@@ -57,6 +59,37 @@ public interface ApiInterface {
     @GET(URL_STORY)//oke
     Call<List<Truyen>> searchStory(@Query("tentruyen") String name);
 
+    @FormUrlEncoded
+    @POST(URL_STORY)//oke
+    Call<Truyen> likeStory(@Field("matruyen") int id1, @Field("mataikhoan") int id2);
+
+    @GET(URL_STORY)//oke
+    Call<Truyen> checkLikeStory(@Query("matruyen") int id1, @Query("mataikhoan") int id2);
+
+    //Đánh giá
+    @GET(URL_RATE)//oke
+    Call<List<DanhGia>> getListRate(@Query("matruyen") int id);
+
+    @GET(URL_RATE)//oke
+    Call<DanhGia> checkRateOfAccount(@Query("matruyen") int id1, @Query("mataikhoan") int id2);
+
+    @FormUrlEncoded
+    @POST(URL_RATE)//oke
+    Call<DanhGia> addRate(@Field("matruyen") int id1,
+                              @Field("mataikhoan") int id2,
+                              @Field("tenhienthi") String name,
+                              @Field("diemdanhgia") int point,
+                              @Field("danhgia") String rate);
+
+    @FormUrlEncoded
+    @POST(URL_RATE)//oke
+    Call<DanhGia> updateRate(@Field("madanhgia") int id1,
+                          @Field("diemdanhgia") int point,
+                          @Field("danhgia") String rate);
+
+    @GET(URL_RATE)
+    Call<DanhGia> deleteRate(@Query("madanhgia") int id);
+
     //Lọc truyện
     @GET(URL_STORY_FILTER)//oke
     Call<List<Truyen>> getListStoriesFilter(@Query("theloai") String species, @Query("trangthai") String status);
@@ -66,10 +99,16 @@ public interface ApiInterface {
     Call<List<ChuongTruyen>> getListChapter(@Query("matruyen") int id);
 
     @GET(URL_CHAPTER)//oke
+    Call<List<ChuongTruyen>> getListChapterRead(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
+
+    @GET(URL_CHAPTER)//oke
+    Call<ChuongTruyen> getChapterRead(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
+
+    @GET(URL_CHAPTER)//oke
     Call<List<ChuongTruyen>> searchChapter(@Query("matruyen") int id, @Query("sochuong") String num);
 
     @GET(URL_CHAPTER)//Chapter, nextChapter, previousChapter //oke
-    Call<ChuongTruyen> getChapter(@Query("matruyen") int id1, @Query("machuong") int id2, @Query("thaydoichuong") int num);
+    Call<ChuongTruyen> getChapter(@Query("matruyen") int id1, @Query("machuong") int id2, @Query("thaydoichuong") int num, @Query("mataikhoan") int id3);
 
     @FormUrlEncoded
     @POST(URL_CHAPTER)//first_chapter //oke
@@ -108,4 +147,9 @@ public interface ApiInterface {
 
     @GET(URL_COMMENT)//oke
     Call<BinhLuan> deleteComment(@Query("mabinhluan") int id);
+
+    @FormUrlEncoded
+    @POST(URL_COMMENT)//oke
+    Call<BinhLuan> updateCommnet(@Field("mabinhluan") int id,
+                              @Field("binhluan") String comment);
 }

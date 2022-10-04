@@ -133,7 +133,7 @@ public class AccountUpdateActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    int status = response.body().getSuccess();
+                    int status = response.body().getAccountsuccess();
                     if (status == 3) {
                         Toast.makeText(AccountUpdateActivity.this, "Tài khoản không tồn tại!", Toast.LENGTH_SHORT).show();
                     } else if (status == 1) {

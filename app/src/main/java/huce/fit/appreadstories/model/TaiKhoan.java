@@ -19,8 +19,8 @@ public class TaiKhoan{
 	@SerializedName("tenhienthi")
 	private String tenhienthi;
 
-	@SerializedName("success")
-	private int success;
+	@SerializedName("accountsuccess")
+	private int accountsuccess;
 
 	public void setMataikhoan(int mataikhoan){
 		this.mataikhoan = mataikhoan;
@@ -62,11 +62,11 @@ public class TaiKhoan{
 		return tenhienthi;
 	}
 
-	public int getSuccess() {
-		return success;
+	public int getAccountsuccess() {
+		return accountsuccess;
 	}
 
-	public void setSuccess(int success) {
-		this.success = success;
+	public void setAccountsuccess(int accountsuccess) {
+		this.accountsuccess = accountsuccess;
 	}
 }

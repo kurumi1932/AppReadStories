@@ -18,60 +18,60 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.controller.adapters.CommentAdapter;
-import huce.fit.appreadstories.model.BinhLuan;
+import huce.fit.appreadstories.controller.adapters.RateAdapter;
+import huce.fit.appreadstories.model.DanhGia;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoryInterfaceFagmentComment extends Fragment {
-    private List<BinhLuan> listComment = new ArrayList<>(); //data source
-    private CommentAdapter commentAdapter;
-    private RecyclerView rcViewComment;
+public class StoryInterfaceRateFagment extends Fragment {
+    private List<DanhGia> listRate = new ArrayList<>(); //data source
+    private RateAdapter rateAdapter;
+    private RecyclerView rcViewRate;
 
     private int idStory;
 
-    public StoryInterfaceFagmentComment(int idStory) {
+    public StoryInterfaceRateFagment(int idStory) {
         this.idStory = idStory;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_story_interface_comment, container, false);
+        View view = inflater.inflate(R.layout.fragment_story_interface_rate, container, false);
 
-        rcViewComment = view.findViewById(R.id.rcViewComment);
+        rcViewRate = view.findViewById(R.id.rcViewRate);
 
-        getData();
+        getDataRate();
         rcView();
 
         return view;
     }
 
     private void rcView() {
-        commentAdapter = new CommentAdapter(listComment, (position, view) -> {
+        rateAdapter = new RateAdapter(listRate, (position, view) -> {
         });//Đổ dữ liệu lên adpter
-        rcViewComment.setHasFixedSize(true);
-        rcViewComment.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rcViewComment.setAdapter(commentAdapter);
+        rcViewRate.setHasFixedSize(true);
+        rcViewRate.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rcViewRate.setAdapter(rateAdapter);
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        rcViewComment.addItemDecoration(itemDecoration);
+        rcViewRate.addItemDecoration(itemDecoration);
     }
 
-    public void getData() {
-        Api.apiInterface().getListComment(idStory).enqueue(new Callback<List<BinhLuan>>() {
+    public void getDataRate() {
+        Api.apiInterface().getListRate(idStory).enqueue(new Callback<List<DanhGia>>() {
             @Override
-            public void onResponse(Call<List<BinhLuan>> call, Response<List<BinhLuan>> response) {
+            public void onResponse(Call<List<DanhGia>> call, Response<List<DanhGia>> response) {
                 if (response.isSuccessful()) {
-                    listComment.clear();
-                    listComment.addAll(response.body());
-                    commentAdapter.notifyDataSetChanged();
+                    listRate.clear();
+                    listRate.addAll(response.body());
+                    rateAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
+            public void onFailure(Call<List<DanhGia>> call, Throwable t) {
                 Log.e("Err_StoryInterfaceF", t.toString());
             }
         });

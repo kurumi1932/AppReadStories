@@ -34,41 +34,70 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcViewComment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="200dp"
+        android:background="@color/white" />
+
+    <LinearLayout
         android:id="@+id/rlComment2"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@drawable/ic_border_filter_linearlayout">
+        android:layout_height="190dp"
+        android:layout_marginTop="-190dp"
+        android:background="@drawable/border_filter_linearlayout"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="50dp">
+
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="7dp"
+                android:background="@drawable/bg_corner_no_color_10dp_boder_black"
+                android:gravity="top|left"
+                android:hint="@string/btComment"
+                android:maxLength="2400"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="20dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck" />
+
+            <TextView
+                android:id="@+id/tvCommentLength"
+                android:layout_width="70dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="right"
+                android:text="0/2400"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/ivSent"
             android:layout_width="45dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_height="45dp"
+            android:layout_marginLeft="-50dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/selectableItemBackground"
             android:padding="4dp"
             android:src="@drawable/ic_send"
             app:tint="@color/black" />
+    </LinearLayout>
 
-        <EditText
-            android:id="@+id/etComment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="50dp"
-            android:hint="@string/btComment"
-            android:textColor="@color/black"
-            android:textSize="17sp"
-            tools:ignore="TouchTargetSizeCheck" />
-    </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcViewComment"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"/>
 </LinearLayout>

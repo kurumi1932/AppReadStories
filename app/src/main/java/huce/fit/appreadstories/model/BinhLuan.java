@@ -2,7 +2,7 @@ package huce.fit.appreadstories.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class BinhLuan {
+public class BinhLuan extends TaiKhoan{
 
     @SerializedName("mabinhluan")
     private int mabinhluan;
@@ -10,17 +10,11 @@ public class BinhLuan {
     @SerializedName("matruyen")
     private int matruyen;
 
-    @SerializedName("mataikhoan")
-    private int mataikhoan;
-
-    @SerializedName("tenhienthi")
-    private String tenhienthi;
-
     @SerializedName("binhluan")
     private String binhluan;
 
-    @SerializedName("success")
-    private int success;
+    @SerializedName("commentsuccess")
+    private int commentsuccess;
 
     public int getMabinhluan() {
         return mabinhluan;
@@ -38,22 +32,6 @@ public class BinhLuan {
         this.matruyen = matruyen;
     }
 
-    public int getMataikhoan() {
-        return mataikhoan;
-    }
-
-    public String getTenhienthi() {
-        return tenhienthi;
-    }
-
-    public void setTenhienthi(String tenhienthi) {
-        this.tenhienthi = tenhienthi;
-    }
-
-    public void setMataikhoan(int mataikhoan) {
-        this.mataikhoan = mataikhoan;
-    }
-
     public String getBinhluan() {
         return binhluan;
     }
@@ -62,11 +40,11 @@ public class BinhLuan {
         this.binhluan = binhluan;
     }
 
-    public int getSuccess() {
-        return success;
+    public int getCommentsuccess() {
+        return commentsuccess;
     }
 
-    public void setSuccess(int success) {
-        this.success = success;
+    public void setCommentsuccess(int commentsuccess) {
+        this.commentsuccess = commentsuccess;
     }
 }

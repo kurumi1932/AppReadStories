@@ -28,6 +28,9 @@ public class ChuongTruyen{
 	@SerializedName("thaydoichuong")
 	private int thaydoichuong;//thay đổi chương
 
+	@SerializedName("so")
+	private int so;
+
 	public void setMatruyen(int matruyen){
 		this.matruyen = matruyen;
 	}
@@ -90,5 +93,13 @@ public class ChuongTruyen{
 
 	public void setThaydoichuong(int thaydoichuong) {
 		this.thaydoichuong = thaydoichuong;
+	}
+
+	public int getSo() {
+		return so;
+	}
+
+	public void setSo(int so) {
+		this.so = so;
 	}
 }

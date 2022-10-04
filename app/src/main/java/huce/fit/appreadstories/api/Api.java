@@ -8,8 +8,8 @@ public class Api {
 
     private static Retrofit retrofit = null;
     //đt: 192.168.43.78
-    //wifi: 192.168.1.21
-    private static final String BASE_URL = "http://192.168.1.21/appreadstories/";
+    //wifi: 192.168.1.5
+    private static final String BASE_URL = "http://192.168.1.5/appreadstories/";
 
     public static final String URL_LOGIN = "login.php";//oke
     public static final String URL_REGISTER = "register.php";//oke
@@ -23,6 +23,8 @@ public class Api {
     public static final String URL_STORY_FOLLOW = "story_follow.php";//oke
 
     public static final String URL_COMMENT = "comment.php";
+
+    public static final String URL_RATE = "rate.php";
 
     public static ApiInterface apiInterface(){
         if(retrofit == null){

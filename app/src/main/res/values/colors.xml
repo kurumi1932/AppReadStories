@@ -15,6 +15,8 @@
     <color name="red">#FF0000</color>
     <color name="blue2">#039BE5</color>
     <color name="pink">#F06292</color>
+    <color name="yellow">#E8B009</color>
+    <color name="orange">#FFA500</color>
     <color name="no_color">#1BFFFFFF</color>
 
     <color name="medium_sea_green">#3CB371</color>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="380dp"
+    android:layout_height="295dp"
+    android:layout_gravity="center"
+    android:background="@color/medium_sea_green"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_clear"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center"
+            android:text="@string/rate"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivRate1"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_not_rate"
+            app:tint="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRate2"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_not_rate"
+            app:tint="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRate3"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_not_rate"
+            app:tint="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRate4"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_not_rate"
+            app:tint="@color/yellow" />
+
+        <ImageView
+            android:id="@+id/ivRate5"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_not_rate"
+            app:tint="@color/yellow" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_margin="10dp">
+        <EditText
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/etRate"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="20dp"
+            android:maxLength="400"
+            android:background="@drawable/bg_corner_white_16dp"
+            android:gravity="top|left"
+            android:hint="@string/text44"
+            android:textColorHint="@color/dim_gray" />
+        <TextView
+            android:id="@+id/tvNumberTextRate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="60dp"
+            android:layout_height="20dp"
+            android:text="0/400"
+            android:gravity="right"
+            android:layout_marginRight="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/btRate"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_corner_yellow_10dp"
+        android:text="@string/rate"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+</LinearLayout>

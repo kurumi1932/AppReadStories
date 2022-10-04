@@ -31,6 +31,24 @@ public class Truyen {
 	@SerializedName("sochuong")
 	private int sochuong;
 
+	@SerializedName("luotxem")
+	private int luotxem;
+
+	@SerializedName("luotthich")
+	private int luotthich;
+
+	@SerializedName("luotbinhluan")
+	private int luotbinhluan;
+
+	@SerializedName("diemdanhgia")
+	private float diemdanhgia;
+
+	@SerializedName("chuongdangdoc")
+	private int chuongdangdoc;
+
+	@SerializedName("storysuccess")
+	private int storysuccess;
+
 	public void setTheloai(String theloai){
 		this.theloai = theloai;
 	}
@@ -101,5 +119,53 @@ public class Truyen {
 
 	public int getSochuong(){
 		return sochuong;
+	}
+
+	public int getLuotxem() {
+		return luotxem;
+	}
+
+	public void setLuotxem(int luotxem) {
+		this.luotxem = luotxem;
+	}
+
+	public int getLuotthich() {
+		return luotthich;
+	}
+
+	public void setLuotthich(int luotthich) {
+		this.luotthich = luotthich;
+	}
+
+	public int getLuotbinhluan() {
+		return luotbinhluan;
+	}
+
+	public void setLuotbinhluan(int luotbinhluan) {
+		this.luotbinhluan = luotbinhluan;
+	}
+
+	public float getDiemdanhgia() {
+		return diemdanhgia;
+	}
+
+	public void setDiemdanhgia(float diemdanhgia) {
+		this.diemdanhgia = diemdanhgia;
+	}
+
+	public int getChuongdangdoc() {
+		return chuongdangdoc;
+	}
+
+	public void setChuongdangdoc(int chuongdangdoc) {
+		this.chuongdangdoc = chuongdangdoc;
+	}
+
+	public int getStorysuccess() {
+		return storysuccess;
+	}
+
+	public void setStorysuccess(int storysuccess) {
+		this.storysuccess = storysuccess;
 	}
 }

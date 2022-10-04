@@ -43,16 +43,16 @@
     <RelativeLayout
         android:id="@+id/layoutStory"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="180dp">
 
         <ImageView
             android:id="@+id/ivStory"
-            android:layout_width="90dp"
-            android:layout_height="match_parent"
+            android:layout_width="100dp"
+            android:layout_height="140dp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:padding="3dp" />
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="5dp"
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/tvLblAuthor"
@@ -61,6 +61,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/ivStory"
+            android:gravity="bottom"
             android:text="@string/text2"
             android:textColor="@color/black"
             android:textSize="17sp"
@@ -73,6 +74,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/tvLblAuthor"
+            android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -83,6 +85,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="40dp"
             android:layout_toRightOf="@+id/ivStory"
+            android:gravity="bottom"
             android:text="@string/text3"
             android:textColor="@color/black"
             android:textSize="17sp"
@@ -95,6 +98,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="40dp"
             android:layout_toRightOf="@+id/tvLblStatus"
+            android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -105,18 +109,20 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="75dp"
             android:layout_toRightOf="@+id/ivStory"
+            android:gravity="bottom"
             android:text="@string/text4"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvChapter"
+            android:id="@+id/tvChapter1"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="75dp"
             android:layout_toRightOf="@+id/tvLblChapter"
+            android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -127,6 +133,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="110dp"
             android:layout_toRightOf="@+id/ivStory"
+            android:gravity="bottom"
             android:text="@string/text5"
             android:textColor="@color/black"
             android:textSize="17sp"
@@ -139,8 +146,66 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="110dp"
             android:layout_toRightOf="@+id/tvLblSpecies"
+            android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
+
+        <LinearLayout
+            android:id="@+id/llRate"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="145dp"
+            android:layout_toRightOf="@+id/ivStory"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivRate1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_not_rate"/>
+
+            <ImageView
+                android:id="@+id/ivRate2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_not_rate" />
+
+            <ImageView
+                android:id="@+id/ivRate3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_not_rate" />
+
+            <ImageView
+                android:id="@+id/ivRate4"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_not_rate" />
+
+            <ImageView
+                android:id="@+id/ivRate5"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_not_rate" />
+
+            <TextView
+                android:id="@+id/tvRate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|bottom"
+                android:padding="2dp"
+                android:text="5.0"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
+
     </RelativeLayout>
 
     <View
@@ -148,16 +213,119 @@
         android:layout_height="1dp"
         android:background="@color/silver" />
 
-    <TextView
-        android:id="@+id/tvListChapter"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:drawableRight="@drawable/ic_continue"
-        android:drawableTint="@color/black"
-        android:gravity="left|center"
-        android:text="@string/btListChap"
-        android:textColor="@color/black"
-        android:textSize="19sp" />
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llLike"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvLike1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tvLike2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center|top"
+                android:text="@string/btLike"
+                android:textColor="@color/dim_gray"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center|top"
+                android:text="@string/view"
+                android:textColor="@color/dim_gray"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llChapterList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvChapter2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center|top"
+                android:text="@string/btListChap"
+                android:textColor="@color/dim_gray"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llComment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvComment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|bottom"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="center|top"
+                android:text="@string/btComment"
+                android:textColor="@color/dim_gray"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -194,7 +362,7 @@
 
         <Button
             android:id="@+id/btFollow"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
@@ -209,7 +377,7 @@
 
         <Button
             android:id="@+id/btReadStory"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/red"
@@ -220,20 +388,35 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btComment"
-            android:layout_width="100dp"
+            android:id="@+id/btDownload"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
-            android:drawableTop="@drawable/ic_comment"
+            android:drawableTop="@drawable/ic_download"
             android:drawableTint="@color/dim_gray"
             android:gravity="center"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/btComment"
+            android:text="@string/btDownloadStory"
             android:textColor="@color/dim_gray"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textSize="15sp" />
+
+        <!--        <Button-->
+        <!--            android:id="@+id/btComment"-->
+        <!--            android:layout_width="100dp"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="1"-->
+        <!--            android:background="@color/white"-->
+        <!--            android:drawableTop="@drawable/ic_comment"-->
+        <!--            android:drawableTint="@color/dim_gray"-->
+        <!--            android:gravity="center"-->
+        <!--            android:paddingTop="10dp"-->
+        <!--            android:paddingBottom="10dp"-->
+        <!--            android:text="@string/btComment"-->
+        <!--            android:textColor="@color/dim_gray"-->
+        <!--            android:textSize="15sp"-->
+        <!--            android:textStyle="bold" />-->
     </LinearLayout>
 
 </LinearLayout>

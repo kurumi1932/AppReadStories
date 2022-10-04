@@ -1,6 +1,8 @@
 package huce.fit.appreadstories.controller.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
@@ -27,14 +30,13 @@ import retrofit2.Response;
 public class ChapterListActivity extends AppCompatActivity {
 
     private List<ChuongTruyen> listChapter = new ArrayList<>(); //data source
+    private List<ChuongTruyen> listChapterRead = new ArrayList<>();
     private ChapterAdapter chapterAdapter;
     private RecyclerView rcViewChapter;
-    private ImageView ivBack;
+    private ImageView ivBack, ivReverse;
     private SearchView svChapter;
     private ProgressBar pbReload;
-
-    private int idStory;
-    private int idChapter;
+    private int idAccount, idStory, idChapter;;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +48,59 @@ public class ChapterListActivity extends AppCompatActivity {
         rcViewChapter = findViewById(R.id.rcViewChapter);
         ivBack = findViewById(R.id.ivBack);
         svChapter = findViewById(R.id.svChapter);
+        ivReverse = findViewById(R.id.ivReverse);
 
         svChapter.setMaxWidth(Integer.MAX_VALUE);
 
+        getSharedPreferences();
         processEvents();
-        getData();
-        rcView();
+        getDataListChapterRead();
+        getDataChapterRead();
     }
 
-    private void rcView() {
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        idAccount = sharedPreferences.getInt("idAccount", 0);
+        Log.e("idFragmentAccount", String.valueOf(idAccount));
+    }
+
+    private void getDataListChapterRead() {
+        Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
+            @Override
+            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
+                if (response.isSuccessful() && response.body().toString() != null) {
+                    listChapterRead.clear();
+                    listChapterRead.addAll(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+                Log.e("Err_ChapterList", t.toString());
+            }
+        });
+    }
+
+    private void getDataChapterRead() {
+        Api.apiInterface().getChapterRead(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
+            @Override
+            public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
+                if (response.isSuccessful() && response.body().toString() != null) {
+                    rcView(response.body().getMachuong());
+                    getData();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+                Log.e("Err_ChapterList", t.toString());
+            }
+        });
+    }
+
+    private void rcView(int chapterRead) {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
-        chapterAdapter = new ChapterAdapter(listChapter, (position, view1) -> {
+        chapterAdapter = new ChapterAdapter(this, listChapter, listChapterRead, chapterRead, (position, view1) -> {
             idChapter = listChapter.get(position).getMachuong();
             Log.e("idchapterclick: ", String.valueOf(idChapter));
 
@@ -85,9 +129,18 @@ public class ChapterListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getData(newText);
+                if (newText.equals("")) {
+                    getData();
+                } else {
+                    getData(newText);
+                }
                 return false;
             }
+        });
+
+        ivReverse.setOnClickListener(view -> {
+            Collections.reverse(listChapter);// đảo ngược dánh sách
+            rcViewChapter.setAdapter(chapterAdapter);
         });
     }
 
@@ -95,19 +148,19 @@ public class ChapterListActivity extends AppCompatActivity {
         pbReload.setVisibility(View.VISIBLE);
         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                if (response.isSuccessful() && response.body().toString() != null) {
+            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response1) {
+                if (response1.isSuccessful() && response1.body().toString() != null) {
                     listChapter.clear();
-                    Log.e("body", response.body().toString());
-                    listChapter.addAll(response.body());
+                    Log.e("body", response1.body().toString());
+                    listChapter.addAll(response1.body());
                     chapterAdapter.notifyDataSetChanged();
                     pbReload.setVisibility(View.GONE);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                Log.e("Err_ChapterList", t.toString());
+            public void onFailure(Call<List<ChuongTruyen>> call1, Throwable t1) {
+                Log.e("Err_ChapterList", t1.toString());
             }
         });
     }

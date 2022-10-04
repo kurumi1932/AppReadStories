@@ -32,7 +32,7 @@ public class ChapterDialogAdapter extends RecyclerView.Adapter<ChapterDialogAdap
     @NonNull
     @Override
     public ChapterDialogHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_dialog_chapter_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dialog_chapter_item, parent, false);
         return new ChapterDialogHoder(view);
     }
 

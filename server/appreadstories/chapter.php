@@ -9,7 +9,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $id_story = $_GET['matruyen'];
 
         //get list chapter
-         if(!empty($id_story) && empty($_GET['machuong']) && empty($_GET['sochuong'])){
+         if(isset($id_story) && empty($_GET['machuong']) && empty($_GET['sochuong'])&& empty($_GET['mataikhoan'])){
 
             if ($id_story>0) {
 
@@ -31,13 +31,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
         
                 echo json_encode($result);
                 mysqli_close($conn);
-        
             }
 
         }
 
         //search chapter
-        if(!empty($id_story) && empty($_GET['machuong']) && !empty($_GET['sochuong'])){
+        if(isset($id_story) && empty($_GET['machuong']) && isset($_GET['sochuong']) && empty($_GET['mataikhoan'])){
             $number_chapter=$_GET['sochuong'];
             $str = '%';
             $str_search = $number_chapter.$str;
@@ -55,16 +54,68 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $index['thoigiandang'] = $row['thoigiandang'];
     
                 array_push($result, $index);
-    
             }
     
             echo json_encode($result);
             mysqli_close($conn);
         }
 
-        //get chapter
-        if(!empty($id_story) && !empty($_GET['machuong']) && !empty($_GET['thaydoichuong']) && empty($_GET['sochuong'])){
+        //get list chapter read
+        if (isset($id_story) && empty($_GET['machuong']) && empty($_GET['sochuong']) && isset($_GET['mataikhoan']) && empty($_GET['thaydoichuong'])) {
+            $id_account = $_GET['mataikhoan'];
 
+            if(isset($_GET['so'])){
+                $num = $_GET['so'];
+                
+                if($num == 0){
+                    //get list chapter read
+                    $sql_select = "SELECT * FROM chuongdadoc WHERE matruyen='$id_story' AND mataikhoan='$id_account'";
+                    $response = mysqli_query($conn, $sql_select);
+                    $result = array();
+            
+                    while($row = mysqli_fetch_array($response)) {
+                        $index['machuong'] = $row['machuong'];
+            
+                        array_push($result, $index);
+                    }
+            
+                    echo json_encode($result);
+                    mysqli_close($conn);
+                }else{
+                    //get chapter reading
+                    $sql_select = "SELECT * FROM tuongtac WHERE matruyen='$id_story' AND mataikhoan='$id_account'";
+                    $response = mysqli_query($conn, $sql_select);
+    
+                    if (mysqli_num_rows($response)===1) {
+                        $row = mysqli_fetch_assoc($response);
+
+                        $result['machuong'] = $row['chuongdangdoc'];
+
+                        echo json_encode($result);
+                        mysqli_close($conn);
+                    }
+                }
+            }
+        }
+
+        function storyRead($conn, $id_story, $id_account, $id_chapter){
+            //chapter read
+            $sql_select = "SELECT * FROM chuongdadoc WHERE matruyen='$id_story' AND mataikhoan='$id_account' AND machuong='$id_chapter' ";
+            $response = mysqli_query($conn, $sql_select);
+
+            if (mysqli_num_rows($response)===0) {
+                $sql_insert = "INSERT INTO chuongdadoc(matruyen, mataikhoan, machuong) VALUES ('$id_story','$id_account','$id_chapter')";
+                mysqli_query($conn, $sql_insert);
+            }
+
+            //chapter being read
+            $sql_update = "UPDATE tuongtac SET chuongdangdoc=$id_chapter WHERE matruyen='$id_story' AND mataikhoan='$id_account'";
+            mysqli_query($conn, $sql_update);
+        }
+
+        //get chapter
+        if(isset($id_story) && isset($_GET['machuong']) && empty($_GET['sochuong']) && isset($_GET['mataikhoan']) && isset($_GET['thaydoichuong'])){
+            $id_account = $_GET['mataikhoan'];
             $id_chapter = $_GET['machuong'];
             $num = $_GET['thaydoichuong'];
 
@@ -95,6 +146,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                                 $result['noidung'] = $row['noidung'];
                     
                                 echo json_encode($result);
+
+                                storyRead($conn, $id_story, $id_account,$row['machuong']);
                                 mysqli_close($conn);
                             }
                         } else{
@@ -129,8 +182,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         $result['noidung'] = $row['noidung'];
             
                         echo json_encode($result);
-                        mysqli_close($conn);
 
+                        storyRead($conn, $id_story, $id_account,$row['machuong']);
+                        mysqli_close($conn);
                     }else{
                         $result['matruyen'] = 0;
                         $result['machuong'] = 0;
@@ -170,6 +224,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                                 $result['noidung'] = $row['noidung'];
                     
                                 echo json_encode($result);
+
+                                storyRead($conn, $id_story, $id_account,$row['machuong']);
                                 mysqli_close($conn);
                             }
                         } else{
@@ -186,7 +242,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         }
                     }   
                 }
-            }      
+            }
         }
         
         break;

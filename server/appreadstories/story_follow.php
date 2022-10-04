@@ -106,8 +106,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 mysqli_close($conn);
             }
         }
-
-    break;
+        break;
     //-------------default-------------//
     default:
   
@@ -117,7 +116,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
         mysqli_close($conn);
         
         break;
-
 }
 
 ?>
