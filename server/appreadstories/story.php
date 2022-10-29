@@ -23,6 +23,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     }else{
                         $result['storysuccess'] = 1;
                     }
+                    $result['chuongdangdoc'] = $row['chuongdangdoc'];
                 }else{
                     $sql_insert = "INSERT INTO tuongtac(matruyen, mataikhoan) VALUES ('$id_story','$id_account')";
                     $response1 = mysqli_query($conn, $sql_insert);

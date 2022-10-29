@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,10 +24,11 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.model.TruyenTheoDoi;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.controller.activity.StoryInterfaceActivity;
 import huce.fit.appreadstories.controller.adapters.StoryAdapter;
+import huce.fit.appreadstories.model.Truyen;
+import huce.fit.appreadstories.model.TruyenTheoDoi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,9 +37,11 @@ import retrofit2.Response;
 public class StoryFollowFragment extends Fragment {
 
     private StoryAdapter storyFollowAdapter;
+    private LinearLayout llFragmentStoryFollow;
     private RecyclerView rcViewStory;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar pbReload;
+    private Button btCheckConnection;
 
     private int idAccount;
     private List<Truyen> listStoryFollow = new ArrayList<>();
@@ -52,14 +57,21 @@ public class StoryFollowFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_story_follow, container, false);
 
+        getSharedPreferences();
+
+        llFragmentStoryFollow = view.findViewById(R.id.llFragmentStoryFollow);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         pbReload = view.findViewById(R.id.pbReLoad);
         rcViewStory = view.findViewById(R.id.rcViewStory);
+        btCheckConnection = view.findViewById(R.id.btCheckConnection);
 
-        getSharedPreferences();
+        if(isNetwork()){
+            show();
+        }else {
+            hide();
+        }
         getData();
-        rcView(listStoryFollow);
-        processEvents();
+        rcView();
 
         return view;
     }
@@ -70,27 +82,42 @@ public class StoryFollowFragment extends Fragment {
         Log.e("idFragmentAccount", String.valueOf(idAccount));
     }
 
-    private void processEvents() {
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
+        return checkNetwork.isNetwork();
+    }
+
+    private void show() {
+        getData();
+        rcView();
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        llFragmentStoryFollow.setVisibility(View.VISIBLE);
+        btCheckConnection.setVisibility(View.GONE);
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(true);
             swipeRefreshLayout.setRefreshing(false);
-            getData();
+            if (isNetwork()) {
+                listStoryFollow.clear();
+                show();
+            }else {
+                hide();
+            }
         });
     }
 
-    private void rcView(List<Truyen> listStoryFollow) {
-        storyFollowAdapter = new StoryAdapter(listStoryFollow, (position, view1) -> {
-            Truyen ttd = listStoryFollow.get(position);
-            int idStoryFollow = ttd.getMatruyen();
-            Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
-            intent.putExtra("idStory", idStoryFollow);
-            startActivity(intent);
-        });
-        rcViewStory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rcViewStory.setAdapter(storyFollowAdapter);
+    private void hide() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+        llFragmentStoryFollow.setVisibility(View.GONE);
+        pbReload.setVisibility(View.GONE);
+        btCheckConnection.setVisibility(View.VISIBLE);
 
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        rcViewStory.addItemDecoration(itemDecoration);
+        btCheckConnection.setOnClickListener(v -> {
+            if (isNetwork()) {
+                show();
+            } else {
+                Toast.makeText(getActivity(), "Không có kết nối mạng!\n\tVui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getData() {
@@ -102,10 +129,10 @@ public class StoryFollowFragment extends Fragment {
                     if (response.body().get(0).getMatruyen() != 0) {
                         listStoryFollow.clear();
                         listStoryFollow.addAll(response.body());
+
                         storyFollowAdapter.notifyDataSetChanged();
                         pbReload.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(getActivity(), "Không có truyện theo dõi!", Toast.LENGTH_SHORT).show();
                         pbReload.setVisibility(View.GONE);
                     }
                 }
@@ -113,9 +140,21 @@ public class StoryFollowFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<TruyenTheoDoi>> call, Throwable t) {
-                Log.e("story_follow: ", t.toString());
-                Toast.makeText(getActivity(), "Lỗi truyện theo dõi!", Toast.LENGTH_SHORT).show();
+                Log.e("Err_StoryFollow", "getData", t);
             }
         });
+    }
+
+    private void rcView() {
+        storyFollowAdapter = new StoryAdapter(listStoryFollow, (position, view1) -> {
+            Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
+            intent.putExtra("idStory", position);
+            startActivity(intent);
+        });
+        rcViewStory.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rcViewStory.setAdapter(storyFollowAdapter);
+
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        rcViewStory.addItemDecoration(itemDecoration);
     }
 }

@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/llChapterList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -35,6 +36,7 @@
                 android:layout_marginRight="50dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/border_corner_silver_10dp"
+                android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
                 android:queryHint="@string/text43"
                 android:searchIcon="@null" />
@@ -47,8 +49,13 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="9dp"
                 android:src="@drawable/ic_reverse"
-                app:tint="@color/black"/>
+                app:tint="@color/black" />
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/silver" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcViewChapter"

@@ -37,7 +37,8 @@ public interface ApiInterface {
     Call<TaiKhoan> register(@Field("taikhoan") String username,
                             @Field("matkhau") String password,
                             @Field("email") String email,
-                            @Field("tenhienthi") String name);
+                            @Field("tenhienthi") String name,
+                            @Field("ngaysinh") String birthday);
 
     @GET(URL_ACCOUNT)//oke
     Call<TaiKhoan> getAccount(@Query("mataikhoan") int id);
@@ -102,7 +103,7 @@ public interface ApiInterface {
     Call<List<ChuongTruyen>> getListChapterRead(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
-    Call<ChuongTruyen> getChapterRead(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
+    Call<ChuongTruyen> getChapterReading(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
     Call<List<ChuongTruyen>> searchChapter(@Query("matruyen") int id, @Query("sochuong") String num);

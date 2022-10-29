@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import huce.fit.appreadstories.controller.fragment.StoryInterfaceRateFagment;
-import huce.fit.appreadstories.controller.fragment.StoryInterfaceContentFagment;
+import huce.fit.appreadstories.controller.fragment.StoryInterfaceIntroduceFagment;
 
 public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
     private int idStory;
@@ -20,7 +20,7 @@ public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new StoryInterfaceContentFagment(idStory);
+                return new StoryInterfaceIntroduceFagment(idStory);
             case 1:
                 return new StoryInterfaceRateFagment(idStory);
 

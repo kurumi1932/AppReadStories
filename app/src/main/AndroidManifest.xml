@@ -23,20 +23,27 @@
         </activity>
         <activity android:name=".controller.activity.MainActivity"
             android:screenOrientation="portrait"></activity>
+
         <activity android:name=".controller.activity.StorySearchActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".controller.activity.StoryInterfaceActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".controller.activity.StoryDownloadActivity"
+            android:screenOrientation="portrait"></activity>
+
         <activity android:name=".controller.activity.ChapterListActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".controller.activity.ChapterReadActivity"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".controller.activity.CommentListActivity"
+            android:screenOrientation="portrait"></activity>
+
         <activity android:name=".controller.activity.AccountCreateActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".controller.activity.AccountUpdateActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".controller.activity.CommentListActivity"
-            android:screenOrientation="portrait"></activity>
+
         <activity android:name=".controller.activity.ContactInforActivity"
             android:screenOrientation="portrait"></activity>
     </application>

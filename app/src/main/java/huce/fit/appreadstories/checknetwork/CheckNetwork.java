@@ -7,14 +7,13 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 public class CheckNetwork {
-    private static final String DEBUG_TAG = "NetworkStatusExample";
+    private Context context;
 
+    public CheckNetwork(Context context) {
+        this.context = context;
+    }
 
-    public static void isNetworkAvailable(Context context) {
-//        if (context == null) {
-//            return false;
-//        }
-
+    public boolean isNetwork() {
         boolean isWifiConn = false;
         boolean isMobileConn = false;
 
@@ -23,12 +22,16 @@ public class CheckNetwork {
             NetworkInfo networkInfo = connMgr.getNetworkInfo(network);
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                 isWifiConn |= networkInfo.isConnected();
-            }
-            if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+            } else if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
                 isMobileConn |= networkInfo.isConnected();
             }
         }
-        Log.d(DEBUG_TAG, "Wifi connected: " + isWifiConn);
-        Log.d(DEBUG_TAG, "Mobile connected: " + isMobileConn);
+        Log.e("Wifi connected: ", String.valueOf(isWifiConn));
+        Log.e("Mobile connected: ", String.valueOf(isMobileConn));
+        if (!isWifiConn && !isMobileConn) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

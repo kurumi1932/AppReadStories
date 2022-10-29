@@ -37,7 +37,6 @@
     <string name="text18">Ngôn tình</string>
     <string name="text19">Sắp xếp</string>
     <string name="text20">Mới cập nhật</string>
-    <!--    <string name="text21">Số chương</string>-->
     <string name="text22">Đăng ký</string>
     <string name="hint5">Nhập lại mật khẩu</string>
     <string name="btOk">Xác nhận</string>
@@ -72,11 +71,13 @@
     <string name="text43">Nhập số chương cần tìm</string>
     <string name="btUpdate">-> Sửa</string>
     <string name="btDelete">-> Xóa</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btDownloadStory">Tải truyện</string>
     <string name="rate">Đánh giá</string>
     <string name="btLike">Yêu thích</string>
     <string name="view">Lượt xem</string>
     <string name="text44">Đánh giá của bạn sẽ giúp đỡ những độc giả muốn tham khảo truyện</string>
+    <string name="deleteRate">Xóa đánh giá</string>
+    <string name="downloadStory">Truyện tải về</string>
+    <string name="btCheckConnection">Tải lại</string>
 </resources>

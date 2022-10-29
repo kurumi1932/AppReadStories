@@ -24,33 +24,34 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewPager2);
         btNavigationView = findViewById(R.id.btNavigationView);
 
-        viewPagerMainAdapter = new ViewPagerMainAdapter(this);
-        viewPager2.setAdapter(viewPagerMainAdapter);
-        viewPager2.setUserInputEnabled(false);//tắt thao tac vuốt viewpager2
-
+        viewPager();
         processEvents();
     }
 
-    public void closeMainActivity(){
+    public void viewPager() {
+        viewPagerMainAdapter = new ViewPagerMainAdapter(this);
+        viewPager2.setAdapter(viewPagerMainAdapter);
+        viewPager2.setUserInputEnabled(false);//tắt thao tac vuốt viewpager2
+    }
+
+    public void closeMainActivity() {
         finish();
     }
 
     private void processEvents() {
         btNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            switch (id){
-                case R.id.btMenuStory:
-                    viewPager2.setCurrentItem(0);
-                    break;
-                case R.id.btMenuFilter:
-                    viewPager2.setCurrentItem(1);
-                    break;
-                case R.id.btMenuStoryFollow:
-                    viewPager2.setCurrentItem(2);
-                    break;
-                case R.id.btMenuAccount:
-                    viewPager2.setCurrentItem(3);
-                    break;
+            if (id == R.id.btMenuStory) {
+                viewPager2.setCurrentItem(0);
+            } else if (id == R.id.btMenuFilter) {
+                viewPager2.setCurrentItem(1);
+            } else if (id == R.id.btMenuStoryFollow) {
+                viewPager();
+                viewPager2.setCurrentItem(2);
+            } else if (id == R.id.btMenuStoryDownload) {
+                viewPager2.setCurrentItem(3);
+            } else if (id == R.id.btMenuAccount) {
+                viewPager2.setCurrentItem(4);
             }
             return true;
         });
@@ -59,19 +60,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                switch (position) {
-                    case 0:
-                        btNavigationView.getMenu().findItem(R.id.btMenuStory).setChecked(true);
-                        break;
-                    case 1:
-                        btNavigationView.getMenu().findItem(R.id.btMenuFilter).setChecked(true);
-                        break;
-                    case 2:
-                        btNavigationView.getMenu().findItem(R.id.btMenuStoryFollow).setChecked(true);
-                        break;
-                    case 3:
-                        btNavigationView.getMenu().findItem(R.id.btMenuAccount).setChecked(true);
-                        break;
+                if (position == 0) {
+                    btNavigationView.getMenu().findItem(R.id.btMenuStory).setChecked(true);
+                } else if (position == 1) {
+                    btNavigationView.getMenu().findItem(R.id.btMenuFilter).setChecked(true);
+                } else if (position == 2) {
+                    btNavigationView.getMenu().findItem(R.id.btMenuStoryFollow).setChecked(true);
+                } else if (position == 3) {
+                    btNavigationView.getMenu().findItem(R.id.btMenuStoryDownload).setChecked(true);
+                } else if (position == 4) {
+                    btNavigationView.getMenu().findItem(R.id.btMenuAccount).setChecked(true);
                 }
             }
         });

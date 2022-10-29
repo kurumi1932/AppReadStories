@@ -47,7 +47,7 @@ public class ChapterReadActivity extends AppCompatActivity {
     private ConstraintLayout constrainLayout;
     private BottomNavigationView btNavigationView;
     private ProgressBar pbReLoad;
-    private TextView tvChapterName, tvPostPerson, tvPostDay, tvContent, tv1, tv2;
+    private TextView tvNumberChapter, tvChapterName, tvPostPerson, tvPostDay, tvContent;
     private int idAccount, idStory, idChapter;
     private AtomicInteger status = new AtomicInteger(1);
     Handler handler = new Handler();
@@ -65,23 +65,21 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         idStory = intent.getIntExtra("idStory", 0);
-        idChapter = intent.getIntExtra("idChapter", 0);
+        idChapter = intent.getIntExtra("idChapterReading", 0);
 
         constrainLayout = findViewById(R.id.constrainLayout);
         btNavigationView = findViewById(R.id.btNavigationView);
 
         pbReLoad = findViewById(R.id.pbReLoad);
+        tvNumberChapter = findViewById(R.id.tvNumberChapter);
         tvChapterName = findViewById(R.id.tvChapterName);
         tvPostPerson = findViewById(R.id.tvPostPerson);
         tvPostDay = findViewById(R.id.tvPostDay);
         tvContent = findViewById(R.id.tvContent);
-        tv1 = findViewById(R.id.tv1);
-        tv2 = findViewById(R.id.tv2);
-
-        tv1.setVisibility(View.GONE);
-        tv2.setVisibility(View.GONE);
 
         btNavigationView.setVisibility(View.GONE);
+        constrainLayout.setVisibility(View.GONE);
+
         getData( 2, "Không tìm thấy chương!");
         processEvents();
     }
@@ -93,6 +91,10 @@ public class ChapterReadActivity extends AppCompatActivity {
     }
 
     public void getData(int chapter_change, String text) {
+        Log.e("1: ", String.valueOf(idStory));
+        Log.e("2: ", String.valueOf(idChapter));
+        Log.e("3: ", String.valueOf(chapter_change));
+        Log.e("4: ", String.valueOf(idAccount));
         pbReLoad.setVisibility(View.VISIBLE);
         Api.apiInterface().getChapter(idStory, idChapter, chapter_change, idAccount).enqueue(new Callback<ChuongTruyen>() {
             @Override
@@ -101,14 +103,14 @@ public class ChapterReadActivity extends AppCompatActivity {
                     pbReLoad.setVisibility(View.GONE);
                     ChuongTruyen chuong = response.body();
                     if (chuong.getMachuong() != 0) {
+                        tvNumberChapter.setText(chuong.getSochuong());
                         tvChapterName.setText(chuong.getTenchuong());
                         tvPostPerson.setText(chuong.getNguoidang());
                         tvPostDay.setText(chuong.getThoigiandang());
                         tvContent.setText(chuong.getNoidung());
                         setIdChapter(chuong.getMachuong());
 
-                        tv1.setVisibility(View.VISIBLE);
-                        tv2.setVisibility(View.VISIBLE);
+                        constrainLayout.setVisibility(View.VISIBLE);
                     } else {
                         Toast.makeText(ChapterReadActivity.this, text, Toast.LENGTH_SHORT).show();
                     }
@@ -117,7 +119,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ChuongTruyen> call, Throwable t) {
-                Log.e("Err_ChapterRead", t.toString());
+                Log.e("E120_ChapterRead", t.toString());
             }
         });
     }
@@ -220,7 +222,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_DialogChapterList", t.toString());
+                Log.e("E235_DialogChapterList", t.toString());
             }
         });
 
@@ -257,7 +259,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                Log.e("Err_DialogChapterList", t.toString());
+                Log.e("E272_DialogChapterList", t.toString());
             }
         });
 
@@ -287,7 +289,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                        Log.e("Err_DialogChapterList", t.toString());
+                        Log.e("E302_DialogChapterList", t.toString());
                     }
                 });
                 return false;

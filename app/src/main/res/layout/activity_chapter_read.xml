@@ -10,17 +10,17 @@
         android:layout_height="45dp"
         app:itemBackground="@color/white"
         app:itemIconTint="@color/black"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/menu_bt_nvg_story_read" />
 
     <ScrollView
         android:id="@+id/scView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_chapter_read"
+        android:background="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,22 +31,62 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tvChapterName"
-                android:layout_width="match_parent"
+                android:id="@+id/tv0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:fontFamily="serif"
-                android:gravity="left"
+                android:text="@string/chapter"
                 android:textColor="@color/black"
-                android:textSize="21sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvNumberChapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="serif"
+                android:text="19.5"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/tv0"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="serif"
+                android:text=":"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/tvNumberChapter"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvChapterName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="serif"
+                android:text="Kẻ hủy diệt"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/tv1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -68,11 +108,11 @@
                 android:fontFamily="serif"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:layout_constraintLeft_toRightOf="@+id/tv1"
+                app:layout_constraintLeft_toRightOf="@+id/tv2"
                 app:layout_constraintTop_toBottomOf="@+id/tvChapterName" />
 
             <TextView
-                android:id="@+id/tv2"
+                android:id="@+id/tv3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -93,7 +133,7 @@
                 android:fontFamily="serif"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:layout_constraintLeft_toRightOf="@+id/tv2"
+                app:layout_constraintLeft_toRightOf="@+id/tv3"
                 app:layout_constraintTop_toBottomOf="@+id/tvPostPerson" />
 
             <TextView
@@ -103,23 +143,16 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="30dp"
                 android:fontFamily="serif"
                 android:gravity="left"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPostDay" />
 
-            <TextView
-                android:id="@+id/tv3"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginTop="15dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvContent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

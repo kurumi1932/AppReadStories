@@ -15,55 +15,56 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.interfaces.ClickListener;
-import huce.fit.appreadstories.model.Truyen;
+import huce.fit.appreadstories.sqlite.Story;
 
 
-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> {
-    private List<Truyen> listStory;
+public class StoryDownloadAdapter extends RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHoder> {
+    private List<Story> listStoryDownload;
     private ClickListener clickListener;
 
 
-    public StoryAdapter(List<Truyen> listStory, ClickListener clickListener) {
-        this.listStory = listStory;
+    public StoryDownloadAdapter(List<Story> listStoryDownload, ClickListener clickListener) {
+        this.listStoryDownload = listStoryDownload;
         this.clickListener = clickListener;
     }
 
 
     @NonNull
     @Override
-    public StoryHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StoryDownloadHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_story_item, parent, false);
-        return new StoryHoder(view);
+        return new StoryDownloadHoder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StoryHoder holder, int position) {
-        Truyen tc = listStory.get(position);
-        if (tc == null) {
+    public void onBindViewHolder(@NonNull StoryDownloadHoder holder, int position) {
+        Story story = listStoryDownload.get(position);
+        if (story == null) {
             return;
         } else {
-            holder.tvStoryName.setText(tc.getTentruyen());
-            holder.tvAuthor.setText(tc.getTacgia());
-            holder.tvStatus.setText(tc.getTrangthai());
-            holder.tvChapter.setText(String.valueOf(tc.getSochuong()));
-            Picasso.get().load(tc.getAnh())
+            holder.tvStoryName.setText(story.getNameStory());
+            holder.tvAuthor.setText(story.getAuthor());
+            holder.tvStatus.setText(story.getStatus());
+            holder.tvChapter.setText(String.valueOf(story.getSumChapter()));
+            Picasso.get().load(story.getImage())
                     .into(holder.ivStory);
         }
     }
 
     @Override
     public int getItemCount() {
-        if (listStory != null && listStory.size() > 0)
-            return listStory.size();
+        if (listStoryDownload != null && listStoryDownload.size() > 0)
+            return listStoryDownload.size();
         else
             return 0;
     }
 
-    public class StoryHoder extends RecyclerView.ViewHolder {
+
+    public class StoryDownloadHoder extends RecyclerView.ViewHolder {
         private TextView tvStoryName, tvAuthor, tvStatus, tvChapter;
         private ImageView ivStory;
 
-        public StoryHoder(@NonNull View itemView) {
+        public StoryDownloadHoder(@NonNull View itemView) {
             super(itemView);
             tvStoryName = itemView.findViewById(R.id.tvStoryName);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
@@ -71,10 +72,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
             tvChapter = itemView.findViewById(R.id.tvChapter);
             ivStory = itemView.findViewById(R.id.ivStory);
 
-            itemView.setOnClickListener((view -> {
+            itemView.setOnClickListener((v -> {
                 int position = getBindingAdapterPosition();
-                int idStory = listStory.get(position).getMatruyen();
-                clickListener.onItemClick(idStory, view);
+                int idStory = listStoryDownload.get(position).getIdStory();
+                clickListener.onItemClick(idStory, v);
             }));
         }
     }

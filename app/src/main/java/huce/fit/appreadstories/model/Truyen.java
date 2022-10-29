@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Truyen {
 
+	@SerializedName("matruyen")
+	private int matruyen;
+
 	@SerializedName("theloai")
 	private String theloai;
 
@@ -12,9 +15,6 @@ public class Truyen {
 
 	@SerializedName("gioithieu")
 	private String gioithieu;
-
-	@SerializedName("matruyen")
-	private int matruyen;
 
 	@SerializedName("trangthai")
 	private String trangthai;
@@ -49,6 +49,14 @@ public class Truyen {
 	@SerializedName("storysuccess")
 	private int storysuccess;
 
+	public void setMatruyen(int matruyen){
+		this.matruyen = matruyen;
+	}
+
+	public int getMatruyen(){
+		return matruyen;
+	}
+
 	public void setTheloai(String theloai){
 		this.theloai = theloai;
 	}
@@ -71,14 +79,6 @@ public class Truyen {
 
 	public String getGioithieu(){
 		return gioithieu;
-	}
-
-	public void setMatruyen(int matruyen){
-		this.matruyen = matruyen;
-	}
-
-	public int getMatruyen(){
-		return matruyen;
 	}
 
 	public void setTrangthai(String trangthai){

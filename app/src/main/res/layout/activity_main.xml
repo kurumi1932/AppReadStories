@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.activity.MainActivity">
+    android:orientation="vertical">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btNavigationView" />
+        android:layout_marginBottom="58dp" />
 
     <View
-        android:layout_above="@+id/btNavigationView"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_above="@+id/btNavigationView"
         android:background="@color/silver" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/btNavigationView"
         android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="-57dp"
         android:background="@color/white"
         app:itemIconTint="@color/color_bt_nvg_main"
         app:itemTextColor="@color/color_bt_nvg_main"
         app:menu="@menu/menu_bt_nvg_main" />
-
-</RelativeLayout>
+</LinearLayout>

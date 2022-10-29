@@ -19,12 +19,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $result['matkhau'] = $row['matkhau'];
       $result['email'] = $row['email'];
       $result['tenhienthi'] = $row['tenhienthi'];
-      $result['success'] = "1";
+      $result['accountsuccess'] = "1";
       
       echo json_encode($result);
       mysqli_close($conn);
     }else{ 
-      $result['success'] = "2";
+      $result['accountsuccess'] = "2";
   
       echo json_encode($result);
       mysqli_close($conn);
@@ -49,18 +49,18 @@ switch ($_SERVER['REQUEST_METHOD']) {
       $response2 = mysqli_query($conn, $sql_update);
       
       if($response2){
-        $result['success'] = "1";
+        $result['accountsuccess'] = "1";
         
         echo json_encode($result);
         mysqli_close($conn);
       }else{
-        $result['success'] = "2";
+        $result['accountsuccess'] = "2";
 
         echo json_encode($result);
         mysqli_close($conn);
       }
     }else{
-      $result['success'] = "3";
+      $result['accountsuccess'] = "3";
   
       echo json_encode($result);
       mysqli_close($conn);
@@ -70,7 +70,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
   //-------------default-------------//
   default:
   
-    $result['success'] = "0";
+    $result['accountsuccess'] = "0";
 
     echo json_encode($result);
     mysqli_close($conn);

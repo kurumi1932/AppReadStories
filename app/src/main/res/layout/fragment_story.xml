@@ -7,6 +7,7 @@
     tools:context=".controller.fragment.StoryFragment">
 
     <LinearLayout
+        android:id="@+id/llFragmentStory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -54,9 +55,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcViewStory"
-                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@color/white" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
@@ -64,6 +65,19 @@
         android:id="@+id/pbReLoad"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btCheckConnection"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:background="@color/medium_sea_green"
+        android:text="@string/btCheckConnection"
+        android:textColor="@color/white"
+        android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -19,6 +19,9 @@ public class TaiKhoan{
 	@SerializedName("tenhienthi")
 	private String tenhienthi;
 
+	@SerializedName("ngaysinh")
+	private String ngaysinh;
+
 	@SerializedName("accountsuccess")
 	private int accountsuccess;
 
@@ -60,6 +63,14 @@ public class TaiKhoan{
 
 	public String getTenhienthi(){
 		return tenhienthi;
+	}
+
+	public String getNgaysinh() {
+		return ngaysinh;
+	}
+
+	public void setNgaysinh(String ngaysinh) {
+		this.ngaysinh = ngaysinh;
 	}
 
 	public int getAccountsuccess() {

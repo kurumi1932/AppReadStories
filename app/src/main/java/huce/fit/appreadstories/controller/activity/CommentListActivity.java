@@ -96,7 +96,7 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<BinhLuan>> call, Throwable t) {
-                Log.e("Err_CommentList", t.toString());
+                Log.e("Err_CommentList", "getData", t);
             }
         });
     }
@@ -106,13 +106,18 @@ public class CommentListActivity extends AppCompatActivity {
             finish();
         });
         ivSent.setOnClickListener(v -> {
-            if(idComment==0){
-                addComment();
-            }else {
-                updateComment();
-                idComment=0;
+            String comment = etComment.getText().toString();
+            if (comment.equals("")) {
+                Toast.makeText(CommentListActivity.this, "Vui lòng nhập bình luận!", Toast.LENGTH_SHORT).show();
+            } else {
+                if (idComment == 0) {
+                    addComment(comment);
+                } else {
+                    updateComment(comment);
+                    idComment = 0;
+                }
+                etComment.setText("");
             }
-            etComment.setText("");
         });
         etComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -127,7 +132,7 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(etComment.getLineCount()>31){
+                if (etComment.getLineCount() > 31) {
                     Toast.makeText(CommentListActivity.this, "Vượt quá sô dòng giới hạn đánh giá!", Toast.LENGTH_SHORT).show();
                     etComment.getText().delete(etComment.getText().length() - 1, etComment.getText().length());
                 }
@@ -136,8 +141,7 @@ public class CommentListActivity extends AppCompatActivity {
         });
     }
 
-    private void addComment() {
-        String comment = etComment.getText().toString();
+    private void addComment(String comment) {
         Api.apiInterface().getAccount(idAccount).enqueue(new Callback<TaiKhoan>() {
             @Override
             public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
@@ -156,8 +160,7 @@ public class CommentListActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<BinhLuan> call1, Throwable t1) {
-                            Log.e("Err_CommentList", t1.toString());
-                            Toast.makeText(CommentListActivity.this, "Lỗi đường dẫn đăng bình luận!", Toast.LENGTH_SHORT).show();
+                            Log.e("Err_CommentList", "addComment1", t1);
                         }
                     });
                 }
@@ -165,7 +168,29 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TaiKhoan> call, Throwable t) {
-                Toast.makeText(CommentListActivity.this, "Không tìm thấy tài khoản!", Toast.LENGTH_SHORT).show();
+                Log.e("Err_CommentList", "addComment", t);
+            }
+        });
+    }
+
+    private void updateComment(String comment) {
+        Api.apiInterface().updateCommnet(idComment, comment).enqueue(new Callback<BinhLuan>() {
+            @Override
+            public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getCommentsuccess() == 1) {
+                        Toast.makeText(CommentListActivity.this, "Bình luận đã được sửa", Toast.LENGTH_SHORT).show();
+                        getData();
+                    }
+                    if (response.body().getCommentsuccess() == 2) {
+                        Toast.makeText(CommentListActivity.this, "Lỗi sửa bình luận!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BinhLuan> call, Throwable t) {
+                Log.e("Err_CommentList", "updateComment", t);
             }
         });
     }
@@ -184,7 +209,7 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BinhLuan> call, Throwable t) {
-                Log.e("Err_CommentAdapter", t.toString());
+                Log.e("Err_CommentList", "checkCommentOfAccount", t);
             }
         });
     }
@@ -215,7 +240,7 @@ public class CommentListActivity extends AppCompatActivity {
 
         tvUpdate.setOnClickListener(view -> {
             etComment.setText(comment);
-            idComment=position;
+            idComment = position;
             dialogCommentDelete.dismiss();
         });
         tvDelete.setOnClickListener(view -> {
@@ -278,29 +303,7 @@ public class CommentListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<BinhLuan> call, Throwable t) {
-                Log.e("Err_DialogComment", t.toString());
-            }
-        });
-    }
-
-    private void updateComment() {
-        Api.apiInterface().updateCommnet(idComment,etComment.getText().toString()).enqueue(new Callback<BinhLuan>() {
-            @Override
-            public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getCommentsuccess() == 1) {
-                        Toast.makeText(CommentListActivity.this, "Bình luận đã được sửa", Toast.LENGTH_SHORT).show();
-                        getData();
-                    }
-                    if (response.body().getCommentsuccess() == 2) {
-                        Toast.makeText(CommentListActivity.this, "Lỗi sửa bình luận!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BinhLuan> call, Throwable t) {
-                Log.e("Err_DialogComment", t.toString());
+                Log.e("Err_CommentList", "deleteComment", t);
             }
         });
     }

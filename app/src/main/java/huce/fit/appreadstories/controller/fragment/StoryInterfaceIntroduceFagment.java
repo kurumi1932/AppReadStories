@@ -18,18 +18,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoryInterfaceContentFagment extends Fragment {
+public class StoryInterfaceIntroduceFagment extends Fragment {
     private TextView tvIntroduce;
     private int idStory;
 
-    public StoryInterfaceContentFagment(int idStory) {
+    public StoryInterfaceIntroduceFagment(int idStory) {
         this.idStory = idStory;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_story_interface_content, container, false);
+        View view = inflater.inflate(R.layout.fragment_story_interface_introduce, container, false);
 
         tvIntroduce = view.findViewById(R.id.tvIntroduce);
         getData();

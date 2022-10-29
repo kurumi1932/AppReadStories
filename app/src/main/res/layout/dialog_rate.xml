@@ -76,40 +76,66 @@
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:layout_margin="10dp">
+
         <EditText
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/etRate"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:paddingBottom="20dp"
-            android:maxLength="400"
             android:background="@drawable/bg_corner_white_16dp"
             android:gravity="top|left"
             android:hint="@string/text44"
-            android:textColorHint="@color/dim_gray" />
+            android:maxLength="400"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="20dp"
+            android:textColorHint="@color/dim_gray"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tvNumberTextRate"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:layout_width="60dp"
             android:layout_height="20dp"
-            android:text="0/400"
+            android:layout_marginRight="16dp"
             android:gravity="right"
-            android:layout_marginRight="16dp"/>
+            android:text="0/400"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btRate"
-        android:layout_width="140dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_corner_yellow_10dp"
-        android:text="@string/rate"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|top"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btDeleteRate"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:background="@drawable/bg_corner_yellow_10dp"
+            android:text="@string/deleteRate"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btRate"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:background="@drawable/bg_corner_yellow_10dp"
+            android:text="@string/rate"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </LinearLayout>

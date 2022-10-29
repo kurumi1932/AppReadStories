@@ -6,12 +6,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import huce.fit.appreadstories.controller.fragment.AccountFragment;
+import huce.fit.appreadstories.controller.fragment.StoryDownloadFragment;
 import huce.fit.appreadstories.controller.fragment.StoryFilterFragment;
 import huce.fit.appreadstories.controller.fragment.StoryFollowFragment;
 import huce.fit.appreadstories.controller.fragment.StoryFragment;
 
 public class ViewPagerMainAdapter extends FragmentStateAdapter {
-
     public ViewPagerMainAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -27,6 +27,8 @@ public class ViewPagerMainAdapter extends FragmentStateAdapter {
             case 2:
                 return new StoryFollowFragment();
             case 3:
+                return new StoryDownloadFragment();
+            case 4:
                 return new AccountFragment();
         }
         return null;
@@ -34,6 +36,6 @@ public class ViewPagerMainAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

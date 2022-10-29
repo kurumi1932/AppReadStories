@@ -67,7 +67,8 @@
         android:paddingBottom="-5dp"
         android:iconifiedByDefault="false"
         android:queryHint="@string/text43"
-        android:background="@drawable/border_filter_linearlayout"/>
+        android:background="@drawable/border_filter_linearlayout"
+        android:queryBackground="@android:color/transparent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcListChapterOnChapterRead"

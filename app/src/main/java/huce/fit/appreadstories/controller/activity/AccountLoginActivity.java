@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.TaiKhoan;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,45 +23,59 @@ public class AccountLoginActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
     private Button btLogin, btCreate;
-    private String userNameCreate, username, password;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getSharedPreferences();
-    }
+    private String username, password;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_login);
+        getSharedPreferences();
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btLogin = findViewById(R.id.btLogin);
         btCreate = findViewById(R.id.btCreate);
 
-        userNameCreate = getIntent().getStringExtra("username");
-        if (userNameCreate != null) {
-            etUsername.setText(userNameCreate);
-        }
         processEvents();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", "");
+        if (!username.equals("")) {
+            etUsername.setText(username);
+
+            SharedPreferences.Editor myedit = sharedPreferences.edit();
+            myedit.putString("username", "");
+            myedit.commit();
+        }
+    }
+
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(this);
+        return checkNetwork.isNetwork();
+    }
+
     private void processEvents() {
-        try {
-            btLogin.setOnClickListener(v -> { //lambda
-                username = etUsername.getText().toString().trim();
-                password = etPassword.getText().toString().trim();
+        btLogin.setOnClickListener(v -> { //lambda
+            username = etUsername.getText().toString().trim();
+            password = etPassword.getText().toString().trim();
+            if (isNetwork()) {
                 loginAccount(username, password);
-            });
-            btCreate.setOnClickListener(v -> {
+            } else {
+                Toast.makeText(AccountLoginActivity.this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btCreate.setOnClickListener(v -> {
+            if (isNetwork()) {
                 Intent intent = new Intent(AccountLoginActivity.this, AccountCreateActivity.class);
                 startActivity(intent);
-            });
-        } catch (Exception ex) {
-            Log.e("Events", ex.getMessage());
-        }
+            } else {
+                Toast.makeText(AccountLoginActivity.this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loginAccount(String username, String password) {
@@ -92,7 +107,7 @@ public class AccountLoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<TaiKhoan> call, Throwable t) {
-                    Toast.makeText(AccountLoginActivity.this, "Lỗi đường dẫn!", Toast.LENGTH_SHORT).show();
+                    Log.e("Err_AccountLogin", "loginAccount", t);
                 }
             });
         }
@@ -115,9 +130,5 @@ public class AccountLoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-    }
-
-    public void close() {
-        finish();
     }
 }

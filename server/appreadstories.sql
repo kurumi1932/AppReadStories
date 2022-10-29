@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th9 28, 2022 lúc 11:49 AM
+-- Thời gian đã tạo: Th10 14, 2022 lúc 12:45 PM
 -- Phiên bản máy phục vụ: 10.4.22-MariaDB
 -- Phiên bản PHP: 8.1.1
 
@@ -52,11 +52,19 @@ INSERT INTO `binhluan` (`mabinhluan`, `matruyen`, `mataikhoan`, `tenhienthi`, `b
 (38, 1, 4, 'TK4', 'hay'),
 (39, 2, 4, 'TK4', 'hay'),
 (40, 4, 4, 'TK4', 'hay'),
-(41, 5, 4, 'TK4', 'hay');
+(41, 5, 4, 'TK4', 'hay'),
+(60, 4, 2, 'TK2', 'llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll igf sdjhdgs sdghfds djfsjfh aiu9frjdbf         android:text=\"lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll\"\n        android:text=\"lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll\" android:text=\"lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll\" \nds     \ngfgggggggggggg'),
+(61, 14, 2, 'TK2', 'abcd');
 
 --
 -- Bẫy `binhluan`
 --
+DELIMITER $$
+CREATE TRIGGER `binhluan_AFTER_DELETE` AFTER DELETE ON `binhluan` FOR EACH ROW BEGIN
+    update truyen set luotbinhluan = (select count(mabinhluan) from binhluan where matruyen = old.matruyen) where matruyen = old.matruyen;
+END
+$$
+DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `binhluan_AFTER_INSERT` AFTER INSERT ON `binhluan` FOR EACH ROW BEGIN
     update truyen set luotbinhluan = (select count(mabinhluan) from binhluan where matruyen = new.matruyen) where matruyen = new.matruyen;
@@ -85,7 +93,18 @@ INSERT INTO `chuongdadoc` (`matruyen`, `mataikhoan`, `machuong`) VALUES
 (1, 3, 2),
 (1, 3, 11),
 (1, 3, 4),
-(1, 3, 10);
+(1, 3, 10),
+(14, 2, 121),
+(1, 2, 4),
+(4, 2, 57),
+(4, 2, 58),
+(14, 1, 124),
+(15, 1, 127),
+(17, 1, 137),
+(16, 1, 129),
+(13, 1, 119),
+(11, 1, 109),
+(14, 1, 122);
 
 -- --------------------------------------------------------
 
@@ -303,8 +322,10 @@ DELIMITER ;
 --
 
 CREATE TABLE `danhgia` (
+  `madanhgia` int(11) NOT NULL,
   `matruyen` int(11) NOT NULL,
   `mataikhoan` int(11) NOT NULL,
+  `tenhienthi` varchar(45) NOT NULL,
   `diemdanhgia` float NOT NULL,
   `danhgia` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -313,16 +334,39 @@ CREATE TABLE `danhgia` (
 -- Đang đổ dữ liệu cho bảng `danhgia`
 --
 
-INSERT INTO `danhgia` (`matruyen`, `mataikhoan`, `diemdanhgia`, `danhgia`) VALUES
-(1, 1, 4, NULL),
-(1, 2, 3, NULL);
+INSERT INTO `danhgia` (`madanhgia`, `matruyen`, `mataikhoan`, `tenhienthi`, `diemdanhgia`, `danhgia`) VALUES
+(1, 1, 1, 'TK1', 4, 'Truyện rất hay đáng để đọc!'),
+(2, 1, 2, 'TK2', 2, 'k hay'),
+(3, 2, 3, 'TK3', 4, 'ágfèkdsv sedjfhehfds sfjlsdjfsd fáhfa,jfed ákfsdfjhs sàhsdhgsd sàhsdfs sdhsjfs fhsdhf sfjsdhs sdjfjknv sjdhfjshdfnmc sjhfsdhfsdjdf dfjhsdjfhksdjó sfjdhskhdsknd sjfhdsbjfnv sèhsdjfhs sfkjhds sjfhsdhf sjehffdf fkjéhfksnff skjdfhsjfdn sdfjlsè sdkjfsfjei slkdjféí sfkjlsj sédjf sflkdjsid'),
+(4, 2, 2, 'TK2', 3, '[value-5]'),
+(5, 1, 3, 'TK3', 5, 'hay quá'),
+(6, 1, 4, 'TK4', 5, 'hay quá'),
+(11, 4, 1, 'TK1', 1, 'k hay'),
+(12, 4, 4, 'TK4', 2, 'dở'),
+(13, 14, 3, 'TK3', 3, 'Hay'),
+(20, 14, 4, 'TK4', 4, 'hay'),
+(25, 2, 2, 'tk2', 5, 'hay quá'),
+(27, 14, 2, 'TK2', 5, 'lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllsfsfjfh999999999999999999999999999999999999999999999999999999998\n999999999999999998'),
+(28, 13, 2, 'TK2', 4, '');
 
 --
 -- Bẫy `danhgia`
 --
 DELIMITER $$
+CREATE TRIGGER `danhgia_AFTER_DELETE` AFTER DELETE ON `danhgia` FOR EACH ROW BEGIN
+    update truyen set diemdanhgia = (select ROUND(avg(diemdanhgia), 1) from danhgia where matruyen = old.matruyen) where matruyen = old.matruyen;
+END
+$$
+DELIMITER ;
+DELIMITER $$
 CREATE TRIGGER `danhgia_AFTER_INSERT` AFTER INSERT ON `danhgia` FOR EACH ROW BEGIN
-    update truyen set diemdanhgia = (select avg(diemdanhgia) from danhgia where matruyen = new.matruyen) where matruyen = new.matruyen;
+    update truyen set diemdanhgia = (select ROUND(avg(diemdanhgia), 1) from danhgia where matruyen = new.matruyen) where matruyen = new.matruyen;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `danhgia_AFTER_UPDATE` AFTER UPDATE ON `danhgia` FOR EACH ROW BEGIN
+    update truyen set diemdanhgia = (select ROUND(avg(diemdanhgia), 1) from danhgia where matruyen = new.matruyen) where matruyen = new.matruyen;
 END
 $$
 DELIMITER ;
@@ -378,23 +422,23 @@ CREATE TABLE `truyen` (
 --
 
 INSERT INTO `truyen` (`matruyen`, `tentruyen`, `tacgia`, `theloai`, `sochuong`, `trangthai`, `gioithieu`, `thoigiancapnhat`, `anh`, `luotxem`, `luotthich`, `luotbinhluan`, `diemdanhgia`) VALUES
-(1, 'Đấu la đại lục', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 27, 'Hoàn thành', 'Câu chuyện với nhân vật chính, con một thợ rèn, một thợ rèn trở thành tửu quỷ, vì thê tử đã mất, sẵn sàng lôi cuốn người đọc ngay từ những chương đầu tiên. Đấu La Thế Giới, một đại lục rộng lớn, cư dân đông đúc. Chức nghiệp cao quý nhật tại đây được gọi là Hồn Sư. Mỗi người sinh ra, đều có một vũ hồn bẩm sinh.\r\n\r\nVũ hồn có thể là cái cày, cái cuốc, liêm đao (liềm gặt)..thuộc khối công cụ, một đóa hoa cúc, một cành mai...thuộc thực vật hệ đến các vũ hồn cường đại như Tuyết Ảnh Ma Hùng, Tật Phong Ma Lang.... Để có thể trở thành hồn sư, ngoài vũ hồn cường đại, còn cần đến hồn lực để sử dụng vũ hồn đó, vũ hồn càng lớn, hồn lực càng cao, đại biểu cho thực lực mạnh mẽ tại Đấu la đại lục.\r\n\r\nCứ 10 cấp hồn lực, vũ hồn có thể phụ gia thêm một cái hồn hoàn, có được từ việc liệp sát hồn thú, những quái thú mạnh mẽ, có tu vị hằng nghìn năm. Hành trình tu luyện, tìm hiểu bí ẩn cái chết của mẫu thân, bị mật tông sư của phụ thân, câu chuyện sẽ cho người đọc những trải nghiệm thú vị.\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục!', '2022-09-26', 'https://yymedia.codeprime.net/media/novels/58a43a8beb.jpg', 3, 2, 4, 3.5),
-(2, 'Tuyệt thế đường môn', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 19, 'Đang ra', 'Nơi đây không có ma pháp, không có đấu khí, cũng không có võ thuật, chỉ có duy nhất thứ gọi là Vũ Hồn. Trên mảnh đất Đấu La Đại Lục, Đường Môn sau vạn năm huy hoàng đã bắt đầu bước vào con đường suy thoái. Một lớp anh tài mới xuất hiện, liệu thế hệ Sử Lai Khắc Thất Quái mới này có chấn hưng được Đường Môn hay không? Bản anh hùng ca về Đường Môn khi xưa có thể tái hiện một lần nữa hay không?\r\n\r\nBản thân có Bách vạn niên hồn thú, Tử Linh Thánh Pháp Thần tay cầm Nhật Nguyệt Trích Tinh, một hệ thống Hồn Đạo Khí hoàn toàn mới dẫn đến sự suy sụp của Đường Môn. Tất cả bí ẩn dần dần hé mở...\r\n\r\nLiệu ám khí Đường Môn có thể lại một lần nữa danh chấn thiên hạ không? Huy hoàng của Đường Môn khi xưa phải chăng còn có thể tái hiện? Mọi thứ đều nằm ở Tuyệt Thế Đường Môn.\r\n\r\nTóm tắt cảnh giới ( có chứa spoiler )\r\n\r\nXưng hào:\r\n   •Hồn Sĩ - Nhất cấp Hồn Đạo Sư - cấp 1-10\r\n   •Hồn Sư - Nhất cấp Hồn Đạo Sư - cấp 11-20\r\n   •Đại Hồn Sư - Nhị cấp Hồn Đạo Sư - cấp 21-30\r\n   •Hồn Tôn - Tam cấp Hồn Đạo Sư - cấp 31-40\r\n   •Hồn Tông - Tứ cấp Hồn Đạo Sư - cấp 41-50\r\n   •Hồn Vương - Ngũ cấp Hồn Đạo Sư - cấp 51-60\r\n   •Hồn Đế - Lục cấp Hồn Đạo Sư - cấp 61-70\r\n   •Hồn Thánh - Thất cấp Hồn Đạo Sư - cấp 71-80\r\n   •Hồn Đấu La - Bát cấp Hồn Đạo Sư - cấp 81-90\r\n   •Phong Hào Đấu La - Cửu cấp Hồn Đạo Sư - cấp 91-99\r\n   •Phổ thông Phong Hào Đấu La - Cửu cấp Hồn Đạo Sư - cấp 91-94\r\n   •Siêu cấp Đấu La - Cửu cấp Hồn Đạo Sư  - cấp 95-98\r\n   •Cực hạn Đấu La - Thập cấp Hồn Đạo Sư -  cấp 99-100\r\n   •Bán thần - Thập nhất cấp Hồn Đạo Sư - cấp 99-100\r\n   •Thần - Cấp 100\r\n   •Thần quan - Có được 1 vòng thần hoàn   \r\n   •Tam cấp Thần Linh- Có được 3 vòng thần hoàn\r\n   •Nhị cấp Thần Linh - Có được 5 vòng thần hoàn\r\n   •Nhất cấp Thần Linh - Có được 7 vòng thần hoàn\r\n   •Thần Vương - Có được 9 vòng thần hoàn\r\n\r\nPhẩm chất Hồn Hoàn:\r\n   •Thập niên (10 năm) - Bạch sắc (trắng)\r\n   •Bách niên (100 năm) - Hoàng sắc (vàng)\r\n   •Thiên niên(1.000 năm) - Tử sắc (tím)\r\n   •Vạn niên(10.000 năm) - Hắc sắc (đen)\r\n   •Thập vạn niên(100.000 năm) - Hồng sắc (đỏ) - mỗi 10 vạn năm tăng thêm 1 đạo Kim Văn   \r\n   •Bách vạn niên ( 1.000.000 năm) - Kim sắc(vàng chói) - Thuộc tính khác nhau cho màu sắc khác nhau\r\n   •Đặc thù: Xích Kim(Vàng đỏ), lam kim(Vàng xanh dương), bạch kim(Vàng trắng), hoa hồng kim(Vàng hồng), cam kim(Vàng cam), lục kim(Vàng xanh lá), tro(Xám)\r\n   •Phối hợp Hồn Hoàn tốt nhất: Hoàng Hoàng Tử Tử Hắc Hắc Hắc Hắc Hắc (ngoài trừ Song sinh võ hồn và Tà Hồn Sư)\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục 2!', '2022-09-28', 'https://yymedia.codeprime.net/media/novels/2019-11/11f62c8b4b.png', 1, 0, 2, 0),
+(1, 'Đấu la đại lục', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 27, 'Hoàn thành', 'Câu chuyện với nhân vật chính, con một thợ rèn, một thợ rèn trở thành tửu quỷ, vì thê tử đã mất, sẵn sàng lôi cuốn người đọc ngay từ những chương đầu tiên. Đấu La Thế Giới, một đại lục rộng lớn, cư dân đông đúc. Chức nghiệp cao quý nhật tại đây được gọi là Hồn Sư. Mỗi người sinh ra, đều có một vũ hồn bẩm sinh.\r\n\r\nVũ hồn có thể là cái cày, cái cuốc, liêm đao (liềm gặt)..thuộc khối công cụ, một đóa hoa cúc, một cành mai...thuộc thực vật hệ đến các vũ hồn cường đại như Tuyết Ảnh Ma Hùng, Tật Phong Ma Lang.... Để có thể trở thành hồn sư, ngoài vũ hồn cường đại, còn cần đến hồn lực để sử dụng vũ hồn đó, vũ hồn càng lớn, hồn lực càng cao, đại biểu cho thực lực mạnh mẽ tại Đấu la đại lục.\r\n\r\nCứ 10 cấp hồn lực, vũ hồn có thể phụ gia thêm một cái hồn hoàn, có được từ việc liệp sát hồn thú, những quái thú mạnh mẽ, có tu vị hằng nghìn năm. Hành trình tu luyện, tìm hiểu bí ẩn cái chết của mẫu thân, bị mật tông sư của phụ thân, câu chuyện sẽ cho người đọc những trải nghiệm thú vị.\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục!', '2022-10-13', 'https://yymedia.codeprime.net/media/novels/58a43a8beb.jpg', 2, 2, 4, 4),
+(2, 'Tuyệt thế đường môn', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 19, 'Đang ra', 'Nơi đây không có ma pháp, không có đấu khí, cũng không có võ thuật, chỉ có duy nhất thứ gọi là Vũ Hồn. Trên mảnh đất Đấu La Đại Lục, Đường Môn sau vạn năm huy hoàng đã bắt đầu bước vào con đường suy thoái. Một lớp anh tài mới xuất hiện, liệu thế hệ Sử Lai Khắc Thất Quái mới này có chấn hưng được Đường Môn hay không? Bản anh hùng ca về Đường Môn khi xưa có thể tái hiện một lần nữa hay không?\r\n\r\nBản thân có Bách vạn niên hồn thú, Tử Linh Thánh Pháp Thần tay cầm Nhật Nguyệt Trích Tinh, một hệ thống Hồn Đạo Khí hoàn toàn mới dẫn đến sự suy sụp của Đường Môn. Tất cả bí ẩn dần dần hé mở...\r\n\r\nLiệu ám khí Đường Môn có thể lại một lần nữa danh chấn thiên hạ không? Huy hoàng của Đường Môn khi xưa phải chăng còn có thể tái hiện? Mọi thứ đều nằm ở Tuyệt Thế Đường Môn.\r\n\r\nTóm tắt cảnh giới ( có chứa spoiler )\r\n\r\nXưng hào:\r\n   •Hồn Sĩ - Nhất cấp Hồn Đạo Sư - cấp 1-10\r\n   •Hồn Sư - Nhất cấp Hồn Đạo Sư - cấp 11-20\r\n   •Đại Hồn Sư - Nhị cấp Hồn Đạo Sư - cấp 21-30\r\n   •Hồn Tôn - Tam cấp Hồn Đạo Sư - cấp 31-40\r\n   •Hồn Tông - Tứ cấp Hồn Đạo Sư - cấp 41-50\r\n   •Hồn Vương - Ngũ cấp Hồn Đạo Sư - cấp 51-60\r\n   •Hồn Đế - Lục cấp Hồn Đạo Sư - cấp 61-70\r\n   •Hồn Thánh - Thất cấp Hồn Đạo Sư - cấp 71-80\r\n   •Hồn Đấu La - Bát cấp Hồn Đạo Sư - cấp 81-90\r\n   •Phong Hào Đấu La - Cửu cấp Hồn Đạo Sư - cấp 91-99\r\n   •Phổ thông Phong Hào Đấu La - Cửu cấp Hồn Đạo Sư - cấp 91-94\r\n   •Siêu cấp Đấu La - Cửu cấp Hồn Đạo Sư  - cấp 95-98\r\n   •Cực hạn Đấu La - Thập cấp Hồn Đạo Sư -  cấp 99-100\r\n   •Bán thần - Thập nhất cấp Hồn Đạo Sư - cấp 99-100\r\n   •Thần - Cấp 100\r\n   •Thần quan - Có được 1 vòng thần hoàn   \r\n   •Tam cấp Thần Linh- Có được 3 vòng thần hoàn\r\n   •Nhị cấp Thần Linh - Có được 5 vòng thần hoàn\r\n   •Nhất cấp Thần Linh - Có được 7 vòng thần hoàn\r\n   •Thần Vương - Có được 9 vòng thần hoàn\r\n\r\nPhẩm chất Hồn Hoàn:\r\n   •Thập niên (10 năm) - Bạch sắc (trắng)\r\n   •Bách niên (100 năm) - Hoàng sắc (vàng)\r\n   •Thiên niên(1.000 năm) - Tử sắc (tím)\r\n   •Vạn niên(10.000 năm) - Hắc sắc (đen)\r\n   •Thập vạn niên(100.000 năm) - Hồng sắc (đỏ) - mỗi 10 vạn năm tăng thêm 1 đạo Kim Văn   \r\n   •Bách vạn niên ( 1.000.000 năm) - Kim sắc(vàng chói) - Thuộc tính khác nhau cho màu sắc khác nhau\r\n   •Đặc thù: Xích Kim(Vàng đỏ), lam kim(Vàng xanh dương), bạch kim(Vàng trắng), hoa hồng kim(Vàng hồng), cam kim(Vàng cam), lục kim(Vàng xanh lá), tro(Xám)\r\n   •Phối hợp Hồn Hoàn tốt nhất: Hoàng Hoàng Tử Tử Hắc Hắc Hắc Hắc Hắc (ngoài trừ Song sinh võ hồn và Tà Hồn Sư)\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục 2!', '2022-10-01', 'https://yymedia.codeprime.net/media/novels/2019-11/11f62c8b4b.png', 1, 0, 2, 4),
 (3, 'Long vương truyền thuyết', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 7, 'Đang ra', 'Theo sự tiến bộ của khoa học kỹ thuật về Hồn Đạo, nhân loại ở Đấu La đại lục bắt đầu chinh phục biển cả, phát hiện ra hai đại lục mới. Hồn Thú do bị Hồn Sư săn giết quá độ mà sắp bị diệt vong, sau rất nhiều năm ngủ say, Hồn Thú Chi Vương tỉnh dậy trong mảnh tịnh thổ cuối cùng của Hồn Thú ở sâu trong Tinh Đấu đại sâm lâm, nó muốn dẫn dắt những tộc nhân còn sống đi báo thù nhân loại!\r\n\r\nĐường Vũ Lân lập chí muốn trở thành một Hồn Sư cường đại, không ngờ Võ Hồn thức tỉnh lại là...\r\n\r\nTài năng có một không hai, Long Vương giao tranh, bắt đầu tạo nên Long vương truyền thuyết...\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Long Vương Truyền Thuyết!', '2022-09-28', 'https://yymedia.codeprime.net/media/novels/2020-03/cac152a8cc.jpg', 2, 1, 0, 0),
-(4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 14, 'Hoàn thành', 'Một vạn năm về sau, băng tan. \r\nĐấu La liên bang đội khảo sát khoa học tại vùng Cực Bắc khoa khảo lúc phát hiện một cái có kim ngân song sắc hoa văn trứng.\r\nDùng dụng cụ tìm kiếm về sau, phát hiện bên trong lại có sinh mạng thể dấu hiệu, vội vàng đem mang về sở nghiên cứu tiến hành ấp.\r\nTrứng ấp đi ra, có thể ấp ra lại là một đứa con nít, cùng nhân loại giống nhau như đúc hài nhi, một cái trứng sinh hài tử.\r\n\r\nĐường Gia Tam Thiếu sách mới, Đấu La IV cũng là phần cuối cùng của Đấu La hệ liệt.\r\n\r\nBản chính thức của Chung cực đấu la (phần 4)\r\n\r\nMời các bạn đón đọc !!!\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục 4: Chung Cực Đấu La!', '2022-09-26', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg', 0, 1, 7, 0),
-(5, 'Trọng Sinh Chi Đô Thị Tu Tiên', 'Thập Lý Kiếm Thần', 'Đô thị', 17, 'Đang ra', 'Chính thức bản: Độ Kiếp kỳ Đại tu sĩ Trần Phàm ngã xuống tại Thiên kiếp trung, nhưng nhất mộng năm trăm năm trở lại Địa Cầu còn trẻ thời đại.\r\n\r\nMột đời trước ta đăng lâm Vũ Trụ đỉnh, quan sát vạn giới, nhưng không người làm bạn. Đời này chỉ nguyện không phụ trước kia không phụ khanh.\r\n\r\nThông tục bản: Tu hành năm trăm năm Độ Kiếp kỳ người tu tiên sống lại hồi đô thị, bù đắp tiếc nuối, giả heo ăn hổ cố sự.\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Trọng Sinh Chi Đô Thị Tu Tiên!', '2022-09-26', 'https://yymedia.codeprime.net/media/novels/d425882fff.jpg', 0, 0, 2, 0),
-(6, 'Bách Luyện Thành Thần', 'Ân Tứ Giải Thoát', 'Tu tiên', 5, 'Đang ra', 'Trong truyện Bách Luyện Thành Thần - La Chinh, chàng trai có xuất thân trong một gia đình gia thế, nhưng La Chinh lại đang gặp phải một kiếp nạn lớn.\r\n\r\nThấy thế mà phụ thân của hắn đã hợp tác cùng với hai Thánh Nhân đào tạo hắn ngay từ thuở bé. Và bí mật này một ai biết đến, ngay cả bản thân La Chinh cũng không hề hay biết. Dần dần tu vi tăng tiến, hắn cũng hiểu ra những ẩn tình được sắp xếp.\r\n\r\nTình tiết làm cho câu truyện trở nên thú vị là có rất nhiều nhân vật nữ xinh đẹp, dàn hậu cung và tình tiết truyện lôi cuốn.', '2022-09-11', 'https://truyenmoii.com/images/medium/bach-luyen-thanh-than-1616536478.jpg', 0, 0, 0, 0),
+(4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 'Huyền huyễn', 14, 'Hoàn thành', 'Một vạn năm về sau, băng tan. \r\nĐấu La liên bang đội khảo sát khoa học tại vùng Cực Bắc khoa khảo lúc phát hiện một cái có kim ngân song sắc hoa văn trứng.\r\nDùng dụng cụ tìm kiếm về sau, phát hiện bên trong lại có sinh mạng thể dấu hiệu, vội vàng đem mang về sở nghiên cứu tiến hành ấp.\r\nTrứng ấp đi ra, có thể ấp ra lại là một đứa con nít, cùng nhân loại giống nhau như đúc hài nhi, một cái trứng sinh hài tử.\r\n\r\nĐường Gia Tam Thiếu sách mới, Đấu La IV cũng là phần cuối cùng của Đấu La hệ liệt.\r\n\r\nBản chính thức của Chung cực đấu la (phần 4)\r\n\r\nMời các bạn đón đọc !!!\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Đấu La Đại Lục 4: Chung Cực Đấu La!', '2022-10-03', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg', 1, 1, 7, 1.5),
+(5, 'Trọng Sinh Chi Đô Thị Tu Tiên', 'Thập Lý Kiếm Thần', 'Đô thị', 17, 'Đang ra', 'Chính thức bản: Độ Kiếp kỳ Đại tu sĩ Trần Phàm ngã xuống tại Thiên kiếp trung, nhưng nhất mộng năm trăm năm trở lại Địa Cầu còn trẻ thời đại.\r\n\r\nMột đời trước ta đăng lâm Vũ Trụ đỉnh, quan sát vạn giới, nhưng không người làm bạn. Đời này chỉ nguyện không phụ trước kia không phụ khanh.\r\n\r\nThông tục bản: Tu hành năm trăm năm Độ Kiếp kỳ người tu tiên sống lại hồi đô thị, bù đắp tiếc nuối, giả heo ăn hổ cố sự.\r\n\r\nChúc bạn có những giây phút vui vẻ khi đọc truyện Trọng Sinh Chi Đô Thị Tu Tiên!', '2022-09-30', 'https://yymedia.codeprime.net/media/novels/d425882fff.jpg', 1, 0, 2, 0),
+(6, 'Bách Luyện Thành Thần', 'Ân Tứ Giải Thoát', 'Tu tiên', 5, 'Đang ra', 'Trong truyện Bách Luyện Thành Thần - La Chinh, chàng trai có xuất thân trong một gia đình gia thế, nhưng La Chinh lại đang gặp phải một kiếp nạn lớn.\r\n\r\nThấy thế mà phụ thân của hắn đã hợp tác cùng với hai Thánh Nhân đào tạo hắn ngay từ thuở bé. Và bí mật này một ai biết đến, ngay cả bản thân La Chinh cũng không hề hay biết. Dần dần tu vi tăng tiến, hắn cũng hiểu ra những ẩn tình được sắp xếp.\r\n\r\nTình tiết làm cho câu truyện trở nên thú vị là có rất nhiều nhân vật nữ xinh đẹp, dàn hậu cung và tình tiết truyện lôi cuốn.', '2022-09-30', 'https://truyenmoii.com/images/medium/bach-luyen-thanh-than-1616536478.jpg', 1, 1, 0, 0),
 (7, 'Hẹn ước 10 năm', 'Lâm Tri Lạc', 'Ngôn tình', 2, 'Đang ra', 'Năm 2018, tại lễ khai giảng, Giang Thu Thu 18 tuổi đột nhiên được sếp Trịnh 28 tuổi cầu hôn trước mặt bao người.\r\n\r\nCả trường nhốn nháo.\r\n\r\nGiang Thu Thu lại tỏ ý: Sếp này, anh hơi già đấy nhỉ. \r\n\r\nSau đó, cô đã xuyên không về mười năm trước, gặp sếp thời trai trẻ… và các đại thần vẫn chưa thành danh. \r\n\r\nỞ năm 2008, Giang Thu Thu đến từ năm 2018 gây dựng sự nghiệp làm đẹp, chế ảnh meme, dùng câu trích dẫn của Hồng Thế Hiền*.\r\n\r\n*Hồng Thế Hiền: Nam chính đểu cáng trong phim Hoa Hồng Có Gai.\r\n\r\nSau đó, cô đã trở thành nữ thần của cả khu đô thị đại học.\r\n\r\nRồi sau đó, cô đã trở thành bà hoàng huyền thoại và bí ẩn.\r\n\r\nSau khi để lại vô số truyền thuyết, cô lại xuyên không về mười năm sau.\r\n\r\nSếp 28 tuổi cầm chiếc nhẫn trên tay: Mười năm, cuối cùng anh đã đợi được em.\r\n\r\nTóm tắt bằng một câu: Mười năm trước hẹn hò với anh, mười năm sau được anh cầu hôn. \r\n\r\nMột nửa hư cấu.\r\n\r\nNói ra các bác có thể không tin, nữ chính thật sự là một doanh nhân.', '2022-09-11', 'https://truyenmoii.com/images/medium/hen-uoc-muoi-nam-1650861003.jpg', 0, 0, 0, 0),
 (8, 'Thời Gian Như Ngừng Lại', 'Tô Hành Nhạc', 'Ngôn tình', 5, 'Đang ra', 'Bạn đang đọc truyện Thời Gian Như Ngừng Lại của tác giả Tô Hành Nhạc. Mạnh Dao trước đó có một tên khác, gọi là Mạnh Thời Yên.\r\n\r\nNhưng sau này rời đi quê hương, cô cũng sửa lại tên mình\r\n\r\nLúc đó, cô có thích một người, người đó không thích cô, thậm chí còn phải nói là chán ghét mới đúng\r\n\r\nBao năm trôi qua, lần nữa gặp lại cố nhân, bên người anh ta đã có bóng hồng, còn cô vẫn cứ cô đơn lẻ bóng\r\n\r\nKhi nhân viên lái xe tới, anh ta đột nhiên xoay người nhìn cô.\r\n\r\nTrời mùa đông lạnh lẽo, trước cửa khách sạn lại là ánh đèn rực rỡ, người kia nghiêng thân mình, ánh mắt sâu thẳm, khóe miệng cong lên nụ cười nhẹ, hỏi cô:\r\n\r\n\"Mạnh tiểu thư, trước đây chúng ta có phải từng gặp?\"\r\n\r\nMạnh Dao cười cười, không có trả lời.\r\n\r\nMười năm trôi qua, cô lần nữa lại đứng trước mặt anh.', '2022-09-11', 'https://truyenmoii.com/images/medium/thoi-gian-nhu-ngung-lai-1661437818.jpg', 0, 0, 0, 0),
 (9, 'Thần đạo Đế Tôn', 'Oa Ngưu Cuồng Bôn', 'Tu tiên', 10, 'Đang ra', 'Cửu Mệnh Thiên Tử Mục Trần là con trai của Vô Thượng Thần Đế Mục Vân , vì cha mất tích, nên mẹ là tộc trưởng Phượng tộc Tần Mộng Dao đem hắn rời khỏi Cửu Thiên Vân liên minh, bắt đầu hành trình cửu sinh cửu thế.\r\n\r\nNhững đoạn truyền kỳ của 9 thế đều rất bá đạo cùng đó là hắn sẽ luyện một khía cạnh nào đó như đan thuật, khí thuật, trận thuật,... đến đỉnh phong, rồi đến thế thứ 9 hắn đã đạt đến đại viên mãn chuẩn bị đột phá trở về Cửu Thiên Vân liên minh để trở thành tân minh chủ và gặp lại 9 vị mẫu thân thì không may hắn gặp sự hãm hại của những đối thủ bí ẩn nhưng kỳ tích mở ra hắn lại tiến vào giai đoạn truyền kỳ thứ 10.\r\n\r\nTại thế này, bằng dung hợp cửu sinh cửu thế ký ức cùng vô số lá bài ẩn, hắn sẽ khám phá hết thảy những âm mưu, sẽ cực bá đạo để trở về báo thù, khiến kẻ thù phải lo sợ và giành lại hết thảy những thứ thuộc về hắn.\r\n\r\nList danh hào của main ở 9 thế:\r\n\r\n--Đời 1: Cửu U Đại Đế\r\n\r\n--Đời 2: Ngự Thiên Thánh Tôn\r\n\r\n--Đời 3: Cuồng Vũ Thiên Đế\r\n\r\n--Đời 4: Thanh Vân Kiếm Đế\r\n\r\n--Đời 5: Cửu Nguyên Đan Đế\r\n\r\n--Đời 6: Luyện Thiên Đại Đế\r\n\r\n--Đời 7: Phong Không Chí Thánh\r\n\r\n--Đời 8: Thông Thiên Đại Đế/ Thể Đế\r\n\r\n--Đời 9: Hồn Vũ Thiên Tôn', '2022-09-11', 'https://truyenmoii.com/images/medium/than-dao-de-ton-1644299522.jpg', 0, 0, 0, 0),
 (10, 'Bán Tiên', 'Dược Thiên Sầu', 'Tu tiên', 6, 'Hoàn thành', 'Trong núi sâu có một đạo quan, hương hỏa nơi đây đã sớm tàn lụi.\r\n\r\nTa tuổi vừa mới mười chín, từ nhỏ đã là một tên đạo sĩ. Bên trên có mười mấy vị sư huynh, bên dưới ta nhỏ nhất, được gọi là quan môn đệ tử. Sư môn nghèo quá, các sư huynh không chịu được kham khổ, mà sư phụ chưởng môn tánh tình rộng rãi, mặc cho các sư huynh giải thể mà đi.\r\n\r\nSau này có ba vị sư huynh sai đường biết quay lại, nhưng tuổi tác đã khá lớn, đều đã bốn năm mươi tuổi.\r\n\r\nTa được sư phụ xem trọng nên nhậm chức chưởng môn sau khi sư phụ quy tiên. Nhưng bởi vì tuổi tác và kinh nghiệm của ta quá ít nên không thể phục chúng, bởi vậy ba vị sư huynh của ta cảm thấy không phục. Sư môn bất hạnh, nhưng ta không phải quả hồng mềm, ta tuyệt đối không nhượng bộ, cuối cùng đã xảy ra tranh chấp nội bộ.\r\n\r\nTrong một thôn làng ở dưới núi, có một vị cử nhân mới, cũng là bạn thuở nhỏ của ta. Sư phụ trước khi quy tiên cũng đã bàn giao cho ta phải hộ tống hắn vào kinh đi thi. Vì tình nghĩa nên ta không nói nhiều mà đồng ý tiến vào nhân gian một lần, khi trở về sẽ đấu cùng các sư huynh!\r\n\r\nChúc mọi người đọc truyện vui vẻ.', '2022-09-11', 'https://truyenmoii.com/images/medium/ban-tien-1627349258.jpg', 0, 0, 0, 0),
-(11, 'Lạn Kha kỳ duyên', 'Chân Phí Sự', 'Tu tiên', 4, 'Đang ra', 'Lạn Kha ngồi bên ván cờ lá rụng, tại giữa trúc lâm không người đánh cờ.\r\nHưng sở trí Thiên Nguyên một cờ, lại xoay người sông núi thênh thang.\r\n\r\n...\r\n\r\nThức giấc sau cơn mơ, Kế Duyên trở thành một tên hành khất gần như mù mắt trong một cái miếu sơn thần cũ nát.\r\n\r\nThực lực không đủ thì dùng miệng lưỡi để kiếm ăn, chân nhân dùng kiếm, lừa đảo dùng mồm, Kế Duyên nhờ vào bản thân kiếm sống tại cái thế giới đáng sợ này.\r\n\r\n...\r\n\r\nDu Lạn Kha Sơn\r\nGiản lai huề trượng thượng toàn ngoan,\r\nTứ nhập vân tiêu nhãn giới khoan.\r\nPhong động viễn lâm thu sắt sắt,\r\nGiản thông u cốc thuỷ sàn sàn.\r\nBình không tử lạc tiên kì tĩnh,\r\nVật hoán tinh di Phật cốt hàn.\r\nDuyệt thế du du kim kỷ hử,\r\nKhông tồn di tích hậu nhân khan.\r\n\r\nReview Truyện:\r\n\r\nTiên hiệp cổ điển rất khó viết. Một bộ tiên hiệp hay là một bộ truyện phải được viết sao cho thật dễ hiểu, thật thú vị, thật tiêu sái cũng như phải có cái hồn của tiên hiệp. Chỉ một điều kiện thôi đã khó, chứ đừng nói phải có đầy đủ các điều kiện trên. Có lẽ vì vậy mà tiên hiệp bắt đầu suy tàn.\r\n\r\nKể từ sau Hoàng Đình, cũng thật lâu rồi mình mới thấy lại một bộ tiên hiệp cổ điển thuần túy như Lạn Kha Kỳ Duyên. Có yếu tố lãng mạn, thoải mái tiêu sái của tiên hiệp cổ điển trường phái phi thăng, chi tiết truyện vừa xuất sắc lại dân dã. Có yếu tố truyền thuyết phàm tục mang lại cảm giác của những câu chuyện thần thoại cổ xưa. Nam chính ở trong trò chơi hồng trần này, tuy rằng pháp lực tu vi không cao, nhưng cách xử sự làm người lại có trước có sau, thần bí khó lường, có ý cảnh, có tâm cảnh, thực sự đã mang lại cảm giác thần bí của tiên nhân. Đoạn mở đầu, khi nam chính nghèo túng cũng sợ chết như người thường, lời ăn tiếng nói cũng hơi tùy tiện. Trong truyện mỗi người đều rất lý tưởng, không dây dưa lợi ích quá nhiều, cũng không có quá nhiều cơ quan tính toán, nhiều khi đọc mà không nhịn được cười.\r\n\r\nTrước mắt thì thấy đây là một thể loại truyền kỳ du ký cổ đại, có giang hồ, có tu sĩ, có tiên thần, có võ lâm cao thủ, có người phàm. Bàn tay vàng rất có ý tứ, tựa như thay đổi vận mệnh nhân vật. Mỗi khi nam chính thúc đẩy vận mệnh một người, hoặc là dạy người hướng thiện, trên ván cờ sẽ ngưng tụ ra một quân cờ mới. Người đọc bị cuốn hút dần bởi những câu chuyện xung quanh Kế Duyên, muốn biết rốt cuộc quân cờ mà nam chính đã gieo sẽ trở thành những gì.', '2022-09-11', 'https://truyenmoii.com/images/medium/lan-kha-ki-duyen-1620147689.jpg', 0, 0, 0, 0),
+(11, 'Lạn Kha kỳ duyên', 'Chân Phí Sự', 'Tu tiên', 4, 'Đang ra', 'Lạn Kha ngồi bên ván cờ lá rụng, tại giữa trúc lâm không người đánh cờ.\r\nHưng sở trí Thiên Nguyên một cờ, lại xoay người sông núi thênh thang.\r\n\r\n...\r\n\r\nThức giấc sau cơn mơ, Kế Duyên trở thành một tên hành khất gần như mù mắt trong một cái miếu sơn thần cũ nát.\r\n\r\nThực lực không đủ thì dùng miệng lưỡi để kiếm ăn, chân nhân dùng kiếm, lừa đảo dùng mồm, Kế Duyên nhờ vào bản thân kiếm sống tại cái thế giới đáng sợ này.\r\n\r\n...\r\n\r\nDu Lạn Kha Sơn\r\nGiản lai huề trượng thượng toàn ngoan,\r\nTứ nhập vân tiêu nhãn giới khoan.\r\nPhong động viễn lâm thu sắt sắt,\r\nGiản thông u cốc thuỷ sàn sàn.\r\nBình không tử lạc tiên kì tĩnh,\r\nVật hoán tinh di Phật cốt hàn.\r\nDuyệt thế du du kim kỷ hử,\r\nKhông tồn di tích hậu nhân khan.\r\n\r\nReview Truyện:\r\n\r\nTiên hiệp cổ điển rất khó viết. Một bộ tiên hiệp hay là một bộ truyện phải được viết sao cho thật dễ hiểu, thật thú vị, thật tiêu sái cũng như phải có cái hồn của tiên hiệp. Chỉ một điều kiện thôi đã khó, chứ đừng nói phải có đầy đủ các điều kiện trên. Có lẽ vì vậy mà tiên hiệp bắt đầu suy tàn.\r\n\r\nKể từ sau Hoàng Đình, cũng thật lâu rồi mình mới thấy lại một bộ tiên hiệp cổ điển thuần túy như Lạn Kha Kỳ Duyên. Có yếu tố lãng mạn, thoải mái tiêu sái của tiên hiệp cổ điển trường phái phi thăng, chi tiết truyện vừa xuất sắc lại dân dã. Có yếu tố truyền thuyết phàm tục mang lại cảm giác của những câu chuyện thần thoại cổ xưa. Nam chính ở trong trò chơi hồng trần này, tuy rằng pháp lực tu vi không cao, nhưng cách xử sự làm người lại có trước có sau, thần bí khó lường, có ý cảnh, có tâm cảnh, thực sự đã mang lại cảm giác thần bí của tiên nhân. Đoạn mở đầu, khi nam chính nghèo túng cũng sợ chết như người thường, lời ăn tiếng nói cũng hơi tùy tiện. Trong truyện mỗi người đều rất lý tưởng, không dây dưa lợi ích quá nhiều, cũng không có quá nhiều cơ quan tính toán, nhiều khi đọc mà không nhịn được cười.\r\n\r\nTrước mắt thì thấy đây là một thể loại truyền kỳ du ký cổ đại, có giang hồ, có tu sĩ, có tiên thần, có võ lâm cao thủ, có người phàm. Bàn tay vàng rất có ý tứ, tựa như thay đổi vận mệnh nhân vật. Mỗi khi nam chính thúc đẩy vận mệnh một người, hoặc là dạy người hướng thiện, trên ván cờ sẽ ngưng tụ ra một quân cờ mới. Người đọc bị cuốn hút dần bởi những câu chuyện xung quanh Kế Duyên, muốn biết rốt cuộc quân cờ mà nam chính đã gieo sẽ trở thành những gì.', '2022-10-05', 'https://truyenmoii.com/images/medium/lan-kha-ki-duyen-1620147689.jpg', 1, 0, 0, 0),
 (12, 'Lặng lẽ', 'Lệ Miên', 'Đô thị', 0, 'Đang ra', '(Một câu chuyện yêu thầm và kết cục mỹ mãn.)\r\n\r\nNhật ký của tôi, trước đó đều là những mẩu chuyện vụn vặt, những câu chữ tùy tay mà viết, và sau đó, mỗi câu mỗi chữ, luôn không rời đi một người...\r\n\r\nVăn Tuế và Chu Dã gặp nhau ở nhà của một người bạn\r\n\r\nNgười kia cầm hộp kẹo trong tay, mắt nhìn cô, hỏi bằng ngữ khí biếng nhác:\r\n\r\n\"Cô bé là bạn học của Chanh Chanh?\"Văn Tuế gật đầu.\r\n\r\nLông mày Chu Dã cau lại, nghĩ đến gì đó, đột nhiên nở nụ cười, khóe môi cong lên: “Vậy cháu phải theo con bé, cũng gọi tôi một tiếng…”\r\n\r\n“Chú nhỏ.”\r\n\r\nGiọng điệu người đàn ông lười biếng, cắn chữ rất nhẹ, âm thanh uốn lượn, vươn dài mãi đến trong lòng Văn Tuế.\r\n\r\nVăn Tuế thích Chu Dã.\r\n\r\nNhưng anh chỉ coi cô như bạn bình thường của cháu gái.\r\n\r\nNgười đàn ông đến vào mùa xuân, sau này kỳ nghỉ của anh chấm dứt, cùng với tình cảm lặng lẽ của Văn Tuế, đều tan biến theo mùa hè.\r\n\r\nMãi đến khi Văn Tuế lên đại học, hai người mới gặp lại nhau.\r\n\r\n——\r\n\r\nMột ngày nọ, bạn bè tới chơi, nhìn thấy Chu Dã vẫn luôn cầm điện thoại, trêu ghẹo nói: “Nói chuyện phiếm với ai mà vui vậy?”\r\n\r\nChu Dã không ngẩng đầu: “Tuế Tuế.”\r\n\r\nBạn bè nghĩ đến gì đó: “Lần trước Trường Ninh đi trên đường gặp cô bé đó. A, cậu giới thiệu là cháu gái nhỏ. Gần đây cháu gái của tôi thế nào rồi?”\r\n\r\nNgón tay đang gõ chữ của Chu Dã dừng lại, giương mắt liếc: “Lễ phép chút đi, cậu nên gọi là chị dâu.”\r\n\r\nBạn bè: “Được được được, chị dâu thì chị dâu —— Hả?! Đm!!”\r\n\r\nBạn bè: “…”\r\n\r\nAlo, xin hỏi là 110 sao?\r\n\r\nTag: Ngọt văn\r\n\r\nTừ khóa tìm kiếm: Vai chính: Văn Tuế, Chu Dã┃vai phụ:┃cái khác:\r\n\r\nMột câu tóm tắt: Chúc Tuế Tuế của tôi bình an.\r\n\r\nLập ý: Kiên trì chính là thắng lợi', '2022-09-05', 'https://truyenmoii.com/images/medium/lang-le-1661778072.jpg', 0, 0, 0, 0),
-(13, 'Gặp người đúng lúc', 'Tê Kiến', 'Đô thị', 4, 'Hoàn thành', 'Bạn đang đọc truyện Gặp Người Đúng Lúc của tác giả Tê Kiến. Hướng Ca năm đó theo đuổi Chu Hành Diễn gắt gao tới mức toàn bộ trường đều biết.\r\n\r\nTới khi thành công đã trong tầm tay thì cô lại phủi tay bỏ chạy lấy người.\r\n\r\nNhiều năm sau gặp lại, đúng là trời xanh mở mắt, tự ăn trái đắng, Chu Hành Diễn vậy mà quên hẳn cô.', '2022-09-11', 'https://truyenmoii.com/images/medium/gap-nguoi-dung-luc-1650378617.jpg', 0, 0, 0, 0),
-(14, 'Con rể quyền quý', 'Khuyết danh', 'Ngôn tình', 5, 'Đang ra', 'Tái Thượng Thủy Hương là khu nhà ở xa hoa nhất thành phố Ngân Châu, giá nhà đất cũng đắt nhất thành phố Ngân Châu\r\n\r\nMột biệt hai tầng rộng ba trăm mét vuông tọa lạc trên vị trí tốt nhất của Tái Thượng Thủy Hương.\r\n\r\nTrương Thác hai mươi lăm tuổi đang bò trên mặt đất, tay cầm một tấm vải màu trắng, sau khi vắt khô vào thùng nước bên cạnh thì tỉ mỉ lau sạch sàn nhà sang trọng dưới chân.\r\n\r\nNhững chiếc xe Porsche, Ferrari đỗ trong sân biệt thự đều bám đầy bụi.\r\n\r\nNhững thứ nhìn qua xa hoa lộng lẫy này lại không hề thuộc về\r\n\r\nTrương Thác, chẳng qua anh chỉ ở rể nhà họ Lâm, “gả’ cho gia đình giàu có đứng đầu thành phố Ngân Châu, Chủ tịch của Tập đoàn Lâm Thị, Lâm Ngữ Lam...', '2022-09-26', 'https://static.8cache.com/cover/eJzLyTDWjwrNC8wMDHY2SCrz9coKiDJy9DAoM7UMM8qvLPJ2czHzsPRwznavLEjy88vJyjJwCk23TDWv8nYP9q8KT9ONcnf3diutKHcM8ynLjghPMYs08Mm2LTcyNNXNMDYyAgADBR8A/con-re-quyen-quy.jpg', 0, 0, 2, 0),
-(15, 'Tiên đế trùng sinh', 'Tê Kiến', 'Trùng sinh', 2, 'Đang ra', 'Tiên Đế tung hoành ngang dọc khắp vũ trụ - Diệp Thành bị rơi xuống thiên kiếp, trùng sinh về Địa Cầu lúc mình 20 tuổi.\r\n\r\nKiếp trước anh có gia cảnh tầm thường, vợ chưa cưới hãm hại, bị tình địch xúc phạm, đối mặt với cường quyền, anh chỉ có thể cúi đầu, mẹ bị mất tích, anh bất lực đứng nhìn, bố gặp tình cảnh bi thảm, anh cũng không có cách nào thay đổi.\r\n\r\nNhưng bây giờ, Tiên Đế quay trở lại, tất cả nỗi đau khổ đã gặp trước kia, anh sẽ bắt kẻ địch trả giá gấp trăm nghìn lần, để sự bất công trên thế giới này đều tiêu tan theo mây khói.', '2022-09-11', 'https://truyenmoii.com/images/medium/tien-de-trung-sinh-1625742003.jpg', 0, 0, 0, 0),
-(16, 'Vô tận đan điền', 'Hoành Tảo Thiên Nhai', 'Trùng sinh', 5, 'Đang ra', 'Khí Hải là nơi tu luyện giả nạp khí căn bản, là nơi trực tiếp chứa đan điền, ảnh hưởng đến thiên phú, hóa khí trụ cột. Thiên phú cao hơn người thì một cái Khí Hải thường có mấy cái đan điền. Đan điền càng nhiều, thiên phú càng cao, tốc độ nạp khí, hóa khí lại càng nhanh. Người cả đời Khí Hải có bao nhiêu đan điền đều là trời sinh sao có vậy. Nhưng, nếu có pháp quyết tu luyện tăng số đan điền lên thì sao?', '2022-09-11', 'https://static.8cache.com/cover/o/eJzLyTDW183xswhKzi4PDDB11A8LTE_MDKk0TEzy1HeEglyPQP1IR9fwAkdPJ7-SZP1yI0NT3QxjIyMAWysSgg==/vo-tan-dan-dien.jpg', 0, 0, 0, 0),
-(17, 'Mao Sơn Tróc Quỷ Nhân', 'Thanh Tử', 'Đô thị', 14, 'Đang ra', 'Diệp Thiếu Dương vốn là một Mao Sơn tróc quỷ nhân, dũng cảm tiến vào đô thị, gặp người đấu người, gặp quỷ đấu quỷ, gặp yêu đấu yêu, gặp hồ đấu hồ...\r\n\r\nTương tây Thi vương, Tà Thần bất tử, điệp tiên hung linh, tứ phương quỷ khấu.\r\n\r\nNữ minh tinh nuôi tiểu quỷ, công chúa hoàng thất hút máu, nữ giám đốc là hồ yêu,...\r\n\r\nThi triển Mao Sơn thần thuật, đánh lui tất cả!', '2022-09-11', 'https://static.8cache.com/cover/o/eJzLyTDW100zjPQ2rzAxTs1M1g8z9jIvKcjIt6zy1HeEgoB8T33TDA_dlMB01zILX9f0SI-U8vKMklKXMAM3j_Rik8C0oHRn53z9ciNDU90MYyMjAJ6GGtc=/mao-son-troc-quy-nhan.jpg', 0, 0, 0, 0);
+(13, 'Gặp người đúng lúc', 'Tê Kiến', 'Đô thị', 4, 'Hoàn thành', 'Bạn đang đọc truyện Gặp Người Đúng Lúc của tác giả Tê Kiến. Hướng Ca năm đó theo đuổi Chu Hành Diễn gắt gao tới mức toàn bộ trường đều biết.\r\n\r\nTới khi thành công đã trong tầm tay thì cô lại phủi tay bỏ chạy lấy người.\r\n\r\nNhiều năm sau gặp lại, đúng là trời xanh mở mắt, tự ăn trái đắng, Chu Hành Diễn vậy mà quên hẳn cô.', '2022-10-05', 'https://truyenmoii.com/images/medium/gap-nguoi-dung-luc-1650378617.jpg', 1, 0, 0, 4),
+(14, 'Con rể quyền quý', 'Khuyết danh', 'Ngôn tình', 5, 'Đang ra', 'Tái Thượng Thủy Hương là khu nhà ở xa hoa nhất thành phố Ngân Châu, giá nhà đất cũng đắt nhất thành phố Ngân Châu\r\n\r\nMột biệt hai tầng rộng ba trăm mét vuông tọa lạc trên vị trí tốt nhất của Tái Thượng Thủy Hương.\r\n\r\nTrương Thác hai mươi lăm tuổi đang bò trên mặt đất, tay cầm một tấm vải màu trắng, sau khi vắt khô vào thùng nước bên cạnh thì tỉ mỉ lau sạch sàn nhà sang trọng dưới chân.\r\n\r\nNhững chiếc xe Porsche, Ferrari đỗ trong sân biệt thự đều bám đầy bụi.\r\n\r\nNhững thứ nhìn qua xa hoa lộng lẫy này lại không hề thuộc về\r\n\r\nTrương Thác, chẳng qua anh chỉ ở rể nhà họ Lâm, “gả’ cho gia đình giàu có đứng đầu thành phố Ngân Châu, Chủ tịch của Tập đoàn Lâm Thị, Lâm Ngữ Lam...', '2022-10-05', 'https://static.8cache.com/cover/eJzLyTDWjwrNC8wMDHY2SCrz9coKiDJy9DAoM7UMM8qvLPJ2czHzsPRwznavLEjy88vJyjJwCk23TDWv8nYP9q8KT9ONcnf3diutKHcM8ynLjghPMYs08Mm2LTcyNNXNMDYyAgADBR8A/con-re-quyen-quy.jpg', 2, 2, 1, 4),
+(15, 'Tiên đế trùng sinh', 'Tê Kiến', 'Trùng sinh', 2, 'Đang ra', 'Tiên Đế tung hoành ngang dọc khắp vũ trụ - Diệp Thành bị rơi xuống thiên kiếp, trùng sinh về Địa Cầu lúc mình 20 tuổi.\r\n\r\nKiếp trước anh có gia cảnh tầm thường, vợ chưa cưới hãm hại, bị tình địch xúc phạm, đối mặt với cường quyền, anh chỉ có thể cúi đầu, mẹ bị mất tích, anh bất lực đứng nhìn, bố gặp tình cảnh bi thảm, anh cũng không có cách nào thay đổi.\r\n\r\nNhưng bây giờ, Tiên Đế quay trở lại, tất cả nỗi đau khổ đã gặp trước kia, anh sẽ bắt kẻ địch trả giá gấp trăm nghìn lần, để sự bất công trên thế giới này đều tiêu tan theo mây khói.', '2022-10-04', 'https://truyenmoii.com/images/medium/tien-de-trung-sinh-1625742003.jpg', 1, 0, 0, 0),
+(16, 'Vô tận đan điền', 'Hoành Tảo Thiên Nhai', 'Trùng sinh', 5, 'Đang ra', 'Khí Hải là nơi tu luyện giả nạp khí căn bản, là nơi trực tiếp chứa đan điền, ảnh hưởng đến thiên phú, hóa khí trụ cột. Thiên phú cao hơn người thì một cái Khí Hải thường có mấy cái đan điền. Đan điền càng nhiều, thiên phú càng cao, tốc độ nạp khí, hóa khí lại càng nhanh. Người cả đời Khí Hải có bao nhiêu đan điền đều là trời sinh sao có vậy. Nhưng, nếu có pháp quyết tu luyện tăng số đan điền lên thì sao?', '2022-10-05', 'https://static.8cache.com/cover/o/eJzLyTDW183xswhKzi4PDDB11A8LTE_MDKk0TEzy1HeEglyPQP1IR9fwAkdPJ7-SZP1yI0NT3QxjIyMAWysSgg==/vo-tan-dan-dien.jpg', 1, 0, 0, 0),
+(17, 'Mao Sơn Tróc Quỷ Nhân', 'Thanh Tử', 'Đô thị', 14, 'Đang ra', 'Diệp Thiếu Dương vốn là một Mao Sơn tróc quỷ nhân, dũng cảm tiến vào đô thị, gặp người đấu người, gặp quỷ đấu quỷ, gặp yêu đấu yêu, gặp hồ đấu hồ...\r\n\r\nTương tây Thi vương, Tà Thần bất tử, điệp tiên hung linh, tứ phương quỷ khấu.\r\n\r\nNữ minh tinh nuôi tiểu quỷ, công chúa hoàng thất hút máu, nữ giám đốc là hồ yêu,...\r\n\r\nThi triển Mao Sơn thần thuật, đánh lui tất cả!', '2022-10-10', 'https://static.8cache.com/cover/o/eJzLyTDW100zjPQ2rzAxTs1M1g8z9jIvKcjIt6zy1HeEgoB8T33TDA_dlMB01zILX9f0SI-U8vKMklKXMAM3j_Rik8C0oHRn53z9ciNDU90MYyMjAJ6GGtc=/mao-son-troc-quy-nhan.jpg', 1, 0, 0, 0);
 
 --
 -- Bẫy `truyen`
@@ -448,10 +492,12 @@ INSERT INTO `truyentheodoi` (`mataikhoan`, `matruyen`, `tentruyen`, `tacgia`, `s
 (1, 3, 'Long vương truyền thuyết', 'Đường Gia Tam Thiếu', 7, 'Đang ra', 'https://yymedia.codeprime.net/media/novels/2020-03/cac152a8cc.jpg'),
 (1, 4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 14, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg'),
 (1, 5, 'Trọng Sinh Chi Đô Thị Tu Tiên', 'Thập Lý Kiếm Thần', 17, 'Đang ra', 'https://yymedia.codeprime.net/media/novels/d425882fff.jpg'),
+(1, 13, 'Gặp người đúng lúc', 'Tê Kiến', 4, 'Hoàn thành', 'https://truyenmoii.com/images/medium/gap-nguoi-dung-luc-1650378617.jpg'),
 (2, 1, 'Đấu la đại lục', 'Đường Gia Tam Thiếu', 27, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/58a43a8beb.jpg'),
 (2, 4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 14, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg'),
 (3, 1, 'Đấu la đại lục', 'Đường Gia Tam Thiếu', 27, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/58a43a8beb.jpg'),
 (3, 2, 'Tuyệt thế đường môn', 'Đường Gia Tam Thiếu', 19, 'Đang ra', 'https://yymedia.codeprime.net/media/novels/2019-11/11f62c8b4b.png'),
+(3, 3, 'Long vương truyền thuyết', 'Đường Gia Tam Thiếu', 7, 'Đang ra', 'https://yymedia.codeprime.net/media/novels/2020-03/cac152a8cc.jpg'),
 (3, 4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 14, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg'),
 (4, 2, 'Tuyệt thế đường môn', 'Đường Gia Tam Thiếu', 19, 'Đang ra', 'https://yymedia.codeprime.net/media/novels/2019-11/11f62c8b4b.png'),
 (4, 4, 'Chung cực đấu la', 'Đường Gia Tam Thiếu', 14, 'Hoàn thành', 'https://yymedia.codeprime.net/media/novels/2020-05/b3a4759919.jpg'),
@@ -465,8 +511,8 @@ INSERT INTO `truyentheodoi` (`mataikhoan`, `matruyen`, `tentruyen`, `tacgia`, `s
 --
 
 CREATE TABLE `tuongtac` (
-  `mataikhoan` int(11) NOT NULL,
   `matruyen` int(11) NOT NULL,
+  `mataikhoan` int(11) NOT NULL,
   `thich` int(1) NOT NULL DEFAULT 0,
   `chuongdangdoc` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -475,25 +521,45 @@ CREATE TABLE `tuongtac` (
 -- Đang đổ dữ liệu cho bảng `tuongtac`
 --
 
-INSERT INTO `tuongtac` (`mataikhoan`, `matruyen`, `thich`, `chuongdangdoc`) VALUES
-(2, 1, 1, 0),
-(2, 3, 1, 0),
-(3, 1, 1, 10),
+INSERT INTO `tuongtac` (`matruyen`, `mataikhoan`, `thich`, `chuongdangdoc`) VALUES
+(1, 1, 0, 0),
+(11, 1, 0, 109),
+(13, 1, 0, 119),
+(14, 1, 1, 122),
+(15, 1, 0, 127),
+(16, 1, 0, 129),
+(17, 1, 0, 137),
+(1, 2, 1, 4),
+(3, 2, 1, 0),
+(4, 2, 0, 58),
+(11, 2, 0, 0),
+(13, 2, 0, 0),
+(14, 2, 0, 122),
+(15, 2, 0, 0),
+(16, 2, 0, 0),
+(1, 3, 1, 10),
+(2, 3, 0, 0),
 (3, 3, 1, 10),
-(4, 1, 0, 0);
+(4, 3, 1, 0),
+(5, 3, 0, 0),
+(6, 3, 1, 0),
+(14, 3, 0, 0),
+(1, 4, 0, 0),
+(14, 4, 1, 0),
+(15, 4, 0, 0);
 
 --
 -- Bẫy `tuongtac`
 --
 DELIMITER $$
 CREATE TRIGGER `tuongtac_AFTER_INSERT` AFTER INSERT ON `tuongtac` FOR EACH ROW BEGIN
-    update truyen set luotxem = (select count(mataikhoan) from tuongtac where matruyen = new.matruyen) where matruyen = new.matruyen;
+    update truyen set luotxem = (select count(chuongdangdoc) from tuongtac where matruyen = new.matruyen and chuongdangdoc>0) where matruyen = new.matruyen;
 END
 $$
 DELIMITER ;
 DELIMITER $$
 CREATE TRIGGER `tuongtac_AFTER_UPDATE` AFTER UPDATE ON `tuongtac` FOR EACH ROW BEGIN
-    update truyen set luotthich = (select count(mataikhoan) from tuongtac where matruyen = new.matruyen and thich = 1) where matruyen = new.matruyen;
+    update truyen set luotthich = (select count(mataikhoan) from tuongtac where matruyen = new.matruyen and thich = 1), luotxem = (select count(chuongdangdoc) from tuongtac where matruyen = new.matruyen and chuongdangdoc>0) where matruyen = new.matruyen;
 END
 $$
 DELIMITER ;
@@ -528,7 +594,7 @@ ALTER TABLE `chuongtruyen`
 -- Chỉ mục cho bảng `danhgia`
 --
 ALTER TABLE `danhgia`
-  ADD PRIMARY KEY (`matruyen`,`mataikhoan`),
+  ADD PRIMARY KEY (`madanhgia`),
   ADD KEY `fk_danhgia_truyen_idx` (`matruyen`),
   ADD KEY `fk_danhgia_taikhoan_idx` (`mataikhoan`);
 
@@ -571,13 +637,19 @@ ALTER TABLE `tuongtac`
 -- AUTO_INCREMENT cho bảng `binhluan`
 --
 ALTER TABLE `binhluan`
-  MODIFY `mabinhluan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `mabinhluan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT cho bảng `chuongtruyen`
 --
 ALTER TABLE `chuongtruyen`
   MODIFY `machuong` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+
+--
+-- AUTO_INCREMENT cho bảng `danhgia`
+--
+ALTER TABLE `danhgia`
+  MODIFY `madanhgia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT cho bảng `taikhoan`

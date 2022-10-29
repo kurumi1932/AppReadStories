@@ -23,6 +23,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $index['machuong'] = $row['machuong'];
                     $index['sochuong'] = $row['sochuong'];
                     $index['tenchuong'] = $row['tenchuong'];
+                    $index['noidung'] = $row['noidung'];
+                    $index['nguoidang'] = $row['nguoidang'];
                     $index['thoigiandang'] = $row['thoigiandang'];
         
                     array_push($result, $index);

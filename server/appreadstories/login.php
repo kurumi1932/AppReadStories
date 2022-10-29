@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $row = mysqli_fetch_assoc($response);
 
     $result['mataikhoan'] = $row['mataikhoan'];
-    $result['success'] = "1";
+    $result['tenhienthi'] = $row['tenhienthi'];
+    $result['accountsuccess'] = "1";
 
     echo json_encode($result);
     mysqli_close($conn);
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
   else {
 
-    $result['success'] = "0";
+    $result['accountsuccess'] = "0";
 
     echo json_encode($result);
     mysqli_close($conn);

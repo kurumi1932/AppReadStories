@@ -3,9 +3,12 @@ package huce.fit.appreadstories.controller.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +23,7 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.controller.activity.StoryInterfaceActivity;
 import huce.fit.appreadstories.controller.adapters.StoryAdapter;
@@ -30,11 +34,13 @@ import retrofit2.Response;
 public class StoryFilterFragment extends Fragment {
 
     private List<Truyen> listStory = new ArrayList<>(); //data source
+    private LinearLayout llFragmentStoryFilter;
     private StoryAdapter storyAdapter;
     private RecyclerView rcViewStory;
     private ProgressBar pbReload;
     private TextView tvSpecies, tvSpecies1, tvSpecies2, tvSpecies3, tvSpecies4, tvSpecies5;
     private TextView tvStatus, tvStatus1, tvStatus2;
+    private Button btCheckConnection;
     private String clickSpecies, clickStatus;
 
     @Override
@@ -50,6 +56,8 @@ public class StoryFilterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_story_filter, container, false);
 
+        llFragmentStoryFilter = view.findViewById(R.id.llFragmentStoryFilter);
+
         tvSpecies = view.findViewById(R.id.tvSpecies);
         tvSpecies1 = view.findViewById(R.id.tvSpecies1);
         tvSpecies2 = view.findViewById(R.id.tvSpecies2);
@@ -64,14 +72,70 @@ public class StoryFilterFragment extends Fragment {
         pbReload = view.findViewById(R.id.pbReLoad);
         rcViewStory = view.findViewById(R.id.rcViewStory);
 
+        btCheckConnection = view.findViewById(R.id.btCheckConnection);
+
         tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
         tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
 
-        getData(clickSpecies,clickStatus);
-        rcView(listStory);
+        if (isNetwork()) {
+            show();
+        } else {
+            hide();
+        }
         processEvents();
 
         return view;
+    }
+
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
+        return checkNetwork.isNetwork();
+    }
+
+    private void show() {
+        getData(clickSpecies, clickStatus);
+        rcView(listStory);
+        llFragmentStoryFilter.setVisibility(View.VISIBLE);
+        btCheckConnection.setVisibility(View.GONE);
+    }
+
+    private void hide() {
+        llFragmentStoryFilter.setVisibility(View.GONE);
+        pbReload.setVisibility(View.GONE);
+        btCheckConnection.setVisibility(View.VISIBLE);
+
+        btCheckConnection.setOnClickListener(v -> {
+            if (isNetwork()) {
+                show();
+            } else {
+                Toast.makeText(getActivity(), "Không có kết nối mạng!\n\tVui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getData(String species, String status) {
+        if (isNetwork()) {
+            pbReload.setVisibility(View.VISIBLE);
+            Api.apiInterface().getListStoriesFilter(species, status).enqueue(new Callback<List<Truyen>>() {
+                @Override
+                public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
+                    List<Truyen> list = response.body();
+                    if (response.isSuccessful() && list != null) {
+                        listStory.clear();
+                        listStory.addAll(response.body());
+                        storyAdapter.notifyDataSetChanged();
+                        pbReload.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Truyen>> call, Throwable t) {
+                    Log.e("Err_StoryFilter", "getData", t);
+                }
+            });
+        } else {
+            hide();
+        }
     }
 
     private void rcView(List<Truyen> listStory) {
@@ -109,77 +173,56 @@ public class StoryFilterFragment extends Fragment {
             colorBackGroundSpecies();
             tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Tất cả";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvSpecies1.setOnClickListener(v -> {
             colorBackGroundSpecies();
             tvSpecies1.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Đô thị";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvSpecies2.setOnClickListener(v -> {
             colorBackGroundSpecies();
             tvSpecies2.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Tu tiên";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvSpecies3.setOnClickListener(v -> {
             colorBackGroundSpecies();
             tvSpecies3.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Huyền huyễn";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvSpecies4.setOnClickListener(v -> {
             colorBackGroundSpecies();
             tvSpecies4.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Trùng sinh";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvSpecies5.setOnClickListener(v -> {
             colorBackGroundSpecies();
             tvSpecies5.setBackgroundResource(R.drawable.boder_filter_click);
             clickSpecies = "Ngôn tình";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
 
         tvStatus.setOnClickListener(v -> {
             colorBackGroundStatus();
             tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Tất cả";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvStatus1.setOnClickListener(v -> {
             colorBackGroundStatus();
             tvStatus1.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Đang ra";
-            getData(clickSpecies,clickStatus);
+            getData(clickSpecies, clickStatus);
         });
         tvStatus2.setOnClickListener(v -> {
             colorBackGroundStatus();
             tvStatus2.setBackgroundResource(R.drawable.boder_filter_click);
             clickStatus = "Hoàn thành";
-            getData(clickSpecies,clickStatus);
-        });
-    }
-
-    private void getData(String species, String status) {
-        pbReload.setVisibility(View.VISIBLE);
-        Api.apiInterface().getListStoriesFilter(species, status).enqueue(new Callback<List<Truyen>>() {
-            @Override
-            public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
-                List<Truyen> list = response.body();
-                if (response.isSuccessful() && list != null) {
-                    listStory.clear();
-                    listStory.addAll(response.body());
-                    storyAdapter.notifyDataSetChanged();
-                    pbReload.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Truyen>> call, Throwable t) {
-                Toast.makeText(getActivity(), "Lỗi cập nhật danh sách truyện!", Toast.LENGTH_SHORT).show();
-            }
+            getData(clickSpecies, clickStatus);
         });
     }
 }
