@@ -80,4 +80,11 @@
     <string name="deleteRate">Xóa đánh giá</string>
     <string name="downloadStory">Truyện tải về</string>
     <string name="btCheckConnection">Tải lại</string>
+    <string name="btDestroy">Hủy</string>
+    <string name="btConfirm">Xác nhận</string>
+    <string name="font_size">Cỡ chữ</string>
+    <string name="line_stretch">Dán dòng</string>
+    <string name="textColor">Màu chữ</string>
+    <string name="backgroundColor">Màu nền</string>
+    <string name="btUse">Sử dụng</string>
 </resources>

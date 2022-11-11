@@ -1,8 +1,9 @@
 package huce.fit.appreadstories.controller.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,11 +51,14 @@ public class StoryFragment extends Fragment {
     private int curentPage = 1;// page hiện tại
     private int totalPage; // tổng số trang
     private static final int ITEMS_PAGE = 8;// số item có trong trang
+    private int age;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_story, container, false);
+
+        getSharedPreferences();
 
         llFragmentStory = view.findViewById(R.id.llFragmentStory);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
@@ -63,13 +67,19 @@ public class StoryFragment extends Fragment {
         rcViewStory = view.findViewById(R.id.rcViewStory);
         btCheckConnection = view.findViewById(R.id.btCheckConnection);
 
-        if(isNetwork()){
+        if (isNetwork()) {
             show();
-        }else {
+        } else {
             hide();
         }
 
         return view;
+    }
+
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        age = sharedPreferences.getInt("age", 0);
+        Log.e("age", String.valueOf(age));
     }
 
     private boolean isNetwork() {
@@ -104,7 +114,7 @@ public class StoryFragment extends Fragment {
     }
 
     private void totalPage() {
-        Api.apiInterface().getListStories(0).enqueue(new Callback<List<Truyen>>() {
+        Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
             @Override
             public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -120,14 +130,14 @@ public class StoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Truyen>> call, Throwable t) {
-                Log.e("Err_StoryFagment", "totalPage",t);
+                Log.e("Err_StoryFagment", "totalPage", t);
             }
         });
     }
 
     private void getData(int a) {
         pbReload.setVisibility(View.VISIBLE);
-        Api.apiInterface().getListStories(0).enqueue(new Callback<List<Truyen>>() {
+        Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
             @Override
             public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -147,7 +157,7 @@ public class StoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Truyen>> call, Throwable t) {
-                Log.e("Err_StoryFagment", "getData",t);
+                Log.e("Err_StoryFagment", "getData", t);
             }
         });
     }
@@ -192,15 +202,12 @@ public class StoryFragment extends Fragment {
     }
 
     private void loadNextPage(int a) {
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            getData(a);
-            isLoading = false;
+        getData(a);
+        isLoading = false;
 
-            if (curentPage == totalPage) {
-                isLastPage = true;
-            }
-        }, 1500);
+        if (curentPage == totalPage) {
+            isLastPage = true;
+        }
     }
 
     private void processEvents() {
@@ -215,7 +222,7 @@ public class StoryFragment extends Fragment {
                 isLastPage = false;
                 curentPage = 1;
                 show();
-            }else {
+            } else {
                 hide();
             }
         });

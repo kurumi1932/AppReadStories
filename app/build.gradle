@@ -65,4 +65,7 @@ dependencies {
     //room database
     implementation 'androidx.room:room-runtime:2.4.3'
     annotationProcessor 'androidx.room:room-compiler:2.4.3'
+
+    //ColorPicker
+    implementation 'com.azeesoft.lib.colorpicker:colorpicker:1.0.8@aar'
 }

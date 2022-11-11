@@ -99,6 +99,8 @@ public class AccountCreateActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(AccountCreateActivity.this, "Mật khẩu không khớp!", Toast.LENGTH_SHORT).show();
                     }
+                }else {
+                    Toast.makeText(AccountCreateActivity.this, "Định dạng ngày không đúng!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

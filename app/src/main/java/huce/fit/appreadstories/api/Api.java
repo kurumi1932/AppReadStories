@@ -9,7 +9,7 @@ public class Api {
     private static Retrofit retrofit = null;
     //đt: 192.168.43.78
     //wìi nha: 192.168.0.114
-    // wifi nhatkhang: 192.168.0.109
+    //wifi nhatkhang: 192.168.0.109
     //wifi: 192.168.1.5
     private static final String BASE_URL = "http://192.168.43.78/appreadstories/";
 

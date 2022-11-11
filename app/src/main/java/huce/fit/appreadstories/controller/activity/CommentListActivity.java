@@ -29,7 +29,6 @@ import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.controller.adapters.CommentAdapter;
 import huce.fit.appreadstories.model.BinhLuan;
-import huce.fit.appreadstories.model.TaiKhoan;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,7 +42,7 @@ public class CommentListActivity extends AppCompatActivity {
     private EditText etComment;
     private TextView tvCommentLength;
     private int idStory, idAccount, idComment;
-    private String comment;
+    private String name;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +66,7 @@ public class CommentListActivity extends AppCompatActivity {
     private void getSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         idAccount = sharedPreferences.getInt("idAccount", 0);
+        name = sharedPreferences.getString("name", "");
         Log.e("idAccount_Comment", String.valueOf(idAccount));
     }
 
@@ -142,33 +142,21 @@ public class CommentListActivity extends AppCompatActivity {
     }
 
     private void addComment(String comment) {
-        Api.apiInterface().getAccount(idAccount).enqueue(new Callback<TaiKhoan>() {
+        Api.apiInterface().addCommnet(idStory, idAccount, name, comment).enqueue(new Callback<BinhLuan>() {
             @Override
-            public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Api.apiInterface().addCommnet(idStory, idAccount, response.body().getTenhienthi(), comment).enqueue(new Callback<BinhLuan>() {
-                        @Override
-                        public void onResponse(Call<BinhLuan> call1, Response<BinhLuan> response1) {
-                            if (response1.isSuccessful() && response1.body() != null) {
-                                if (response1.body().getCommentsuccess() == 1) {
-                                    getData();
-                                } else {
-                                    Toast.makeText(CommentListActivity.this, "Lỗi! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<BinhLuan> call1, Throwable t1) {
-                            Log.e("Err_CommentList", "addComment1", t1);
-                        }
-                    });
+            public void onResponse(Call<BinhLuan> call1, Response<BinhLuan> response1) {
+                if (response1.isSuccessful() && response1.body() != null) {
+                    if (response1.body().getCommentsuccess() == 1) {
+                        getData();
+                    } else {
+                        Toast.makeText(CommentListActivity.this, "Lỗi! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<TaiKhoan> call, Throwable t) {
-                Log.e("Err_CommentList", "addComment", t);
+            public void onFailure(Call<BinhLuan> call1, Throwable t1) {
+                Log.e("Err_CommentList", "addComment1", t1);
             }
         });
     }
@@ -201,8 +189,8 @@ public class CommentListActivity extends AppCompatActivity {
             public void onResponse(Call<BinhLuan> call, Response<BinhLuan> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getCommentsuccess() == 1) {
-                        comment = response.body().getBinhluan();
-                        openDialogCommentUpdateDelete(position);
+                        String comment = response.body().getBinhluan();
+                        openDialogCommentUpdateDelete(position,comment);
                     }
                 }
             }
@@ -214,7 +202,7 @@ public class CommentListActivity extends AppCompatActivity {
         });
     }
 
-    private void openDialogCommentUpdateDelete(int position) {
+    private void openDialogCommentUpdateDelete(int position, String comment) {
         final Dialog dialogCommentDelete = new Dialog(this);
         dialogCommentDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogCommentDelete.setContentView(R.layout.dialog_comment_update_delete);

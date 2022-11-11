@@ -11,6 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.checknetwork.CheckNetwork;
@@ -24,6 +29,8 @@ public class AccountLoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btLogin, btCreate;
     private String username, password;
+    private DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private Date currentDate = new Date();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +85,21 @@ public class AccountLoginActivity extends AppCompatActivity {
         });
     }
 
+    private int age(String startDate) throws ParseException {
+        String endDate = simpleDateFormat.format(currentDate);
+        Date date1 = simpleDateFormat.parse(startDate);
+        Date date2 = simpleDateFormat.parse(endDate);
+        long getDiff = date2.getTime() - date1.getTime();
+        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);//24h*60p*60s*1000
+        int age = (int) getDaysDiff / 365;
+        Log.e("date1", date1.toString());
+        Log.e("date2", date2.toString());
+        Log.e("getDiff", String.valueOf(getDiff));
+        Log.e("getDaysDiff", String.valueOf(getDaysDiff));
+        Log.e("age", String.valueOf(age));
+        return age;
+    }
+
     private void loginAccount(String username, String password) {
         if (username.length() == 0) {
             Toast.makeText(AccountLoginActivity.this, "Bạn chưa nhập tên tài khoản!", Toast.LENGTH_SHORT).show();
@@ -89,10 +111,18 @@ public class AccountLoginActivity extends AppCompatActivity {
                 public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         if (response.body().getAccountsuccess() == 1) {
+
                             int idAccount = response.body().getMataikhoan();
+                            String password = response.body().getMatkhau();
                             String name = response.body().getTenhienthi();
+                            String email = response.body().getEmail();
+                            String startDate = response.body().getNgaysinh();
                             //lưu vào bộ nhớ tạm của máy
-                            setSharedPreferences(idAccount, name);
+                            try {
+                                setSharedPreferences(idAccount, password, name, email, startDate, age(startDate));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
 
                             Intent intent = new Intent(AccountLoginActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -113,19 +143,38 @@ public class AccountLoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setSharedPreferences(int idAccount, String name) {
+    private void setSharedPreferences(int idAccount, String password, String name, String email,  String birthDay,int age) {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         SharedPreferences.Editor myedit = sharedPreferences.edit();
 
         myedit.putInt("idAccount", idAccount);
+        myedit.putString("password", password);
         myedit.putString("name", name);
+        myedit.putString("email", email);
+        myedit.putString("birthDay", birthDay);
+        myedit.putInt("age", age);
+        myedit.commit();
+    }
+
+    private void setSharedPreferences(int age) {
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        SharedPreferences.Editor myedit = sharedPreferences.edit();
+
+        myedit.putInt("age", age);
         myedit.commit();
     }
 
     private void getSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         int idAccount = sharedPreferences.getInt("idAccount", 0);
+        String startDate = sharedPreferences.getString("birthDay","1000-1-1");
         if (idAccount != 0) {
+            try {
+                setSharedPreferences(age(startDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             Intent intent = new Intent(AccountLoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();

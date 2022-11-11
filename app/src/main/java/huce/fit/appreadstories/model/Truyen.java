@@ -46,6 +46,12 @@ public class Truyen {
 	@SerializedName("chuongdangdoc")
 	private int chuongdangdoc;
 
+	@SerializedName("gioihantuoi")
+	private int gioihantuoi;
+
+	@SerializedName("tylechuongdadoc")
+	private String tylechuongdadoc;
+
 	@SerializedName("storysuccess")
 	private int storysuccess;
 
@@ -159,6 +165,22 @@ public class Truyen {
 
 	public void setChuongdangdoc(int chuongdangdoc) {
 		this.chuongdangdoc = chuongdangdoc;
+	}
+
+	public int getGioihantuoi() {
+		return gioihantuoi;
+	}
+
+	public void setGioihantuoi(int gioihantuoi) {
+		this.gioihantuoi = gioihantuoi;
+	}
+
+	public String getTylechuongdadoc() {
+		return tylechuongdadoc;
+	}
+
+	public void setTylechuongdadoc(String tylechuongdadoc) {
+		this.tylechuongdadoc = tylechuongdadoc;
 	}
 
 	public int getStorysuccess() {

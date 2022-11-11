@@ -14,19 +14,11 @@
     <item
         android:id="@+id/btMenuComment"
         android:icon="@drawable/ic_comment"
-        android:iconTint="@color/white"
         android:title=""
         app:showAsAction="always"/>
     <item
-        android:id="@+id/btMenuPrevious"
-        android:icon="@drawable/ic_previous"
-        android:iconTint="@color/white"
-        android:title=""
-        app:showAsAction="always"/>
-    <item
-        android:id="@+id/btMenuNext"
-        android:icon="@drawable/ic_next"
-        android:iconTint="@color/white"
+        android:id="@+id/btMenuSetting"
+        android:icon="@drawable/ic_setting"
         android:title=""
         app:showAsAction="always"/>
 </menu>

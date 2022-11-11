@@ -15,9 +15,14 @@
     </style>
 
     <!--    animation dialog chapter list-->
-    <style name="DialogChapterListAnimation" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:background">@color/white</item>
-        <item name="android:windowEnterAnimation">@anim/move_show_dialog_chapter_list</item>
-        <item name="android:windowExitAnimation">@anim/move_hide_dialog_chapter_list</item>
+    <style name="DialogChapterlist">
+        <item name="android:windowEnterAnimation">@anim/dialog_chapter_list_up</item>
+        <item name="android:windowExitAnimation">@anim/dialog_chapter_list_down</item>
+    </style>
+
+    <!--    animation dialog setting chapter read-->
+    <style name="DialogSetting">
+        <item name="android:windowEnterAnimation">@anim/dialog_chapter_read_setting_up</item>
+        <item name="android:windowExitAnimation">@anim/dialog_chapter_read_setting_down</item>
     </style>
 </resources>

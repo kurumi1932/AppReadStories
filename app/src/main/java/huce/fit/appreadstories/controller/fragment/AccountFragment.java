@@ -16,16 +16,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.controller.activity.AccountLoginActivity;
 import huce.fit.appreadstories.controller.activity.AccountUpdateActivity;
 import huce.fit.appreadstories.controller.activity.ContactInforActivity;
 import huce.fit.appreadstories.controller.activity.MainActivity;
-import huce.fit.appreadstories.model.TaiKhoan;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class AccountFragment extends Fragment {
@@ -34,6 +29,7 @@ public class AccountFragment extends Fragment {
     private TextView tvName, tvEditAccount, tvContactInfor, tvLogOut;
     private Button btCheckConnection;
     private int idAccount;
+    private String name;
     private MainActivity main = new MainActivity();
 
     @Override
@@ -67,6 +63,7 @@ public class AccountFragment extends Fragment {
     private void getSharedPreferences() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
         idAccount = sharedPreferences.getInt("idAccount", 0);
+        name = sharedPreferences.getString("name","");
         Log.e("idFragmentAccount", String.valueOf(idAccount));
     }
 
@@ -76,7 +73,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void show() {
-        getAccount();
+        tvName.setText(name);
         clFragmentAccount.setVisibility(View.VISIBLE);
         btCheckConnection.setVisibility(View.GONE);
     }
@@ -117,26 +114,6 @@ public class AccountFragment extends Fragment {
                 show();
             } else {
                 Toast.makeText(getActivity(), "Không có kết nối mạng!\nVui lòng thử lại.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getAccount() {
-        Api.apiInterface().getAccount(idAccount).enqueue(new Callback<TaiKhoan>() {
-            @Override
-            public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getAccountsuccess() == 1) {
-                        tvName.setText(response.body().getTenhienthi());
-                    } else {
-                        Toast.makeText(getActivity(), "Không tìm thấy tài khoản!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TaiKhoan> call, Throwable t) {
-                Log.e("E123_AccountFagment", t.getMessage());
             }
         });
     }

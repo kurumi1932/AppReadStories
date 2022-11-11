@@ -1,6 +1,8 @@
 package huce.fit.appreadstories.controller.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +44,7 @@ public class StoryFilterFragment extends Fragment {
     private TextView tvStatus, tvStatus1, tvStatus2;
     private Button btCheckConnection;
     private String clickSpecies, clickStatus;
+    private int age;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class StoryFilterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_story_filter, container, false);
+
+        getSharedPreferences();
 
         llFragmentStoryFilter = view.findViewById(R.id.llFragmentStoryFilter);
 
@@ -74,8 +79,8 @@ public class StoryFilterFragment extends Fragment {
 
         btCheckConnection = view.findViewById(R.id.btCheckConnection);
 
-        tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
-        tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
+        tvSpecies.setBackgroundResource(R.drawable.border_filter_click);
+        tvStatus.setBackgroundResource(R.drawable.border_filter_click);
 
         if (isNetwork()) {
             show();
@@ -85,6 +90,12 @@ public class StoryFilterFragment extends Fragment {
         processEvents();
 
         return view;
+    }
+
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences =  getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        age = sharedPreferences.getInt("age", 0);
+        Log.e("age", String.valueOf(age));
     }
 
     private boolean isNetwork() {
@@ -116,7 +127,7 @@ public class StoryFilterFragment extends Fragment {
     private void getData(String species, String status) {
         if (isNetwork()) {
             pbReload.setVisibility(View.VISIBLE);
-            Api.apiInterface().getListStoriesFilter(species, status).enqueue(new Callback<List<Truyen>>() {
+            Api.apiInterface().getListStoriesFilter(species, status, age).enqueue(new Callback<List<Truyen>>() {
                 @Override
                 public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
                     List<Truyen> list = response.body();
@@ -171,56 +182,56 @@ public class StoryFilterFragment extends Fragment {
     private void processEvents() {
         tvSpecies.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Tất cả";
             getData(clickSpecies, clickStatus);
         });
         tvSpecies1.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies1.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies1.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Đô thị";
             getData(clickSpecies, clickStatus);
         });
         tvSpecies2.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies2.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies2.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Tu tiên";
             getData(clickSpecies, clickStatus);
         });
         tvSpecies3.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies3.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies3.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Huyền huyễn";
             getData(clickSpecies, clickStatus);
         });
         tvSpecies4.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies4.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies4.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Trùng sinh";
             getData(clickSpecies, clickStatus);
         });
         tvSpecies5.setOnClickListener(v -> {
             colorBackGroundSpecies();
-            tvSpecies5.setBackgroundResource(R.drawable.boder_filter_click);
+            tvSpecies5.setBackgroundResource(R.drawable.border_filter_click);
             clickSpecies = "Ngôn tình";
             getData(clickSpecies, clickStatus);
         });
 
         tvStatus.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus.setBackgroundResource(R.drawable.boder_filter_click);
+            tvStatus.setBackgroundResource(R.drawable.border_filter_click);
             clickStatus = "Tất cả";
             getData(clickSpecies, clickStatus);
         });
         tvStatus1.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus1.setBackgroundResource(R.drawable.boder_filter_click);
+            tvStatus1.setBackgroundResource(R.drawable.border_filter_click);
             clickStatus = "Đang ra";
             getData(clickSpecies, clickStatus);
         });
         tvStatus2.setOnClickListener(v -> {
             colorBackGroundStatus();
-            tvStatus2.setBackgroundResource(R.drawable.boder_filter_click);
+            tvStatus2.setBackgroundResource(R.drawable.border_filter_click);
             clickStatus = "Hoàn thành";
             getData(clickSpecies, clickStatus);
         });

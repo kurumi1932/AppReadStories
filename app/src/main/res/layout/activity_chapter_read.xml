@@ -14,7 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/menu_bt_nvg_story_read" />
+        app:menu="@menu/menu_bt_nvg_chapter_read" />
 
     <ScrollView
         android:id="@+id/scView"
@@ -146,6 +146,8 @@
                 android:layout_marginBottom="30dp"
                 android:fontFamily="serif"
                 android:gravity="left"
+                android:lineSpacingExtra="4sp"
+                android:lineSpacingMultiplier="1"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -153,8 +155,48 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvPostDay" />
 
+<!--            android:autoSizeMaxTextSize="20sp" -&ndash;&gt; Font size lớn nhất, lấy thông số của màn hình to nhất được hỗ trợ.-->
+<!--            android:autoSizeMinTextSize="10sp" -&ndash;&gt; Font size nhỏ nhất, lấy thông số của màn hình nhỏ nhất được hỗ trợ.-->
+<!--            android:autoSizeStepGranularity="2sp" -&ndash;&gt; Font size thay đổi mỗi lần tăng giảm.-->
+<!--            android:autoSizeTextType="uniform" -&ndash;&gt; uniform: font sẽ tự điều chỉnh, none: không điều chỉnh.-->
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/rlNextAndPrevious"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/silver" />
+
+        <ImageView
+            android:id="@+id/ivPrevious"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="10dp"
+            android:src="@drawable/ic_previous"
+            app:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/ivNext"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="10dp"
+            android:src="@drawable/ic_next"
+            app:tint="@color/black" />
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/pbReLoad"

@@ -1,7 +1,9 @@
 package huce.fit.appreadstories.controller.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -17,8 +19,8 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.controller.adapters.StoryAdapter;
+import huce.fit.appreadstories.model.Truyen;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,12 +32,14 @@ public class StorySearchActivity extends AppCompatActivity {
     private RecyclerView rcViewStory;
     private ImageView ivBack;
     private SearchView svStory;
-//    private Toolbar toolbar;
+    private int age;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_search);
+
+        getSharedPreferences();
 
         ivBack = findViewById(R.id.ivBack);
         svStory = findViewById(R.id.svStory);
@@ -43,6 +47,12 @@ public class StorySearchActivity extends AppCompatActivity {
 
         processEvents();
         rcView(listStory);
+    }
+
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences =  getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        age = sharedPreferences.getInt("age", 0);
+        Log.e("age", String.valueOf(age));
     }
 
     private void rcView(List<Truyen> listStory) {
@@ -75,14 +85,13 @@ public class StorySearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
                 return false;
             }
         });
     }
 
     private void getData(String name) {
-        Api.apiInterface().searchStory(name).enqueue(new Callback<List<Truyen>>() {
+        Api.apiInterface().searchStory(name, age).enqueue(new Callback<List<Truyen>>() {
             @Override
             public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {

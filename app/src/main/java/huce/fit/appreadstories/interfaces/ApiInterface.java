@@ -40,9 +40,6 @@ public interface ApiInterface {
                             @Field("tenhienthi") String name,
                             @Field("ngaysinh") String birthday);
 
-    @GET(URL_ACCOUNT)//oke
-    Call<TaiKhoan> getAccount(@Query("mataikhoan") int id);
-
     @FormUrlEncoded
     @POST(URL_ACCOUNT)//oke
     Call<TaiKhoan> updateAccount(@Field("mataikhoan") int id,
@@ -52,13 +49,13 @@ public interface ApiInterface {
 
     //Truyện
     @GET(URL_STORY)//oke
-    Call<List<Truyen>> getListStories(@Query("matruyen") int id);
+    Call<List<Truyen>> getListStories(@Query("matruyen") int id, @Query("gioihantuoi") int age);
 
     @GET(URL_STORY)//oke
     Call<Truyen> getStory(@Query("matruyen") int id);
 
     @GET(URL_STORY)//oke
-    Call<List<Truyen>> searchStory(@Query("tentruyen") String name);
+    Call<List<Truyen>> searchStory(@Query("tentruyen") String name, @Query("gioihantuoi") int age);
 
     @FormUrlEncoded
     @POST(URL_STORY)//oke
@@ -93,7 +90,7 @@ public interface ApiInterface {
 
     //Lọc truyện
     @GET(URL_STORY_FILTER)//oke
-    Call<List<Truyen>> getListStoriesFilter(@Query("theloai") String species, @Query("trangthai") String status);
+    Call<List<Truyen>> getListStoriesFilter(@Query("theloai") String species, @Query("trangthai") String status, @Query("gioihantuoi") int age);
 
     //Chương truyện
     @GET(URL_CHAPTER)//oke
@@ -130,7 +127,8 @@ public interface ApiInterface {
                                        @Field("tacgia") String author,
                                        @Field("trangthai") String status,
                                        @Field("sochuong") int chapter_number,
-                                       @Field("anh") String image);
+                                       @Field("anh") String image,
+                                       @Field("thoigiancapnhat") String update_time);
 
     //Bình luận
     @GET(URL_COMMENT)//oke

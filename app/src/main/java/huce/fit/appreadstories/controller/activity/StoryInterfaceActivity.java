@@ -43,12 +43,13 @@ import retrofit2.Response;
 
 public class StoryInterfaceActivity extends AppCompatActivity {
     private ImageView ivBack, ivStory, ivRate1, ivRate2, ivRate3, ivRate4, ivRate5;
-    private TextView tvStoryName, tvAuthor, tvStatus, tvChapter, tvSpecies, tvLike1, tvLike2, tvView, tvChapter2, tvComment, tvRate;
+    private TextView tvStoryName, tvAuthor, tvStatus, tvSpecies, tvLike1, tvLike2, tvView, tvChapter, tvComment, tvRate;
     private Button btReadStory, btFollow, btDownLoad;
     private LinearLayout llRate, llLike, llChapterList, llComment;
     private int idStory, idAccount, idChapterReading;
     private String name;
-    private boolean isView = false, isFollow = false;
+    private boolean isRate = false, isComment = false, isFollow = false;
+    private double progress;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ViewPagerStoryInterfaceAdapter viewPagerStoryInterfaceAdapter;
@@ -61,13 +62,11 @@ public class StoryInterfaceActivity extends AppCompatActivity {
 
         getSharedPreferences();
         idStory = getIntent().getIntExtra("idStory", 0);
-        readStory();
 
         ivStory = findViewById(R.id.ivStory);
         tvStoryName = findViewById(R.id.tvStoryName);
         tvAuthor = findViewById(R.id.tvAuthor);
         tvStatus = findViewById(R.id.tvStatus);
-        tvChapter = findViewById(R.id.tvChapter);
         tvSpecies = findViewById(R.id.tvSpecies);
 
         tvRate = findViewById(R.id.tvRate);
@@ -84,23 +83,21 @@ public class StoryInterfaceActivity extends AppCompatActivity {
 
         tvView = findViewById(R.id.tvView);
 
-        tvChapter2 = findViewById(R.id.tvChapter2);
+        tvChapter = findViewById(R.id.tvChapter);
         llChapterList = findViewById(R.id.llChapterList);
 
-        tvComment = findViewById(R.id.tvComment);//chưa làm
+        tvComment = findViewById(R.id.tvComment);
         llComment = findViewById(R.id.llComment);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
 
         ivBack = findViewById(R.id.ivBack);
-        btReadStory = findViewById(R.id.btReadStory);// chưa làm
+        btReadStory = findViewById(R.id.btReadStory);
         btFollow = findViewById(R.id.btFollow);
         btDownLoad = findViewById(R.id.btDownload);
 
-        getDataStory();
         getDataViewPager();
-        checkLikeStory();
         checkFollow();
         processEvents();
     }
@@ -108,7 +105,9 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        readStory();
         getDataStory();
+        checkLikeStory();
     }
 
     private void getSharedPreferences() {
@@ -126,7 +125,6 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                 tvStoryName.setText(t.getTentruyen());
                 tvAuthor.setText(t.getTacgia());
                 tvStatus.setText(t.getTrangthai());
-                tvChapter.setText(String.valueOf(t.getSochuong()));
                 tvSpecies.setText(t.getTheloai());
                 Picasso.get().load(t.getAnh())
                         .into(ivStory);
@@ -156,7 +154,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                 tvRate.setText(String.valueOf(t.getDiemdanhgia()));
                 tvLike1.setText(String.valueOf(t.getLuotthich()));
                 tvView.setText(String.valueOf(t.getLuotxem()));
-                tvChapter2.setText(String.valueOf(t.getSochuong()));
+                tvChapter.setText(String.valueOf(t.getSochuong()));
                 tvComment.setText(String.valueOf(t.getLuotbinhluan()));
             }
 
@@ -167,7 +165,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         });
     }
 
-    private void getDataViewPager(){
+    private void getDataViewPager() {
         viewPagerStoryInterfaceAdapter = new ViewPagerStoryInterfaceAdapter(this, idStory);
         viewPager.setAdapter(viewPagerStoryInterfaceAdapter);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
@@ -222,11 +220,21 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                         tvLike1.setTextColor(getResources().getColor(R.color.orange));
                         tvLike2.setTextColor(getResources().getColor(R.color.orange));
                     }
-                    if (t.getChuongdangdoc() > 0) {
-                        isView = true;
-                    } else {
-                        isView = false;
+
+                    progress = Double.parseDouble(t.getTylechuongdadoc());
+                    if (progress >= 5) {
+                        isRate = false;
+                        isComment = true;
                     }
+                    if (progress >= 20) {
+                        isRate = true;
+                        isComment = true;
+                    }
+                    if (progress < 5) {
+                        isRate = false;
+                        isComment = false;
+                    }
+
                     tvLike1.setText(String.valueOf(t.getLuotthich()));
                 }
             }
@@ -244,10 +252,10 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         });
 
         llRate.setOnClickListener(v -> {
-            if (isView) {
+            if (isRate) {
                 openDialogRate();
             } else {
-                Toast.makeText(StoryInterfaceActivity.this, "Bạn chưa đọc truyện, không thể đánh giá!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 20%\n\tKhông thể đánh giá!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -262,14 +270,14 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         });
 
         llComment.setOnClickListener(v -> {
-            if (isView) {
+            if (isComment) {
                 Log.e("idStory: ", String.valueOf(idStory));
                 Intent intent = new Intent(StoryInterfaceActivity.this, CommentListActivity.class);
                 intent.putExtra("idAccount", idAccount);
                 intent.putExtra("idStory", idStory);
                 startActivity(intent);
             } else {
-                Toast.makeText(StoryInterfaceActivity.this, "Bạn chưa đọc truyện, không thể bình luận!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -316,7 +324,25 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
                 if (response.isSuccessful() && response.body().toString() != null) {
-                    idChapterReading = response.body().getMachuong();
+                    int id = response.body().getMachuong();
+                    if (id != 0) {
+                        idChapterReading = response.body().getMachuong();
+                    }
+                    if (id == 0) {
+                        Api.apiInterface().firstChapter(idStory).enqueue(new Callback<ChuongTruyen>() {
+                            @Override
+                            public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
+                                if (response.isSuccessful() && response.body().toString() != null) {
+                                    idChapterReading = response.body().getMachuong();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+                                Log.e("Err_StoryInterface", "readStory", t);
+                            }
+                        });
+                    }
                 }
             }
 
@@ -333,7 +359,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             public void onResponse(Call<Truyen> call, Response<Truyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Truyen tc = response.body();
-                    Api.apiInterface().add_delete_StoryFollow(idAccount, idStory, tc.getTentruyen(), tc.getTacgia(), tc.getTrangthai(), tc.getSochuong(), tc.getAnh()).enqueue(new Callback<TruyenTheoDoi>() {
+                    Api.apiInterface().add_delete_StoryFollow(idAccount, idStory, tc.getTentruyen(), tc.getTacgia(), tc.getTrangthai(), tc.getSochuong(), tc.getAnh(), tc.getThoigiancapnhat()).enqueue(new Callback<TruyenTheoDoi>() {
                         @Override
                         public void onResponse(Call<TruyenTheoDoi> call1, Response<TruyenTheoDoi> response1) {
                             if (response1.isSuccessful() && response1.body() != null) {
@@ -411,7 +437,8 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     DanhGia dg = response.body();
                     LinearLayout.LayoutParams lay = (LinearLayout.LayoutParams) btRate.getLayoutParams();
-                    if (dg.getRatesuccess() == 1) {
+                    int rateSuccess = dg.getRatesuccess();
+                    if (rateSuccess == 1) {
                         idRate.set(dg.getMadanhgia());
                         pointRate.set(dg.getDiemdanhgia());
                         if (dg.getDiemdanhgia() >= 1) {
@@ -433,7 +460,9 @@ public class StoryInterfaceActivity extends AppCompatActivity {
                         tvNumberTextRate.setText(dg.getDanhgia().length() + "/400");
                         btDeleteRate.setVisibility(View.VISIBLE);
                         lay.weight = 1;
-                    } else {
+                    }
+
+                    if (rateSuccess != 1) {
                         btDeleteRate.setVisibility(View.GONE);
                         lay.weight = 0;
                     }
