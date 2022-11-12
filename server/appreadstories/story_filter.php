@@ -3,27 +3,28 @@
 $conn = mysqli_connect("localhost", "root", "", "appreadstories");
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  
+
     $species = $_GET['theloai'];
     $status = $_GET['trangthai'];
+    $age = $_GET['gioihantuoi'];
 
-    $species_all = strcmp($species,'Tất cả');
-    $status_all = strcmp($status,'Tất cả');
+    $species_all = strcmp($species, 'Tất cả');
+    $status_all = strcmp($status, 'Tất cả');
 
-    if($species_all == 0 & $status_all == 0){
-        $sql_select = "SELECT * FROM truyen GROUP BY matruyen DESC"; 
-    }elseif ($species_all == 0 & $status_all != 0) {
-        $sql_select = "SELECT * FROM truyen WHERE trangthai='$status' GROUP BY matruyen DESC"; 
-    }elseif ($species_all != 0 & $status_all == 0) {
-        $sql_select = "SELECT * FROM truyen WHERE theloai='$species' GROUP BY matruyen DESC";
-    }else {
-        $sql_select = "SELECT * FROM truyen WHERE theloai='$species' AND trangthai='$status' GROUP BY matruyen DESC";
+    if ($species_all == 0 & $status_all == 0) {
+        $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' ORDER BY thoigiancapnhat DESC";
+    } elseif ($species_all == 0 & $status_all != 0) {
+        $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' AND trangthai='$status' ORDER BY thoigiancapnhat DESC";
+    } elseif ($species_all != 0 & $status_all == 0) {
+        $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' AND theloai='$species' ORDER BY thoigiancapnhat DESC";
+    } else {
+        $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' AND theloai='$species' AND trangthai='$status' ORDER BY thoigiancapnhat DESC";
     }
 
     $response = mysqli_query($conn, $sql_select);
     $result = array();
 
-    while($row = mysqli_fetch_array($response)) {
+    while ($row = mysqli_fetch_array($response)) {
         $index['matruyen'] = $row['matruyen'];
         $index['tentruyen'] = $row['tentruyen'];
         $index['tacgia'] = $row['tacgia'];
@@ -38,7 +39,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     }
     echo json_encode($result);
     mysqli_close($conn);
-
 }
-
-?>

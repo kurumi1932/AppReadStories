@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $password = $_POST["matkhau"];
   $email = $_POST["email"];
   $name = $_POST["tenhienthi"];
+  $birthday = $_POST["ngaysinh"];
 
   //Kiem tra taikhoan da ton tai chua
   $sql_select = "SELECT * FROM taikhoan WHERE taikhoan = '$username'";
@@ -15,19 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   if (mysqli_num_rows($response1) === 1) {
 
-    $result['success'] = "0";
+    $result['accountsuccess'] = "0";
 
     echo json_encode($result);
     mysqli_close($conn);
 
   }else {
 
-    $sql_insert = "INSERT INTO taikhoan(taikhoan, matkhau, email, tenhienthi) VALUES ('$username','$password','$email','$name')";
+    $sql_insert = "INSERT INTO taikhoan(taikhoan, matkhau, email, tenhienthi, ngaysinh) VALUES ('$username','$password','$email','$name','$birthday')";
     $response2 = mysqli_query($conn, $sql_insert);
 
     if ($response2) {
 
-      $result['success'] = "1";
+      $result['accountsuccess'] = "1";
 
       echo json_encode($result);
       mysqli_close($conn);
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     else {
 
-      $result['success'] = "2";
+      $result['accountsuccess'] = "2";
 
       echo json_encode($result);
       mysqli_close($conn);

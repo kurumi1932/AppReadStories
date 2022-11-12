@@ -3,7 +3,7 @@
 $conn = mysqli_connect("localhost", "root", "", "appreadstories");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  
+
   $username = $_POST['taikhoan'];
   $password = $_POST['matkhau'];
 
@@ -15,21 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $row = mysqli_fetch_assoc($response);
 
     $result['mataikhoan'] = $row['mataikhoan'];
+    $result['matkhau'] = $row['matkhau'];
     $result['tenhienthi'] = $row['tenhienthi'];
+    $result['email'] = $row['email'];
+    $result['ngaysinh'] = $row['ngaysinh'];
     $result['accountsuccess'] = "1";
 
     echo json_encode($result);
     mysqli_close($conn);
-
-  }
-  else {
+  } else {
 
     $result['accountsuccess'] = "0";
 
     echo json_encode($result);
     mysqli_close($conn);
-
   }
 }
-
-?>

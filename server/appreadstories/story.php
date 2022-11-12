@@ -4,7 +4,7 @@ $conn = mysqli_connect("localhost", "root", "", "appreadstories");
 
 switch ($_SERVER['REQUEST_METHOD']) {
 
-    //-------------get-------------//
+        //-------------get-------------//
     case 'GET':
         if (isset($_GET['matruyen'])) {
             $id_story = $_GET['matruyen'];
@@ -14,42 +14,45 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                 $sql_select = "SELECT * FROM tuongtac WHERE matruyen = '$id_story' AND mataikhoan = '$id_account'";
                 $response = mysqli_query($conn, $sql_select);
-        
-                if(mysqli_num_rows($response) === 1){
+
+                if (mysqli_num_rows($response) === 1) {
                     $row = mysqli_fetch_assoc($response);
 
                     if ($row['thich'] == 0) {
                         $result['storysuccess'] = 0;
-                    }else{
+                    } else {
                         $result['storysuccess'] = 1;
                     }
-                    $result['chuongdangdoc'] = $row['chuongdangdoc'];
-                }else{
+                    $result['tylechuongdadoc'] = $row['tylechuongdadoc'];
+                } else {
                     $sql_insert = "INSERT INTO tuongtac(matruyen, mataikhoan) VALUES ('$id_story','$id_account')";
                     $response1 = mysqli_query($conn, $sql_insert);
 
                     $result['storysuccess'] = 0;
+                    $result['tylechuongdadoc'] = 0;
                 }
 
                 $sql_select1 = "SELECT * FROM truyen WHERE matruyen = '$id_story'";
                 $response1 = mysqli_query($conn, $sql_select1);
 
-                if(mysqli_num_rows($response1) === 1){
+                if (mysqli_num_rows($response1) === 1) {
                     $row = mysqli_fetch_assoc($response1);
-                    
+
                     $result['luotthich'] = $row['luotthich'];
                 }
-                    
+
                 echo json_encode($result);
                 mysqli_close($conn);
-            }else{
+            } else {
                 //get list story
                 if ($id_story == 0) {
-                    $sql_select = "SELECT * FROM truyen GROUP BY matruyen DESC";
+                    $age = $_GET['gioihantuoi'];
+
+                    $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' ORDER BY thoigiancapnhat DESC";
                     $response = mysqli_query($conn, $sql_select);
                     $result = array();
 
-                    while($row = mysqli_fetch_array($response)) {
+                    while ($row = mysqli_fetch_array($response)) {
                         $index['matruyen'] = $row['matruyen'];
                         $index['tentruyen'] = $row['tentruyen'];
                         $index['tacgia'] = $row['tacgia'];
@@ -64,15 +67,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     }
                     echo json_encode($result);
                     mysqli_close($conn);
-                } 
+                }
                 // get story
                 if ($id_story > 0) {
                     $sql_select = "SELECT * FROM truyen WHERE matruyen = '$id_story'";
                     $response = mysqli_query($conn, $sql_select);
 
-                    if(mysqli_num_rows($response) === 1){
+                    if (mysqli_num_rows($response) === 1) {
                         $row = mysqli_fetch_assoc($response);
-                        
+
                         $result['matruyen'] = $row['matruyen'];
                         $result['tentruyen'] = $row['tentruyen'];
                         $result['tacgia'] = $row['tacgia'];
@@ -95,16 +98,17 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         //search story
-        if(isset($_GET['tentruyen'])){
+        if (isset($_GET['tentruyen'])) {
             $story_name = $_GET['tentruyen'];
             $str = '%';
-            $str_search = $str.$story_name.$str;
-            
-            $sql_select = "SELECT * FROM truyen WHERE tentruyen like '$str_search'";
+            $str_search = $str . $story_name . $str;
+            $age = $_GET['gioihantuoi'];
+
+            $sql_select = "SELECT * FROM truyen WHERE tentruyen like '$str_search' AND gioihantuoi <= '$age'";
             $response = mysqli_query($conn, $sql_select);
             $result = array();
 
-            while($row = mysqli_fetch_array($response)) {
+            while ($row = mysqli_fetch_array($response)) {
                 $index['matruyen'] = $row['matruyen'];
                 $index['tentruyen'] = $row['tentruyen'];
                 $index['tacgia'] = $row['tacgia'];
@@ -121,7 +125,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             mysqli_close($conn);
         }
         break;
-    //-------------post-------------//
+        //-------------post-------------//
     case 'POST':
         $id_story = $_POST['matruyen'];
         $id_account = $_POST['mataikhoan'];
@@ -135,7 +139,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             if ($row['thich'] == 0) {
                 $sql_update = "UPDATE tuongtac SET thich=1 WHERE matruyen = '$id_story' AND mataikhoan = '$id_account'";
-            }else{
+            } else {
                 $sql_update = "UPDATE tuongtac SET thich=0 WHERE matruyen = '$id_story' AND mataikhoan = '$id_account'";
             }
 
@@ -143,21 +147,20 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             if ($response1) {
                 $result['storysuccess'] = 1;
-    
+
                 echo json_encode($result);
                 mysqli_close($conn);
             }
         }
 
         break;
-    //-------------default-------------//
+        //-------------default-------------//
     default:
-  
+
         $result['storysuccess'] = "0";
 
         echo json_encode($result);
         mysqli_close($conn);
-        
+
         break;
 }
-?>
