@@ -7,29 +7,32 @@ public class Truyen {
 	@SerializedName("matruyen")
 	private int matruyen;
 
+	@SerializedName("tentruyen")
+	private String tentruyen;
+
+	@SerializedName("tongchuong")
+	private int tongchuong;
+
+	@SerializedName("tacgia")
+	private String tacgia;
+
+	@SerializedName("trangthai")
+	private String trangthai;
+
 	@SerializedName("theloai")
 	private String theloai;
 
 	@SerializedName("thoigiancapnhat")
 	private String thoigiancapnhat;
 
-	@SerializedName("gioithieu")
-	private String gioithieu;
-
-	@SerializedName("trangthai")
-	private String trangthai;
-
 	@SerializedName("anh")
 	private String anh;
 
-	@SerializedName("tentruyen")
-	private String tentruyen;
+	@SerializedName("gioithieu")
+	private String gioithieu;
 
-	@SerializedName("tacgia")
-	private String tacgia;
-
-	@SerializedName("sochuong")
-	private int sochuong;
+	@SerializedName("diemdanhgia")
+	private float diemdanhgia;
 
 	@SerializedName("luotxem")
 	private int luotxem;
@@ -39,9 +42,6 @@ public class Truyen {
 
 	@SerializedName("luotbinhluan")
 	private int luotbinhluan;
-
-	@SerializedName("diemdanhgia")
-	private float diemdanhgia;
 
 	@SerializedName("chuongdangdoc")
 	private int chuongdangdoc;
@@ -55,76 +55,84 @@ public class Truyen {
 	@SerializedName("storysuccess")
 	private int storysuccess;
 
-	public void setMatruyen(int matruyen){
-		this.matruyen = matruyen;
-	}
-
-	public int getMatruyen(){
+	public int getMatruyen() {
 		return matruyen;
 	}
 
-	public void setTheloai(String theloai){
-		this.theloai = theloai;
+	public void setMatruyen(int matruyen) {
+		this.matruyen = matruyen;
 	}
 
-	public String getTheloai(){
-		return theloai;
-	}
-
-	public void setThoigiancapnhat(String thoigiancapnhat){
-		this.thoigiancapnhat = thoigiancapnhat;
-	}
-
-	public String getThoigiancapnhat(){
-		return thoigiancapnhat;
-	}
-
-	public void setGioithieu(String gioithieu){
-		this.gioithieu = gioithieu;
-	}
-
-	public String getGioithieu(){
-		return gioithieu;
-	}
-
-	public void setTrangthai(String trangthai){
-		this.trangthai = trangthai;
-	}
-
-	public String getTrangthai(){
-		return trangthai;
-	}
-
-	public void setAnh(String anh){
-		this.anh = anh;
-	}
-
-	public String getAnh(){
-		return anh;
-	}
-
-	public void setTentruyen(String tentruyen){
-		this.tentruyen = tentruyen;
-	}
-
-	public String getTentruyen(){
+	public String getTentruyen() {
 		return tentruyen;
 	}
 
-	public void setTacgia(String tacgia){
-		this.tacgia = tacgia;
+	public void setTentruyen(String tentruyen) {
+		this.tentruyen = tentruyen;
 	}
 
-	public String getTacgia(){
+	public int getTongchuong() {
+		return tongchuong;
+	}
+
+	public void setTongchuong(int tongchuong) {
+		this.tongchuong = tongchuong;
+	}
+
+	public String getTacgia() {
 		return tacgia;
 	}
 
-	public void setSochuong(int sochuong){
-		this.sochuong = sochuong;
+	public void setTacgia(String tacgia) {
+		this.tacgia = tacgia;
 	}
 
-	public int getSochuong(){
-		return sochuong;
+	public String getTrangthai() {
+		return trangthai;
+	}
+
+	public void setTrangthai(String trangthai) {
+		this.trangthai = trangthai;
+	}
+
+	public String getTheloai() {
+		return theloai;
+	}
+
+	public void setTheloai(String theloai) {
+		this.theloai = theloai;
+	}
+
+	public String getThoigiancapnhat() {
+		return thoigiancapnhat;
+	}
+
+	public void setThoigiancapnhat(String thoigiancapnhat) {
+		this.thoigiancapnhat = thoigiancapnhat;
+	}
+
+	public String getAnh() {
+		return anh;
+	}
+
+	public void setAnh(String anh) {
+		this.anh = anh;
+	}
+
+	public String getGioithieu() {
+		return gioithieu;
+	}
+
+	public void setGioithieu(String gioithieu) {
+		this.gioithieu = gioithieu;
+	}
+
+	public float getDiemdanhgia() {
+		return diemdanhgia;
+	}
+
+	public void setDiemdanhgia(float diemdanhgia) {
+		this.diemdanhgia = diemdanhgia;
 	}
 
 	public int getLuotxem() {
@@ -149,14 +157,6 @@ public class Truyen {
 
 	public void setLuotbinhluan(int luotbinhluan) {
 		this.luotbinhluan = luotbinhluan;
-	}
-
-	public float getDiemdanhgia() {
-		return diemdanhgia;
-	}
-
-	public void setDiemdanhgia(float diemdanhgia) {
-		this.diemdanhgia = diemdanhgia;
 	}
 
 	public int getChuongdangdoc() {

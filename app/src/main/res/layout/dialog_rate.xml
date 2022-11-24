@@ -83,7 +83,7 @@
             android:layout_height="140dp"
             android:background="@drawable/bg_corner_white_16dp"
             android:gravity="top|left"
-            android:hint="@string/text44"
+            android:hint="@string/hint9"
             android:maxLength="400"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
@@ -120,7 +120,7 @@
             android:layout_marginRight="15dp"
             android:gravity="center"
             android:background="@drawable/bg_corner_yellow_10dp"
-            android:text="@string/deleteRate"
+            android:text="@string/delete_rate"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

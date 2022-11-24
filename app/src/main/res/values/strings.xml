@@ -1,57 +1,52 @@
 <resources>
     <string name="app_name">Truyện CV</string>
-    <string name="chapter">Chương</string>
-    <string name="hint1">Tài khoản</string>
-    <string name="hint2">Mật khẩu</string>
-    <string name="btLogin">Đăng nhập</string>
-    <string name="btCreate">Đăng ký</string>
-    <string name="hint3">Nhập tên truyện cần tìm</string>
-    <string name="hint4">Nhập chương cần tìm</string>
-    <string name="text1">Tên truyện</string>
-    <string name="text2">Tác giả:</string>
+
+<!--    Login + Register-->
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+    <string name="back">Quay lại</string>
+
+<!--    Fragment Story-->
+    <!--    Story Item-->
+    <string name="name_story">Tên truyện</string>
+    <string name="text1">Tác giả:</string>
+    <string name="text2">Tuổi:</string>
     <string name="text3">Trạng thái:</string>
     <string name="text4">Chương:</string>
     <string name="text5">Thể loại:</string>
-    <string name="btRead">Đọc truyện</string>
-    <string name="btListChap">Chương</string>
-    <string name="btFollow">Theo dõi</string>
-    <string name="btComment">Bình luận</string>
-    <string name="text6">GIỚI THIỆU</string>
-    <string name="btAccount">Tài khoản</string>
-    <string name="btStory">Truyện</string>
-    <string name="btStroryFollow">Truyện theo dõi</string>
-    <string name="btInformation">Sửa thông tin tài khoản</string>
-    <string name="btLogOut">Đăng xuất</string>
-    <string name="btExit">Thoát</string>
-    <string name="text7">Lọc truyện</string>
-    <string name="text8">Trạng thái</string>
-    <string name="text9">Tất cả</string>
+
+    <!--    Story Search-->
+    <string name="search">Tìm kiếm</string>
+
+    <!--    Story Interface-->
+    <string name="rate">Đánh giá</string>
+    <string name="delete_rate">Xóa đánh giá</string>
+    <string name="like">Yêu thích</string>
+    <string name="view">Lượt xem</string>
+    <string name="chapter">Chương</string>
+    <string name="comment">Bình luận</string>
+    <string name="story_read">Đọc truyện</string>
+
+<!--    Fragment Filter-->
+    <string name="story_filter">Lọc truyện</string>
+    <string name="all">Tất cả</string>
     <string name="text10">Đang ra</string>
     <string name="text11">Hoàn thành</string>
-    <string name="text12">Số chương</string>
-    <string name="text13">Thể loại</string>
     <string name="text14">Đô thị</string>
     <string name="text15">Tu tiên</string>
     <string name="text16">Huyền huyễn</string>
     <string name="text17">Trùng sinh</string>
     <string name="text18">Ngôn tình</string>
-    <string name="text19">Sắp xếp</string>
-    <string name="text20">Mới cập nhật</string>
-    <string name="text22">Đăng ký</string>
-    <string name="hint5">Nhập lại mật khẩu</string>
-    <string name="btOk">Xác nhận</string>
+
+<!--    Fragment Download-->
+    <string name="story_download">Truyện tải về</string>
+
+<!--   Fragment Account-->
     <string name="text23">Thông tin tài khoản</string>
     <string name="text24">Tên hiển thị</string>
     <string name="text25">Mật khẩu mới</string>
-    <string name="text26">bởi</string>
-    <string name="btFilter">Lọc</string>
-    <string name="btMenuPrevious">Chương trước</string>
-    <string name="btMenuNext">Chương sau</string>
     <string name="text27">Mật khẩu hiện tại</string>
-    <string name="text28">Tìm kiếm</string>
-    <string name="text29">Quay lại</string>
-    <string name="hint6">Email</string>
-    <string name="text30">Lưu</string>
+
     <string name="text31">Thông tin liên hệ</string>
     <string name="text32">Thông tin sinh viên</string>
     <string name="text33">Họ và Tên:</string>
@@ -63,28 +58,50 @@
     <string name="text39">Nguyễn Huy Tiến</string>
     <string name="text40">Đại học Xây dựng (HUCE)</string>
     <string name="text41">Khoa Công nghệ thông tin</string>
-    <string name="CommentDelete">Xóa bình luận</string>
-    <string name="questDeleteComment">Bạn có muốn xóa bình luận không?</string>
-    <string name="yes">Có</string>
-    <string name="no">Không</string>
-    <string name="text42">Nhập nội dung cần tìm kiếm</string>
-    <string name="text43">Nhập số chương cần tìm</string>
-    <string name="btUpdate">-> Sửa</string>
-    <string name="btDelete">-> Xóa</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="btDownloadStory">Tải truyện</string>
-    <string name="rate">Đánh giá</string>
-    <string name="btLike">Yêu thích</string>
-    <string name="view">Lượt xem</string>
-    <string name="text44">Đánh giá của bạn sẽ giúp đỡ những độc giả muốn tham khảo truyện</string>
-    <string name="deleteRate">Xóa đánh giá</string>
-    <string name="downloadStory">Truyện tải về</string>
-    <string name="btCheckConnection">Tải lại</string>
-    <string name="btDestroy">Hủy</string>
-    <string name="btConfirm">Xác nhận</string>
+
+    <string name="btLogOut">Đăng xuất</string>
+
+<!--    Dialog Setting-->
     <string name="font_size">Cỡ chữ</string>
     <string name="line_stretch">Dán dòng</string>
-    <string name="textColor">Màu chữ</string>
-    <string name="backgroundColor">Màu nền</string>
+
+<!--    Dialog Setting Color-->
+    <string name="text_color">Màu chữ</string>
+    <string name="background_color">Màu nền</string>
     <string name="btUse">Sử dụng</string>
+
+<!--    Dialog Comment Update Delete-->
+    <string name="btUpdate">-> Sửa</string>
+    <string name="btDelete">-> Xóa</string>
+
+<!--    Bottom Navigation Main-->
+    <string name="btMenuStory">Truyện</string>
+    <string name="btMenuFilter">Lọc</string>
+    <string name="btMenuFollow">Theo dõi</string>
+    <string name="btMenuDownload">Tải truyện</string>
+    <string name="btMenuAccount">Tài khoản</string>
+
+<!--    Bottom Navigation Chapter Read-->
+    <string name="btMenuPrevious">Chương trước</string>
+    <string name="btMenuNext">Chương sau</string>
+
+<!--    Hint-->
+    <string name="hint1">Tài khoản</string>
+    <string name="hint2">Mật khẩu</string>
+    <string name="hint3">Nhập tên truyện cần tìm</string>
+    <string name="hint4">Nhập chương cần tìm</string>
+    <string name="hint5">Nhập lại mật khẩu</string>
+    <string name="hint6">Email</string>
+    <string name="hint7">Nhập nội dung cần tìm kiếm</string>
+    <string name="hint8">Nhập số chương cần tìm</string>
+    <string name="hint9">Đánh giá của bạn sẽ giúp đỡ những độc giả muốn tham khảo truyện</string>
+
+<!--    Button-->
+    <string name="save">Lưu</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+    <string name="destroy">Hủy</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="reload">Tải lại</string>
+
 </resources>

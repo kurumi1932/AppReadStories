@@ -13,13 +13,13 @@ public interface AppDao {
     void insertStory(Story... story);
 
     @Delete
-    void deletétory(Story story);
+    void deleteStory(Story story);
 
     @Query("SELECT * FROM story")
     List<Story> getAllStory();
 
     @Query("SELECT * FROM story WHERE idStory = :id")
-    List<Story> getStory(int id);
+    Story getStory(int id);
 
     @Insert
     void insertChapter(Chapter... chapter);
@@ -32,5 +32,14 @@ public interface AppDao {
 
     @Query("SELECT * FROM chapter WHERE idStory = :id1 AND idChapter=:id2")
     Chapter getChapter(int id1, int id2);
+
+    @Insert
+    void insertChapterRead(ChapterRead... chapterRead);
+
+    @Delete
+    void deleteChapterRead(ChapterRead chapterRead);
+
+    @Query("SELECT * FROM chapter_read WHERE idStory = :id")
+    List<Chapter> getAllChapterRead(int id);
 
 }

@@ -11,98 +11,118 @@
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="65dp"
-            android:gravity="center|left"
-            android:orientation="horizontal">
+            android:scrollbars="none">
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvColor1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle1"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvColor2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle2"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvColor3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle3"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/black"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvColor4"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle4"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvColor5"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle5"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/medium_sea_green"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_circle_white"
-                android:gravity="center"
-                android:text="Aa"
-                android:textColor="@color/black"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/tvColor6"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle6"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvColor7"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bg_circle_white"
+                    android:backgroundTint="@color/circle7"
+                    android:gravity="center"
+                    android:text="Aa"
+                    android:textColor="@color/medium_sea_green"
+                    android:textSize="19sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <ImageView
             android:id="@+id/ivSettingColor"

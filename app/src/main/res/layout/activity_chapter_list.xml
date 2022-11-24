@@ -38,7 +38,7 @@
                 android:background="@drawable/border_corner_silver_10dp"
                 android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
-                android:queryHint="@string/text43"
+                android:queryHint="@string/hint8"
                 android:searchIcon="@null" />
 
             <ImageView

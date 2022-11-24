@@ -30,6 +30,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".controller.activity.StoryDownloadActivity"
             android:screenOrientation="portrait"></activity>
+        <service android:name=".service.DownloadService" />
 
         <activity android:name=".controller.activity.ChapterListActivity"
             android:screenOrientation="portrait"></activity>

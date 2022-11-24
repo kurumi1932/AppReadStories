@@ -59,7 +59,7 @@
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/ivStory"
             android:gravity="bottom"
-            android:text="@string/text2"
+            android:text="@string/text1"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -214,7 +214,7 @@
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="center|top"
-                android:text="@string/btLike"
+                android:text="@string/like"
                 android:textColor="@color/dim_gray"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -267,7 +267,7 @@
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="center|top"
-                android:text="@string/btListChap"
+                android:text="@string/chapter"
                 android:textColor="@color/dim_gray"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -294,7 +294,7 @@
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="center|top"
-                android:text="@string/btComment"
+                android:text="@string/comment"
                 android:textColor="@color/dim_gray"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -343,7 +343,7 @@
             android:gravity="center"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/btFollow"
+            android:text="@string/btMenuFollow"
             android:textColor="@color/dim_gray"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -355,7 +355,7 @@
             android:layout_weight="1"
             android:background="@color/red"
             android:gravity="center"
-            android:text="@string/btRead"
+            android:text="@string/story_read"
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -371,7 +371,7 @@
             android:gravity="center"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/btDownloadStory"
+            android:text="@string/btMenuDownload"
             android:textColor="@color/dim_gray"
             android:textSize="15sp" />
 

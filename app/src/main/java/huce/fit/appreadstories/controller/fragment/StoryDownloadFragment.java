@@ -21,6 +21,7 @@ import java.util.List;
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.controller.activity.StoryInterfaceActivity;
 import huce.fit.appreadstories.controller.adapters.StoryDownloadAdapter;
+import huce.fit.appreadstories.sqlite.AppDatabase;
 import huce.fit.appreadstories.sqlite.Story;
 
 public class StoryDownloadFragment extends Fragment {
@@ -64,10 +65,9 @@ public class StoryDownloadFragment extends Fragment {
     private void rcView() {
         pbReload.setVisibility(View.VISIBLE);
         storyDownloadAdapter = new StoryDownloadAdapter(listStoryDownload, (position, view1) -> {
-            Story story = listStoryDownload.get(position);
-            int idStoryFollow = story.getIdStory();
+            int idStoryDownload = position;
             Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
-            intent.putExtra("idStory", idStoryFollow);
+            intent.putExtra("idStory", idStoryDownload);
             startActivity(intent);
         });
         rcViewStoryDownload.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -80,6 +80,6 @@ public class StoryDownloadFragment extends Fragment {
     }
 
     private void getData(){
-//        listStoryDownload = AppDatabase.getInstance(getActivity()).appDao().getAllStory();
+        listStoryDownload = AppDatabase.getInstance(getActivity()).appDao().getAllStory();
     }
 }

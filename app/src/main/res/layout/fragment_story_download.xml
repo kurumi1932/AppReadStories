@@ -21,9 +21,9 @@
             android:background="@color/white_smoke"
             android:foregroundGravity="center"
             android:gravity="center"
-            android:text="@string/downloadStory"
+            android:text="@string/story_download"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <View
             android:layout_width="match_parent"

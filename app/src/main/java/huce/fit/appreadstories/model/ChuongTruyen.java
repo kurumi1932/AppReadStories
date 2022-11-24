@@ -29,7 +29,7 @@ public class ChuongTruyen{
 	private int thaydoichuong;//thay đổi chương
 
 	@SerializedName("so")
-	private int so;//phân biệt chương đã đọc và chương chưa đọc
+	private int so;//phân biệt danh sách chương đã đọc và chương đang đọc
 
 	public void setMatruyen(int matruyen){
 		this.matruyen = matruyen;

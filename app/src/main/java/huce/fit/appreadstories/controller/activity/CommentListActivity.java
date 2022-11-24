@@ -232,17 +232,17 @@ public class CommentListActivity extends AppCompatActivity {
             dialogCommentDelete.dismiss();
         });
         tvDelete.setOnClickListener(view -> {
-            openDialogCommentNotifyDelete(position);
+            openDialogNotifyYesNo(position);
             dialogCommentDelete.dismiss();
         });
 
         dialogCommentDelete.show();
     }
 
-    private void openDialogCommentNotifyDelete(int position) {
+    private void openDialogNotifyYesNo(int position) {
         final Dialog dialogCommentDelete = new Dialog(this);
         dialogCommentDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogCommentDelete.setContentView(R.layout.dialog_comment_notify_delete);
+        dialogCommentDelete.setContentView(R.layout.dialog_notify_yes_no);
 
         Window window = dialogCommentDelete.getWindow();
         if (window == null) {
@@ -260,8 +260,14 @@ public class CommentListActivity extends AppCompatActivity {
         // click bên ngoài dialog có thể out
         dialogCommentDelete.setCancelable(true);
 
-        TextView tvYes = dialogCommentDelete.findViewById(R.id.tvYes);
-        TextView tvNo = dialogCommentDelete.findViewById(R.id.tvNo);
+        TextView tvTitle, tvContent, tvYes, tvNo;
+        tvTitle = dialogCommentDelete.findViewById(R.id.tvTitle);
+        tvContent = dialogCommentDelete.findViewById(R.id.tvContent);
+        tvYes = dialogCommentDelete.findViewById(R.id.tvYes);
+        tvNo = dialogCommentDelete.findViewById(R.id.tvNo);
+
+        tvTitle.setText("Xóa bình luận");
+        tvContent.setText("Bạn có muốn xóa bình luận không?");
 
         tvYes.setOnClickListener(view -> {
             deleteComment(position);

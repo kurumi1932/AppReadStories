@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.controller.adapters.RateAdapter;
 import huce.fit.appreadstories.model.DanhGia;
 import retrofit2.Call;
@@ -33,6 +35,11 @@ public class StoryInterfaceRateFagment extends Fragment {
 
     public StoryInterfaceRateFagment(int idStory) {
         this.idStory = idStory;
+    }
+
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
+        return checkNetwork.isNetwork();
     }
 
     @Nullable
@@ -60,20 +67,25 @@ public class StoryInterfaceRateFagment extends Fragment {
     }
 
     public void getDataRate() {
-        Api.apiInterface().getListRate(idStory).enqueue(new Callback<List<DanhGia>>() {
-            @Override
-            public void onResponse(Call<List<DanhGia>> call, Response<List<DanhGia>> response) {
-                if (response.isSuccessful()) {
-                    listRate.clear();
-                    listRate.addAll(response.body());
-                    rateAdapter.notifyDataSetChanged();
+        if (isNetwork()) {
+            Api.apiInterface().getListRate(idStory).enqueue(new Callback<List<DanhGia>>() {
+                @Override
+                public void onResponse(Call<List<DanhGia>> call, Response<List<DanhGia>> response) {
+                    if (response.isSuccessful()) {
+                        listRate.clear();
+                        listRate.addAll(response.body());
+                        rateAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<DanhGia>> call, Throwable t) {
-                Log.e("Err_StoryInterfaceF", t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<List<DanhGia>> call, Throwable t) {
+                    Log.e("Err_StoryInterfaceF", t.toString());
+                }
+            });
+        } else {
+            listRate.clear();
+            Toast.makeText(getActivity(), "\tChưa kết nối mạng!\nKhông xem được đánh giá!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

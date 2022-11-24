@@ -66,7 +66,7 @@
         android:layout_height="35dp"
         android:paddingBottom="-5dp"
         android:iconifiedByDefault="false"
-        android:queryHint="@string/text43"
+        android:queryHint="@string/hint8"
         android:background="@drawable/border_filter_linearlayout"
         android:queryBackground="@android:color/transparent"/>
 

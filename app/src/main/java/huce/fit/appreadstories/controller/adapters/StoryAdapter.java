@@ -44,8 +44,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
         } else {
             holder.tvStoryName.setText(tc.getTentruyen());
             holder.tvAuthor.setText(tc.getTacgia());
+            holder.tvAge.setText(String.valueOf(tc.getGioihantuoi()));
             holder.tvStatus.setText(tc.getTrangthai());
-            holder.tvChapter.setText(String.valueOf(tc.getSochuong()));
+            holder.tvChapter.setText(String.valueOf(tc.getTongchuong()));
             Picasso.get().load(tc.getAnh())
                     .into(holder.ivStory);
         }
@@ -60,13 +61,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
     }
 
     public class StoryHoder extends RecyclerView.ViewHolder {
-        private TextView tvStoryName, tvAuthor, tvStatus, tvChapter;
+        private TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter;
         private ImageView ivStory;
 
         public StoryHoder(@NonNull View itemView) {
             super(itemView);
             tvStoryName = itemView.findViewById(R.id.tvStoryName);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
+            tvAge = itemView.findViewById(R.id.tvAge);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvChapter = itemView.findViewById(R.id.tvChapter);
             ivStory = itemView.findViewById(R.id.ivStory);

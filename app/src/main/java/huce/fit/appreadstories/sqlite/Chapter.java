@@ -8,12 +8,11 @@ public class Chapter {
     @PrimaryKey
     private int idChapter;
     private int idStory;
-    private String numberChapter;
+    private String sumChapter;
     private String nameChapter;
-    private String content;
     private String poster;
     private String timePost;
-    private int idChapterReading;
+    private String content;
 
     public int getIdChapter() {
         return idChapter;
@@ -31,12 +30,12 @@ public class Chapter {
         this.idStory = idStory;
     }
 
-    public String getNumberChapter() {
-        return numberChapter;
+    public String getSumChapter() {
+        return sumChapter;
     }
 
-    public void setNumberChapter(String numberChapter) {
-        this.numberChapter = numberChapter;
+    public void setSumChapter(String sumChapter) {
+        this.sumChapter = sumChapter;
     }
 
     public String getNameChapter() {
@@ -69,13 +68,5 @@ public class Chapter {
 
     public void setTimePost(String timePost) {
         this.timePost = timePost;
-    }
-
-    public int getIdChapterReading() {
-        return idChapterReading;
-    }
-
-    public void setIdChapterReading(int idChapterReading) {
-        this.idChapterReading = idChapterReading;
     }
 }

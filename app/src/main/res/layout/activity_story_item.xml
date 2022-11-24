@@ -22,20 +22,35 @@
         android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
         android:layout_toEndOf="@+id/ivStory"
         android:layout_toRightOf="@+id/ivStory"
-        android:text="@string/text1"
+        android:ellipsize="end"
+        android:paddingRight="5dp"
+        android:text="@string/name_story"
         android:textColor="@color/medium_sea_green"
         android:textSize="17sp" />
 
     <TextView
-        android:id="@+id/tvLblTacGia"
+        android:id="@+id/tvAge"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="-20dp"
+        android:layout_toRightOf="@+id/tvStoryName"
+        android:background="@drawable/border_silver"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv1"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
         android:layout_toRightOf="@+id/ivStory"
-        android:text="@string/text2"
+        android:text="@string/text1"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
@@ -45,13 +60,13 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="40dp"
-        android:layout_toRightOf="@+id/tvLblTacGia"
+        android:layout_toRightOf="@+id/tv1"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvLblTrangThai"
+        android:id="@+id/tv2"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
@@ -67,17 +82,17 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tvLblTrangThai"
+        android:layout_toRightOf="@+id/tv2"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/tvLblChuong"
+        android:id="@+id/tv3"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginStart="125dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tvLblTrangThai"
+        android:layout_toRightOf="@+id/tv2"
         android:text="@string/text4"
         android:textColor="@color/black"
         android:textSize="15sp" />
@@ -88,7 +103,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tvLblChuong"
+        android:layout_toRightOf="@+id/tv3"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />

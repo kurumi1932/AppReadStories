@@ -14,9 +14,10 @@ public class Story {
     private String species;
     private String timeUpdate;
     private String image;
+    private String introduce;
     private float rate;
-    private int like;
     private int view;
+    private int like;
     private int sumComment;
     private int isFollow;
     private int chapterReading;
@@ -86,6 +87,14 @@ public class Story {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 
     public float getRate() {

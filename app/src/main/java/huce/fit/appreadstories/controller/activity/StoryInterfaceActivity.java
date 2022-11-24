@@ -31,11 +31,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.controller.adapters.ViewPagerStoryInterfaceAdapter;
 import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.model.DanhGia;
 import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.model.TruyenTheoDoi;
+import huce.fit.appreadstories.sqlite.AppDatabase;
+import huce.fit.appreadstories.sqlite.Story;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,6 +105,11 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         processEvents();
     }
 
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(this);
+        return checkNetwork.isNetwork();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -118,51 +126,88 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     }
 
     private void getDataStory() {
-        Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
-            @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-                Truyen t = response.body();
-                tvStoryName.setText(t.getTentruyen());
-                tvAuthor.setText(t.getTacgia());
-                tvStatus.setText(t.getTrangthai());
-                tvSpecies.setText(t.getTheloai());
-                Picasso.get().load(t.getAnh())
-                        .into(ivStory);
+        if (isNetwork()) {
+            Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
+                @Override
+                public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+                    Truyen t = response.body();
+                    tvStoryName.setText(t.getTentruyen());
+                    tvAuthor.setText(t.getTacgia());
+                    tvStatus.setText(t.getTrangthai());
+                    tvSpecies.setText(t.getTheloai());
+                    Picasso.get().load(t.getAnh())
+                            .into(ivStory);
 
-                if (t.getDiemdanhgia() == 0) {
-                    ivRate1.setImageResource(R.drawable.ic_not_rate);
-                    ivRate2.setImageResource(R.drawable.ic_not_rate);
-                    ivRate3.setImageResource(R.drawable.ic_not_rate);
-                    ivRate4.setImageResource(R.drawable.ic_not_rate);
-                    ivRate5.setImageResource(R.drawable.ic_not_rate);
+                    if (t.getDiemdanhgia() == 0) {
+                        ivRate1.setImageResource(R.drawable.ic_not_rate);
+                        ivRate2.setImageResource(R.drawable.ic_not_rate);
+                        ivRate3.setImageResource(R.drawable.ic_not_rate);
+                        ivRate4.setImageResource(R.drawable.ic_not_rate);
+                        ivRate5.setImageResource(R.drawable.ic_not_rate);
+                    }
+                    if (t.getDiemdanhgia() >= 1) {
+                        ivRate1.setImageResource(R.drawable.ic_rate);
+                    }
+                    if (t.getDiemdanhgia() >= 2) {
+                        ivRate2.setImageResource(R.drawable.ic_rate);
+                    }
+                    if (t.getDiemdanhgia() >= 3) {
+                        ivRate3.setImageResource(R.drawable.ic_rate);
+                    }
+                    if (t.getDiemdanhgia() >= 4) {
+                        ivRate4.setImageResource(R.drawable.ic_rate);
+                    }
+                    if (t.getDiemdanhgia() == 5) {
+                        ivRate5.setImageResource(R.drawable.ic_rate);
+                    }
+                    tvRate.setText(String.valueOf(t.getDiemdanhgia()));
+                    tvLike1.setText(String.valueOf(t.getLuotthich()));
+                    tvView.setText(String.valueOf(t.getLuotxem()));
+                    tvChapter.setText(String.valueOf(t.getTongchuong()));
+                    tvComment.setText(String.valueOf(t.getLuotbinhluan()));
                 }
-                if (t.getDiemdanhgia() >= 1) {
-                    ivRate1.setImageResource(R.drawable.ic_rate);
-                }
-                if (t.getDiemdanhgia() >= 2) {
-                    ivRate2.setImageResource(R.drawable.ic_rate);
-                }
-                if (t.getDiemdanhgia() >= 3) {
-                    ivRate3.setImageResource(R.drawable.ic_rate);
-                }
-                if (t.getDiemdanhgia() >= 4) {
-                    ivRate4.setImageResource(R.drawable.ic_rate);
-                }
-                if (t.getDiemdanhgia() == 5) {
-                    ivRate5.setImageResource(R.drawable.ic_rate);
-                }
-                tvRate.setText(String.valueOf(t.getDiemdanhgia()));
-                tvLike1.setText(String.valueOf(t.getLuotthich()));
-                tvView.setText(String.valueOf(t.getLuotxem()));
-                tvChapter.setText(String.valueOf(t.getSochuong()));
-                tvComment.setText(String.valueOf(t.getLuotbinhluan()));
-            }
 
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_StoryInterface", "getDataStory", t);
+                @Override
+                public void onFailure(Call<Truyen> call, Throwable t) {
+                    Log.e("Err_StoryInterface", "getDataStory", t);
+                }
+            });
+        } else {
+            Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+            tvStoryName.setText(story.getNameStory());
+            tvAuthor.setText(story.getAuthor());
+            tvStatus.setText(story.getStatus());
+            tvSpecies.setText(story.getSpecies());
+            Picasso.get().load(story.getImage()).into(ivStory);
+
+            if (story.getRate() == 0) {
+                ivRate1.setImageResource(R.drawable.ic_not_rate);
+                ivRate2.setImageResource(R.drawable.ic_not_rate);
+                ivRate3.setImageResource(R.drawable.ic_not_rate);
+                ivRate4.setImageResource(R.drawable.ic_not_rate);
+                ivRate5.setImageResource(R.drawable.ic_not_rate);
             }
-        });
+            if (story.getRate() >= 1) {
+                ivRate1.setImageResource(R.drawable.ic_rate);
+            }
+            if (story.getRate() >= 2) {
+                ivRate2.setImageResource(R.drawable.ic_rate);
+            }
+            if (story.getRate() >= 3) {
+                ivRate3.setImageResource(R.drawable.ic_rate);
+            }
+            if (story.getRate() >= 4) {
+                ivRate4.setImageResource(R.drawable.ic_rate);
+            }
+            if (story.getRate() == 5) {
+                ivRate5.setImageResource(R.drawable.ic_rate);
+            }
+            tvRate.setText(String.valueOf(story.getRate()));
+            tvLike1.setText(String.valueOf(story.getLike()));
+            tvView.setText(String.valueOf(story.getView()));
+            tvChapter.setText(String.valueOf(story.getSumChapter()));
+            tvComment.setText(String.valueOf(story.getSumComment()));
+        }
     }
 
     private void getDataViewPager() {
@@ -181,69 +226,87 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     }
 
     private void checkFollow() {
-        Api.apiInterface().checkStoryFollow(idAccount, idStory).enqueue(new Callback<TruyenTheoDoi>() {
-            @Override
-            public void onResponse(Call<TruyenTheoDoi> call, Response<TruyenTheoDoi> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getSuccess() == 1) {
-                        isFollow = true;
-                        btFollow.setText("Đang theo dõi");
-                        btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_follow, 0, 0);
-                        btFollow.setTextColor(getResources().getColor(R.color.medium_sea_green));
-                    }
-                    if (response.body().getSuccess() == 2) {
-                        isFollow = false;
-                        btFollow.setText("Theo dõi");
-                        btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_unfollow, 0, 0);
-                        btFollow.setTextColor(getResources().getColor(R.color.dim_gray));
+        if (isNetwork()) {
+            Api.apiInterface().checkStoryFollow(idAccount, idStory).enqueue(new Callback<TruyenTheoDoi>() {
+                @Override
+                public void onResponse(Call<TruyenTheoDoi> call, Response<TruyenTheoDoi> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getSuccess() == 1) {
+                            isFollow = true;
+                            btFollow.setText("Đang theo dõi");
+                            btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_follow, 0, 0);
+                            btFollow.setTextColor(getResources().getColor(R.color.medium_sea_green));
+                        }
+                        if (response.body().getSuccess() == 2) {
+                            isFollow = false;
+                            btFollow.setText("Theo dõi");
+                            btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_unfollow, 0, 0);
+                            btFollow.setTextColor(getResources().getColor(R.color.dim_gray));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<TruyenTheoDoi> call, Throwable t) {
-                Log.e("Err_StoryInterface", "checkFollow", t);
+                @Override
+                public void onFailure(Call<TruyenTheoDoi> call, Throwable t) {
+                    Log.e("Err_StoryInterface", "checkFollow", t);
+                }
+            });
+        } else {
+            Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+            int follow = story.getIsFollow();
+            if (follow == 1) {
+                isFollow = true;
+                btFollow.setText("Đang theo dõi");
+                btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_follow, 0, 0);
+                btFollow.setTextColor(getResources().getColor(R.color.medium_sea_green));
             }
-        });
+            if(follow == 0){
+                btFollow.setText("Theo dõi");
+                btFollow.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_unfollow, 0, 0);
+                btFollow.setTextColor(getResources().getColor(R.color.dim_gray));
+            }
+        }
     }
 
     private void checkLikeStory() {
-        Api.apiInterface().checkLikeStory(idStory, idAccount).enqueue(new Callback<Truyen>() {
-            @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Truyen t = response.body();
-                    if (t.getStorysuccess() == 0) {
-                        tvLike1.setTextColor(getResources().getColor(R.color.black));
-                        tvLike2.setTextColor(getResources().getColor(R.color.dim_gray));
-                    } else {
-                        tvLike1.setTextColor(getResources().getColor(R.color.orange));
-                        tvLike2.setTextColor(getResources().getColor(R.color.orange));
-                    }
+        if (isNetwork()) {
+            Api.apiInterface().checkLikeStory(idStory, idAccount).enqueue(new Callback<Truyen>() {
+                @Override
+                public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Truyen t = response.body();
+                        if (t.getStorysuccess() == 0) {
+                            tvLike1.setTextColor(getResources().getColor(R.color.black));
+                            tvLike2.setTextColor(getResources().getColor(R.color.dim_gray));
+                        } else {
+                            tvLike1.setTextColor(getResources().getColor(R.color.orange));
+                            tvLike2.setTextColor(getResources().getColor(R.color.orange));
+                        }
 
-                    progress = Double.parseDouble(t.getTylechuongdadoc());
-                    if (progress >= 5) {
-                        isRate = false;
-                        isComment = true;
-                    }
-                    if (progress >= 20) {
-                        isRate = true;
-                        isComment = true;
-                    }
-                    if (progress < 5) {
-                        isRate = false;
-                        isComment = false;
-                    }
+                        progress = Double.parseDouble(t.getTylechuongdadoc());
+                        if (progress >= 5) {
+                            isRate = false;
+                            isComment = true;
+                        }
+                        if (progress >= 20) {
+                            isRate = true;
+                            isComment = true;
+                        }
+                        if (progress < 5) {
+                            isRate = false;
+                            isComment = false;
+                        }
 
-                    tvLike1.setText(String.valueOf(t.getLuotthich()));
+                        tvLike1.setText(String.valueOf(t.getLuotthich()));
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_StoryInterface", "checkLikeStory", t);
-            }
-        });
+                @Override
+                public void onFailure(Call<Truyen> call, Throwable t) {
+                    Log.e("Err_StoryInterface", "checkLikeStory", t);
+                }
+            });
+        }
     }
 
     private void processEvents() {
@@ -251,17 +314,43 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             finish();
         });
 
-        llRate.setOnClickListener(v -> {
-            if (isRate) {
-                openDialogRate();
-            } else {
-                Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 20%\n\tKhông thể đánh giá!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (isNetwork()) {
+            llRate.setOnClickListener(v -> {
+                if (isRate) {
+                    openDialogRate();
+                } else {
+                    Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 20%\n\tKhông thể đánh giá!", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-        llLike.setOnClickListener(v -> {
-            likeStory();
-        });
+            llLike.setOnClickListener(v -> {
+                likeStory();
+            });
+
+            llComment.setOnClickListener(v -> {
+                if (isComment) {
+                    Log.e("idStory: ", String.valueOf(idStory));
+                    Intent intent = new Intent(StoryInterfaceActivity.this, CommentListActivity.class);
+                    intent.putExtra("idAccount", idAccount);
+                    intent.putExtra("idStory", idStory);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            btFollow.setOnClickListener(v -> {
+                add_delete_StoryFollow();
+            });
+
+            btDownLoad.setOnClickListener(v -> {
+                Intent intent = new Intent(StoryInterfaceActivity.this, StoryDownloadActivity.class);
+                intent.putExtra("idStory", idStory);
+                intent.putExtra("isFollow", isFollow);
+                intent.putExtra("idChapterReading", idChapterReading);
+                startActivity(intent);
+            });
+        }
 
         llChapterList.setOnClickListener(v -> {
             Intent intent = new Intent(StoryInterfaceActivity.this, ChapterListActivity.class);
@@ -269,33 +358,9 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        llComment.setOnClickListener(v -> {
-            if (isComment) {
-                Log.e("idStory: ", String.valueOf(idStory));
-                Intent intent = new Intent(StoryInterfaceActivity.this, CommentListActivity.class);
-                intent.putExtra("idAccount", idAccount);
-                intent.putExtra("idStory", idStory);
-                startActivity(intent);
-            } else {
-                Toast.makeText(StoryInterfaceActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btFollow.setOnClickListener(v -> {
-            add_delete_StoryFollow();
-        });
-
         btReadStory.setOnClickListener(v -> {
             Intent intent = new Intent(StoryInterfaceActivity.this, ChapterReadActivity.class);
             intent.putExtra("idStory", idStory);
-            intent.putExtra("idChapterReading", idChapterReading);
-            startActivity(intent);
-        });
-
-        btDownLoad.setOnClickListener(v -> {
-            Intent intent = new Intent(StoryInterfaceActivity.this, StoryDownloadActivity.class);
-            intent.putExtra("idStory", idStory);
-            intent.putExtra("isFollow", isFollow);
             intent.putExtra("idChapterReading", idChapterReading);
             startActivity(intent);
         });
@@ -320,37 +385,42 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     }
 
     private void readStory() {
-        Api.apiInterface().getChapterReading(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
-            @Override
-            public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
-                if (response.isSuccessful() && response.body().toString() != null) {
-                    int id = response.body().getMachuong();
-                    if (id != 0) {
-                        idChapterReading = response.body().getMachuong();
-                    }
-                    if (id == 0) {
-                        Api.apiInterface().firstChapter(idStory).enqueue(new Callback<ChuongTruyen>() {
-                            @Override
-                            public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
-                                if (response.isSuccessful() && response.body().toString() != null) {
-                                    idChapterReading = response.body().getMachuong();
+        if (isNetwork()) {
+            Api.apiInterface().getChapterReading(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
+                @Override
+                public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
+                    if (response.isSuccessful() && response.body().toString() != null) {
+                        int id = response.body().getMachuong();
+                        if (id != 0) {
+                            idChapterReading = response.body().getMachuong();
+                        }
+                        if (id == 0) {
+                            Api.apiInterface().firstChapter(idStory).enqueue(new Callback<ChuongTruyen>() {
+                                @Override
+                                public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
+                                    if (response.isSuccessful() && response.body().toString() != null) {
+                                        idChapterReading = response.body().getMachuong();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<ChuongTruyen> call, Throwable t) {
-                                Log.e("Err_StoryInterface", "readStory", t);
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+                                    Log.e("Err_StoryInterface", "readStory", t);
+                                }
+                            });
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ChuongTruyen> call, Throwable t) {
-                Log.e("Err_StoryInterface", "readStory", t);
-            }
-        });
+                @Override
+                public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+                    Log.e("Err_StoryInterface", "readStory", t);
+                }
+            });
+        } else {
+            Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+            idChapterReading = story.getChapterReading();
+        }
     }
 
     private void add_delete_StoryFollow() {
@@ -359,7 +429,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             public void onResponse(Call<Truyen> call, Response<Truyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Truyen tc = response.body();
-                    Api.apiInterface().add_delete_StoryFollow(idAccount, idStory, tc.getTentruyen(), tc.getTacgia(), tc.getTrangthai(), tc.getSochuong(), tc.getAnh(), tc.getThoigiancapnhat()).enqueue(new Callback<TruyenTheoDoi>() {
+                    Api.apiInterface().add_delete_StoryFollow(idAccount, idStory, tc.getTentruyen(), tc.getTacgia(), tc.getGioihantuoi(), tc.getTrangthai(), tc.getTongchuong(), tc.getAnh(), tc.getThoigiancapnhat()).enqueue(new Callback<TruyenTheoDoi>() {
                         @Override
                         public void onResponse(Call<TruyenTheoDoi> call1, Response<TruyenTheoDoi> response1) {
                             if (response1.isSuccessful() && response1.body() != null) {
@@ -562,22 +632,8 @@ public class StoryInterfaceActivity extends AppCompatActivity {
 
         btRate.setOnClickListener(view -> {
             if (idRate.get() > 0) {//update rate
-                Api.apiInterface().updateRate(idRate.get(), pointRate.get(), etRate.getText().toString()).enqueue(new Callback<DanhGia>() {
-                    @Override
-                    public void onResponse(Call<DanhGia> call, Response<DanhGia> response) {
-                        if (response.body().getRatesuccess() == 1) {
-                            getDataStory();
-                            viewPager.setAdapter(viewPagerStoryInterfaceAdapter);//reload view pager
-                            Toast.makeText(StoryInterfaceActivity.this, "Bạn đã đánh giá truyện!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<DanhGia> call, Throwable t) {
-                        Log.e("Err_StoryInterface", "openDialogRate_update", t);
-                    }
-                });
                 dialogRate.dismiss();
+                openDialogNotifyYesNo(idRate.get(), pointRate.get(), etRate.getText().toString());
             } else {//add rate
                 if (pointRate.get() > 0) {
                     Api.apiInterface().addRate(idStory, idAccount, name, pointRate.get(), etRate.getText().toString()).enqueue(new Callback<DanhGia>() {
@@ -605,5 +661,61 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         });
 
         dialogRate.show();
+    }
+
+    private void openDialogNotifyYesNo(int idRate, int pointRate, String rate) {
+        final Dialog dialogCommentDelete = new Dialog(this);
+        dialogCommentDelete.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogCommentDelete.setContentView(R.layout.dialog_notify_yes_no);
+
+        Window window = dialogCommentDelete.getWindow();
+        if (window == null) {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // vị trí dialog
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = Gravity.CENTER;
+        window.setAttributes(windowAttributes);
+
+        // click bên ngoài dialog có thể out
+        dialogCommentDelete.setCancelable(true);
+
+        TextView tvTitle, tvContent, tvYes, tvNo;
+        tvTitle = dialogCommentDelete.findViewById(R.id.tvTitle);
+        tvContent = dialogCommentDelete.findViewById(R.id.tvContent);
+        tvYes = dialogCommentDelete.findViewById(R.id.tvYes);
+        tvNo = dialogCommentDelete.findViewById(R.id.tvNo);
+
+        tvTitle.setText("Sửa đánh giá");
+        tvContent.setText("Bạn có có chắc muốn thay đổi đánh giá?");
+
+        tvYes.setOnClickListener(view -> {
+            Api.apiInterface().updateRate(idRate, pointRate, rate).enqueue(new Callback<DanhGia>() {
+                @Override
+                public void onResponse(Call<DanhGia> call, Response<DanhGia> response) {
+                    if (response.body().getRatesuccess() == 1) {
+                        getDataStory();
+                        viewPager.setAdapter(viewPagerStoryInterfaceAdapter);//reload view pager
+                        Toast.makeText(StoryInterfaceActivity.this, "Bạn đã đánh giá truyện!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DanhGia> call, Throwable t) {
+                    Log.e("Err_StoryInterface", "openDialogNotifyYesNo", t);
+                }
+            });
+            dialogCommentDelete.dismiss();
+        });
+        tvNo.setOnClickListener(view -> {
+            dialogCommentDelete.dismiss();
+            openDialogRate();
+        });
+
+        dialogCommentDelete.show();
     }
 }

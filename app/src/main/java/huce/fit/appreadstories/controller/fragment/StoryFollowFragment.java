@@ -70,8 +70,6 @@ public class StoryFollowFragment extends Fragment {
         }else {
             hide();
         }
-        getData();
-        rcView();
 
         return view;
     }

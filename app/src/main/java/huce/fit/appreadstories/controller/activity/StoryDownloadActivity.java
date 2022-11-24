@@ -1,7 +1,7 @@
 package huce.fit.appreadstories.controller.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,9 +28,7 @@ import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.controller.adapters.ChapterDownloadAdapter;
 import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.sqlite.AppDatabase;
-import huce.fit.appreadstories.sqlite.Chapter;
-import huce.fit.appreadstories.sqlite.Story;
+import huce.fit.appreadstories.service.DownloadService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,12 +42,11 @@ public class StoryDownloadActivity extends AppCompatActivity {
 
     private int idStory, idChapterReading;
     private boolean isFollow;
+    private DownloadService downloadService;
+
     private ChapterDownloadAdapter chapterDownloadAdapter;
     private RecyclerView rcViewChapter;
     private List<ChuongTruyen> listChapter = new ArrayList<>();
-
-    private Story story = new Story();
-    private Chapter chapter = new Chapter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +56,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
         idStory = getIntent().getIntExtra("idStory", 0);
         isFollow = getIntent().getBooleanExtra("isFollow", false);
         idChapterReading = getIntent().getIntExtra("idChapterReading", 0);
+        Log.e("idStory:", String.valueOf(idStory));
         Log.e("isFollow:", String.valueOf(isFollow));
         Log.e("idChapterRead:", String.valueOf(idChapterReading));
 
@@ -106,7 +103,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
                     tvStoryName.setText(t.getTentruyen());
                     tvAuthor.setText(t.getTacgia());
                     tvStatus.setText(t.getTrangthai());
-                    tvChapter.setText(String.valueOf(t.getSochuong()));
+                    tvChapter.setText(String.valueOf(t.getTongchuong()));
                     tvSpecies.setText(t.getTheloai());
                     Picasso.get().load(t.getAnh()).into(ivStory);
                 }
@@ -149,72 +146,18 @@ public class StoryDownloadActivity extends AppCompatActivity {
 
     private void processEvents() {
         ivBack.setOnClickListener(view -> finish());
+
         btDownloadStory.setOnClickListener(view -> {
-            downloadStory(this);
-            downloadChapter(this);
-            Toast.makeText(StoryDownloadActivity.this, "Bạn đã tải truyện về máy!", Toast.LENGTH_SHORT).show();
+            startService();
         });
     }
 
-    private void downloadStory(Context context) {
-        Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
-            @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-                Truyen t = response.body();
-
-                if (t != null) {
-                    story.setIdStory(t.getMatruyen());
-                    story.setNameStory(t.getTentruyen());
-                    story.setAuthor(t.getTacgia());
-                    story.setSumChapter(t.getSochuong());
-                    story.setStatus(t.getTrangthai());
-                    story.setSpecies(t.getTheloai());
-                    story.setTimeUpdate(t.getThoigiancapnhat());
-                    story.setImage(t.getAnh());
-                    story.setRate(t.getDiemdanhgia());
-                    story.setLike(t.getLuotthich());
-                    story.setView(t.getLuotxem());
-                    story.setSumComment(t.getLuotbinhluan());
-                    if (isFollow) {
-                        story.setIsFollow(1);
-                    } else {
-                        story.setIsFollow(0);
-                    }
-                    story.setChapterReading(idChapterReading);
-                }
-                AppDatabase.getInstance(context).appDao().insertStory(story);
-            }
-
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_StoryDownload", "downloadStory", t);
-            }
-        });
-    }
-
-    private void downloadChapter(Context context) {
-        Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
-            @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        ChuongTruyen c = response.body().get(i);
-                        chapter.setIdChapter(c.getMachuong());
-                        chapter.setIdStory(c.getMatruyen());
-                        chapter.setNumberChapter(c.getSochuong());
-                        chapter.setNameChapter(c.getTenchuong());
-                        chapter.setContent(c.getNoidung());
-                        chapter.setPoster(c.getNguoidang());
-                        chapter.setTimePost(c.getThoigiandang());
-                        AppDatabase.getInstance(context).appDao().insertChapter(chapter);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ChuongTruyen>> call1, Throwable t) {
-                Log.e("Err_StoryDownload", "downloadChapter", t);
-            }
-        });
+    // Start the service
+    public void startService() {
+        Intent intent = new Intent(StoryDownloadActivity.this, DownloadService.class);
+        intent.putExtra("idStory", idStory);
+        intent.putExtra("isFollow", isFollow);
+        intent.putExtra("idChapterReading", idChapterReading);
+        startService(intent);
     }
 }

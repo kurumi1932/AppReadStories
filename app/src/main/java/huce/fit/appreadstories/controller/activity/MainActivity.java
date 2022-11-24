@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
                 viewPager2.setCurrentItem(0);
             } else if (id == R.id.btMenuFilter) {
                 viewPager2.setCurrentItem(1);
-            } else if (id == R.id.btMenuStoryFollow) {
+            } else if (id == R.id.btMenuFollow) {
                 viewPager();
                 viewPager2.setCurrentItem(2);
-            } else if (id == R.id.btMenuStoryDownload) {
+            } else if (id == R.id.btMenuDownload) {
                 viewPager2.setCurrentItem(3);
             } else if (id == R.id.btMenuAccount) {
                 viewPager2.setCurrentItem(4);
@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (position == 1) {
                     btNavigationView.getMenu().findItem(R.id.btMenuFilter).setChecked(true);
                 } else if (position == 2) {
-                    btNavigationView.getMenu().findItem(R.id.btMenuStoryFollow).setChecked(true);
+                    btNavigationView.getMenu().findItem(R.id.btMenuFollow).setChecked(true);
                 } else if (position == 3) {
-                    btNavigationView.getMenu().findItem(R.id.btMenuStoryDownload).setChecked(true);
+                    btNavigationView.getMenu().findItem(R.id.btMenuDownload).setChecked(true);
                 } else if (position == 4) {
                     btNavigationView.getMenu().findItem(R.id.btMenuAccount).setChecked(true);
                 }

@@ -125,8 +125,9 @@ public interface ApiInterface {
                                        @Field("matruyen") int id2,
                                        @Field("tentruyen") String story,
                                        @Field("tacgia") String author,
+                                       @Field("gioihantuoi") int age,
                                        @Field("trangthai") String status,
-                                       @Field("sochuong") int chapter_number,
+                                       @Field("tongchuong") int chapter_number,
                                        @Field("anh") String image,
                                        @Field("thoigiancapnhat") String update_time);
 

@@ -57,7 +57,7 @@ public class ChapterReadActivity extends AppCompatActivity {
     private int idAccount, idStory, idChapter;
     private int fontSize = 18;
     private int lineStretch = 100;
-    private String textColor,backgroundColor;
+    private String textColor, backgroundColor;
     private float lineStretchFloat;
     private double progress;
     private boolean isComment;
@@ -129,15 +129,15 @@ public class ChapterReadActivity extends AppCompatActivity {
         sharedPreferences2 = getSharedPreferences("SettingChapterRead", Context.MODE_PRIVATE);
         fontSize = sharedPreferences2.getInt("fontSize", 18);
         lineStretch = sharedPreferences2.getInt("lineStretch", 100);
-        textColor  = sharedPreferences2.getString("textColor","#000000");
-        backgroundColor  = sharedPreferences2.getString("backgroundColor","#ffffff");
+        textColor = sharedPreferences2.getString("textColor", "#000000");
+        backgroundColor = sharedPreferences2.getString("backgroundColor", "#ffffff");
         Log.e("fontsize: ", String.valueOf(fontSize));
         Log.e("lineStretch: ", String.valueOf(lineStretch));
         Log.e("textColor: ", textColor);
         Log.e("backgroundColor: ", backgroundColor);
     }
 
-    private void setTextColor(){
+    private void setTextColor() {
         tv0.setTextColor(Color.parseColor(textColor));
         tvNumberChapter.setTextColor(Color.parseColor(textColor));
         tv1.setTextColor(Color.parseColor(textColor));
@@ -329,7 +329,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("E235_DialogChapterList", t.toString());
+                Log.e("Err_ChapterRead", "openDialogListChapter1", t);
             }
         });
 
@@ -370,7 +370,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                Log.e("E272_DialogChapterList", t.toString());
+                Log.e("Err_ChapterRead", "openDialogListChapter2", t);
             }
         });
 
@@ -400,7 +400,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                        Log.e("E302_DialogChapterList", t.toString());
+                        Log.e("Err_ChapterRead", "openDialogListChapter3", t);
                     }
                 });
                 return false;
@@ -410,7 +410,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
     private void openDialogSetting() {
         ImageView ivSettingColor, ivFontSizeDown, ivFontSizeUp, ivLineStretchDown, ivLineStretchUp;
-        TextView tvFontSize, tvLineStretch;
+        TextView tvFontSize, tvLineStretch, tvColor1, tvColor2, tvColor3, tvColor4, tvColor5, tvColor6, tvColor7;
 
         Dialog dialogSetting = new Dialog(this);
         dialogSetting.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -440,6 +440,14 @@ public class ChapterReadActivity extends AppCompatActivity {
         ivLineStretchUp = dialogSetting.findViewById(R.id.ivLineStretchUp);
         tvFontSize = dialogSetting.findViewById(R.id.tvFontSize);
         tvLineStretch = dialogSetting.findViewById(R.id.tvLineStretch);
+
+        tvColor1 = dialogSetting.findViewById(R.id.tvColor1);
+        tvColor2 = dialogSetting.findViewById(R.id.tvColor2);
+        tvColor3 = dialogSetting.findViewById(R.id.tvColor3);
+        tvColor4 = dialogSetting.findViewById(R.id.tvColor4);
+        tvColor5 = dialogSetting.findViewById(R.id.tvColor5);
+        tvColor6 = dialogSetting.findViewById(R.id.tvColor6);
+        tvColor7 = dialogSetting.findViewById(R.id.tvColor7);
 
         tvFontSize.setText(String.valueOf(fontSize));
         tvLineStretch.setText(lineStretch + "%");
@@ -486,7 +494,62 @@ public class ChapterReadActivity extends AppCompatActivity {
             }
         });
 
+        tvColor1.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle1)).substring(2);
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.black)).substring(2);
+
+            setColor();
+        });
+
+        tvColor2.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle2));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.black));
+
+            setColor();
+        });
+
+        tvColor3.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle3));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.black));;
+
+            setColor();
+        });
+
+        tvColor4.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle4));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.white));
+
+            setColor();
+        });
+
+        tvColor5.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle5));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.medium_sea_green));
+
+            setColor();
+        });
+
+        tvColor6.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle6));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.white));
+
+            setColor();
+        });
+
+        tvColor7.setOnClickListener(view -> {
+            backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle7));
+            textColor = "#" + Integer.toHexString(getResources().getColor(R.color.medium_sea_green));
+
+            setColor();
+        });
+
         dialogSetting.show();
+    }
+
+    private void setColor() {
+        setTextColor();
+        constrainLayout.setBackgroundColor(Color.parseColor(backgroundColor));
+        setSharedPreferences(textColor,backgroundColor);
     }
 
     private void setLineStretch(int line_stretch_int) {
@@ -510,7 +573,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         ImageView ivTextColor, ivBackgroundColor;
         TextView tvUseTextColor, tvUseBackgroundColor;
 
-        ColorPickerDialog colorPickerDialog= ColorPickerDialog.createColorPickerDialog(this);
+        ColorPickerDialog colorPickerDialog = ColorPickerDialog.createColorPickerDialog(this);
 
         Dialog dialogSettingColor = new Dialog(this);
         dialogSettingColor.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -545,10 +608,10 @@ public class ChapterReadActivity extends AppCompatActivity {
             colorPickerDialog.setOnColorPickedListener((color, hexVal) -> {
                 textColor = "#" + hexVal.substring(3);
                 Log.e("color: ", String.valueOf(color));
-                Log.e("hexVal",hexVal);
-                Log.e("hexColor",textColor);
+                Log.e("hexVal", hexVal);
+                Log.e("hexColor", textColor);
                 ivTextColor.setBackgroundColor(Color.parseColor(textColor));
-                setSharedPreferences(textColor,backgroundColor);
+                setSharedPreferences(textColor, backgroundColor);
             });
             colorPickerDialog.setHexaDecimalTextColor(getResources().getColor(R.color.black));
             colorPickerDialog.setInitialColor(Color.parseColor(textColor));
@@ -560,10 +623,10 @@ public class ChapterReadActivity extends AppCompatActivity {
             colorPickerDialog.setOnColorPickedListener((color, hexVal) -> {
                 backgroundColor = "#" + hexVal.substring(3);
                 Log.e("color: ", String.valueOf(color));
-                Log.e("hexVal",hexVal);
-                Log.e("hexColor",backgroundColor);
+                Log.e("hexVal", hexVal);
+                Log.e("hexColor", backgroundColor);
                 ivBackgroundColor.setBackgroundColor(Color.parseColor(backgroundColor));
-                setSharedPreferences(textColor,backgroundColor);
+                setSharedPreferences(textColor, backgroundColor);
             });
             colorPickerDialog.setHexaDecimalTextColor(getResources().getColor(R.color.black));
             colorPickerDialog.setInitialColor(Color.parseColor(backgroundColor));

@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.Truyen;
+import huce.fit.appreadstories.sqlite.AppDatabase;
+import huce.fit.appreadstories.sqlite.Story;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,6 +27,11 @@ public class StoryInterfaceIntroduceFagment extends Fragment {
 
     public StoryInterfaceIntroduceFagment(int idStory) {
         this.idStory = idStory;
+    }
+
+    private boolean isNetwork() {
+        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
+        return checkNetwork.isNetwork();
     }
 
     @Nullable
@@ -38,17 +46,22 @@ public class StoryInterfaceIntroduceFagment extends Fragment {
     }
 
     private void getData() {
-        Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
-            @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-                Truyen tc = response.body();
-                tvIntroduce.setText(tc.getGioithieu());
-            }
+        if (isNetwork()) {
+            Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
+                @Override
+                public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+                    Truyen tc = response.body();
+                    tvIntroduce.setText(tc.getGioithieu());
+                }
 
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_StoryInterfaceF", t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<Truyen> call, Throwable t) {
+                    Log.e("Err_StoryInterfaceF", t.toString());
+                }
+            });
+        } else {
+            Story story = AppDatabase.getInstance(getActivity()).appDao().getStory(idStory);
+            tvIntroduce.setText(story.getIntroduce());
+        }
     }
 }
