@@ -10,6 +10,7 @@ public class Story {
     private String nameStory;
     private int sumChapter;
     private String author;
+    private int age;
     private String status;
     private String species;
     private String timeUpdate;
@@ -55,6 +56,14 @@ public class Story {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getStatus() {

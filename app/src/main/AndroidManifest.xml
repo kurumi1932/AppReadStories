@@ -13,7 +13,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppReadStories">
         <activity
-            android:name=".controller.activity.AccountLoginActivity"
+            android:name=".activity.AccountLoginActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -21,31 +21,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.activity.MainActivity"
+        <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".controller.activity.StorySearchActivity"
+        <activity android:name=".activity.StorySearchActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".controller.activity.StoryInterfaceActivity"
+        <activity android:name=".activity.StoryInterfaceActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".controller.activity.StoryDownloadActivity"
+        <activity android:name=".activity.StoryDownloadActivity"
             android:screenOrientation="portrait"></activity>
         <service android:name=".service.DownloadService" />
 
-        <activity android:name=".controller.activity.ChapterListActivity"
+        <activity android:name=".activity.ChapterListActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".controller.activity.ChapterReadActivity"
-            android:screenOrientation="portrait"></activity>
-
-        <activity android:name=".controller.activity.CommentListActivity"
+        <activity android:name=".activity.ChapterReadActivity"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".controller.activity.AccountCreateActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".controller.activity.AccountUpdateActivity"
+        <activity android:name=".activity.CommentListActivity"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".controller.activity.ContactInforActivity"
+        <activity android:name=".activity.AccountCreateActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activity.AccountUpdateActivity"
+            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".activity.ContactInforActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 

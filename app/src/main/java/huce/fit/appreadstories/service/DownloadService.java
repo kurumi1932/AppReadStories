@@ -34,11 +34,6 @@ public class DownloadService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        Toast.makeText(this, "Service was Created", Toast.LENGTH_LONG).show();
-    }
-
     private void getSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         idAccount = sharedPreferences.getInt("idAccount", 0);
@@ -58,9 +53,8 @@ public class DownloadService extends Service {
             Log.e("isFollow", String.valueOf(isFollow));
 
             downloadStory(this);
+            Toast.makeText(this, "Download Started", Toast.LENGTH_LONG).show();
         }
-
-        Toast.makeText(this, "Download Started", Toast.LENGTH_LONG).show();
         return START_STICKY;
     }
 
@@ -74,6 +68,7 @@ public class DownloadService extends Service {
                     story.setIdStory(t.getMatruyen());
                     story.setNameStory(t.getTentruyen());
                     story.setAuthor(t.getTacgia());
+                    story.setAge(t.getGioihantuoi());
                     story.setSumChapter(t.getTongchuong());
                     story.setStatus(t.getTrangthai());
                     story.setSpecies(t.getTheloai());
@@ -113,11 +108,11 @@ public class DownloadService extends Service {
                         ChuongTruyen c = response.body().get(i);
                         chapter.setIdChapter(c.getMachuong());
                         chapter.setIdStory(c.getMatruyen());
-                        chapter.setSumChapter(c.getSochuong());
+                        chapter.setNumberChapter(c.getSochuong());
                         chapter.setNameChapter(c.getTenchuong());
                         chapter.setContent(c.getNoidung());
                         chapter.setPoster(c.getNguoidang());
-                        chapter.setTimePost(c.getThoigiandang());
+                        chapter.setPostDay(c.getThoigiandang());
                         AppDatabase.getInstance(context).appDao().insertChapter(chapter);
                     }
                     checkDownLoad2 = true;
@@ -139,7 +134,7 @@ public class DownloadService extends Service {
                 if (response.isSuccessful() && response.body().toString() != null) {
                     for (int i = 0; i < response.body().size(); i++) {
                         ChuongTruyen c = response.body().get(i);
-                        chapterRead.setIdStory(c.getMatruyen());
+                        chapterRead.setIdStory(idStory);
                         chapterRead.setIdChapter(c.getMachuong());
                         AppDatabase.getInstance(context).appDao().insertChapterRead(chapterRead);
                     }

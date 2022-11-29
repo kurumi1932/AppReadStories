@@ -42,51 +42,51 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST(URL_ACCOUNT)//oke
-    Call<TaiKhoan> updateAccount(@Field("mataikhoan") int id,
+    Call<TaiKhoan> updateAccount(@Field("mataikhoan") int idAccount,
                                  @Field("matkhau") String password,
                                  @Field("email") String email,
                                  @Field("tenhienthi") String name);
 
     //Truyện
     @GET(URL_STORY)//oke
-    Call<List<Truyen>> getListStories(@Query("matruyen") int id, @Query("gioihantuoi") int age);
+    Call<List<Truyen>> getListStories(@Query("matruyen") int idStory, @Query("gioihantuoi") int age);
 
     @GET(URL_STORY)//oke
-    Call<Truyen> getStory(@Query("matruyen") int id);
+    Call<Truyen> getStory(@Query("matruyen") int idStory);
 
     @GET(URL_STORY)//oke
     Call<List<Truyen>> searchStory(@Query("tentruyen") String name, @Query("gioihantuoi") int age);
 
     @FormUrlEncoded
     @POST(URL_STORY)//oke
-    Call<Truyen> likeStory(@Field("matruyen") int id1, @Field("mataikhoan") int id2);
+    Call<Truyen> likeStory(@Field("matruyen") int idStory, @Field("mataikhoan") int idAccount);
 
     @GET(URL_STORY)//oke
-    Call<Truyen> checkLikeStory(@Query("matruyen") int id1, @Query("mataikhoan") int id2);
+    Call<Truyen> checkLikeStory(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount);
 
     //Đánh giá
     @GET(URL_RATE)//oke
-    Call<List<DanhGia>> getListRate(@Query("matruyen") int id);
+    Call<List<DanhGia>> getListRate(@Query("matruyen") int idStory);
 
     @GET(URL_RATE)//oke
-    Call<DanhGia> checkRateOfAccount(@Query("matruyen") int id1, @Query("mataikhoan") int id2);
+    Call<DanhGia> checkRateOfAccount(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount);
 
     @FormUrlEncoded
     @POST(URL_RATE)//oke
-    Call<DanhGia> addRate(@Field("matruyen") int id1,
-                              @Field("mataikhoan") int id2,
+    Call<DanhGia> addRate(@Field("matruyen") int idStory,
+                              @Field("mataikhoan") int idAccount,
                               @Field("tenhienthi") String name,
                               @Field("diemdanhgia") int point,
                               @Field("danhgia") String rate);
 
     @FormUrlEncoded
     @POST(URL_RATE)//oke
-    Call<DanhGia> updateRate(@Field("madanhgia") int id1,
+    Call<DanhGia> updateRate(@Field("madanhgia") int idRate,
                           @Field("diemdanhgia") int point,
                           @Field("danhgia") String rate);
 
     @GET(URL_RATE)
-    Call<DanhGia> deleteRate(@Query("madanhgia") int id);
+    Call<DanhGia> deleteRate(@Query("madanhgia") int idRate);
 
     //Lọc truyện
     @GET(URL_STORY_FILTER)//oke
@@ -94,35 +94,35 @@ public interface ApiInterface {
 
     //Chương truyện
     @GET(URL_CHAPTER)//oke
-    Call<List<ChuongTruyen>> getListChapter(@Query("matruyen") int id);
+    Call<List<ChuongTruyen>> getListChapter(@Query("matruyen") int idStory);
 
     @GET(URL_CHAPTER)//oke
-    Call<List<ChuongTruyen>> getListChapterRead(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
+    Call<List<ChuongTruyen>> getListChapterRead(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
-    Call<ChuongTruyen> getChapterReading(@Query("matruyen") int id1, @Query("mataikhoan") int id2, @Query("so") int num);
+    Call<ChuongTruyen> getChapterReading(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
-    Call<List<ChuongTruyen>> searchChapter(@Query("matruyen") int id, @Query("sochuong") String num);
+    Call<List<ChuongTruyen>> searchChapter(@Query("matruyen") int idStory, @Query("sochuong") String num);
 
     @GET(URL_CHAPTER)//Chapter, nextChapter, previousChapter //oke
-    Call<ChuongTruyen> getChapter(@Query("matruyen") int id1, @Query("machuong") int id2, @Query("thaydoichuong") int num, @Query("mataikhoan") int id3);
+    Call<ChuongTruyen> getChapter(@Query("matruyen") int idStory, @Query("machuong") int idChapter, @Query("thaydoichuong") int num, @Query("mataikhoan") int idAccount);
 
     @FormUrlEncoded
     @POST(URL_CHAPTER)//first_chapter //oke
-    Call<ChuongTruyen> firstChapter(@Field("matruyen") int id);
+    Call<ChuongTruyen> firstChapter(@Field("matruyen") int idStory);
 
     //Truyện theo dõi
     @GET(URL_STORY_FOLLOW)//oke
-    Call<List<TruyenTheoDoi>> getListStoriesFollow(@Query("mataikhoan") int id);
+    Call<List<TruyenTheoDoi>> getListStoriesFollow(@Query("mataikhoan") int idAccount);
 
     @GET(URL_STORY_FOLLOW)//oke
-    Call<TruyenTheoDoi> checkStoryFollow(@Query("mataikhoan") int id1, @Query("matruyen") int id2);
+    Call<TruyenTheoDoi> checkStoryFollow(@Query("mataikhoan") int idAccount, @Query("matruyen") int idStory);
 
     @FormUrlEncoded
     @POST(URL_STORY_FOLLOW)//oke
-    Call<TruyenTheoDoi> add_delete_StoryFollow(@Field("mataikhoan") int id1,
-                                       @Field("matruyen") int id2,
+    Call<TruyenTheoDoi> add_delete_StoryFollow(@Field("mataikhoan") int idAccount,
+                                       @Field("matruyen") int idStory,
                                        @Field("tentruyen") String story,
                                        @Field("tacgia") String author,
                                        @Field("gioihantuoi") int age,
@@ -133,23 +133,23 @@ public interface ApiInterface {
 
     //Bình luận
     @GET(URL_COMMENT)//oke
-    Call<List<BinhLuan>> getListComment(@Query("matruyen") int id);
+    Call<List<BinhLuan>> getListComment(@Query("matruyen") int idStory);
 
     @FormUrlEncoded
     @POST(URL_COMMENT)//oke
-    Call<BinhLuan> addCommnet(@Field("matruyen") int id1,
-                              @Field("mataikhoan") int id2,
+    Call<BinhLuan> addCommnet(@Field("matruyen") int idStory,
+                              @Field("mataikhoan") int idAccount,
                               @Field("tenhienthi") String name,
                               @Field("binhluan") String comment);
 
     @GET(URL_COMMENT)//oke
-    Call<BinhLuan> checkCommentOfAccount(@Query("mabinhluan") int id1, @Query("mataikhoan") int id2);
+    Call<BinhLuan> checkCommentOfAccount(@Query("mabinhluan") int idComment, @Query("mataikhoan") int idAccount);
 
     @GET(URL_COMMENT)//oke
-    Call<BinhLuan> deleteComment(@Query("mabinhluan") int id);
+    Call<BinhLuan> deleteComment(@Query("mabinhluan") int idComment);
 
     @FormUrlEncoded
     @POST(URL_COMMENT)//oke
-    Call<BinhLuan> updateCommnet(@Field("mabinhluan") int id,
+    Call<BinhLuan> updateCommnet(@Field("mabinhluan") int idComment,
                               @Field("binhluan") String comment);
 }

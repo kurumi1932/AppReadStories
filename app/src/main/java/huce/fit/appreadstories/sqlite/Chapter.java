@@ -8,10 +8,10 @@ public class Chapter {
     @PrimaryKey
     private int idChapter;
     private int idStory;
-    private String sumChapter;
+    private String numberChapter;
     private String nameChapter;
     private String poster;
-    private String timePost;
+    private String postDay;
     private String content;
 
     public int getIdChapter() {
@@ -30,12 +30,12 @@ public class Chapter {
         this.idStory = idStory;
     }
 
-    public String getSumChapter() {
-        return sumChapter;
+    public String getNumberChapter() {
+        return numberChapter;
     }
 
-    public void setSumChapter(String sumChapter) {
-        this.sumChapter = sumChapter;
+    public void setNumberChapter(String numberChapter) {
+        this.numberChapter = numberChapter;
     }
 
     public String getNameChapter() {
@@ -62,11 +62,11 @@ public class Chapter {
         this.poster = poster;
     }
 
-    public String getTimePost() {
-        return timePost;
+    public String getPostDay() {
+        return postDay;
     }
 
-    public void setTimePost(String timePost) {
-        this.timePost = timePost;
+    public void setPostDay(String postDay) {
+        this.postDay = postDay;
     }
 }

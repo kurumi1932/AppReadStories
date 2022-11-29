@@ -61,6 +61,10 @@
 
     <string name="btLogOut">Đăng xuất</string>
 
+<!--    Chapter Read-->
+    <string name="poster">Người đăng:</string>
+    <string name="post_day">Ngày đăng:</string>
+
 <!--    Dialog Setting-->
     <string name="font_size">Cỡ chữ</string>
     <string name="line_stretch">Dán dòng</string>
@@ -80,10 +84,6 @@
     <string name="btMenuFollow">Theo dõi</string>
     <string name="btMenuDownload">Tải truyện</string>
     <string name="btMenuAccount">Tài khoản</string>
-
-<!--    Bottom Navigation Chapter Read-->
-    <string name="btMenuPrevious">Chương trước</string>
-    <string name="btMenuNext">Chương sau</string>
 
 <!--    Hint-->
     <string name="hint1">Tài khoản</string>
