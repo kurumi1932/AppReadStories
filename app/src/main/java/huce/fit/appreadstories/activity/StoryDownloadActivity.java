@@ -1,6 +1,5 @@
 package huce.fit.appreadstories.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -24,11 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.adapters.ChapterBasicAdapter;
+import huce.fit.appreadstories.adapters.ChapterDownloadActivityAdapter;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.service.DownloadService;
+import huce.fit.appreadstories.service.DownloadStoryService;
+import huce.fit.appreadstories.sqlite.AppDatabase;
+import huce.fit.appreadstories.sqlite.Chapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,9 +45,9 @@ public class StoryDownloadActivity extends AppCompatActivity {
     private int idStory, idChapterReading;
     private boolean isFollow;
 
-    private ChapterBasicAdapter chapterBasicAdapter;
+    private ChapterDownloadActivityAdapter chapterDownloadActivityAdapter;
     private RecyclerView rcViewChapter;
-    private List<ChuongTruyen> listChapter = new ArrayList<>();
+    private final List<ChuongTruyen> listChapter = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
     private void getDataStory() {
         Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
             @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Truyen> call,@NonNull Response<Truyen> response) {
                 Truyen t = response.body();
                 if (t != null) {
                     tvStoryName.setText(t.getTentruyen());
@@ -109,35 +111,48 @@ public class StoryDownloadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
+            public void onFailure(@NonNull Call<Truyen> call,@NonNull Throwable t) {
                 Log.e("Err_StoryDownload", "getDataStory", t);
             }
         });
     }
 
     private void getDataListChapter() {
+        List<Chapter> listChapterOffline = AppDatabase.getInstance(this).appDao().getAllChapter(idStory);
+
         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
-            @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
+            public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listChapter.clear();
                     listChapter.addAll(response.body());
-                    chapterBasicAdapter.notifyDataSetChanged();
+                    if (listChapterOffline != null) {
+                        for (int i = 0; i < listChapterOffline.size(); i++) {
+                            for (int j = 0; j < listChapter.size(); j++) {
+                                ChuongTruyen c = listChapter.get(j);
+                                if (c.getMachuong() == listChapterOffline.get(i).getIdChapter()) {
+                                    listChapter.remove(listChapter.get(j));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    chapterDownloadActivityAdapter.notifyDataSetChanged();
+                    Log.e("StoryDownloadActivity", "Success_getDataListChapter(1)");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ChuongTruyen>> call1, Throwable t) {
-                Log.e("Err_StoryDownload", "getDataListChapter", t);
+            public void onFailure(@NonNull Call<List<ChuongTruyen>> call,@NonNull Throwable t) {
+                Log.e("StoryDownloadActivity", "Err_getDataListChapter(1)", t);
             }
         });
     }
 
     private void rcView() {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
-        chapterBasicAdapter = new ChapterBasicAdapter(listChapter);//Đổ dữ liệu lên adpter
-        rcViewChapter.setAdapter(chapterBasicAdapter);
+        chapterDownloadActivityAdapter = new ChapterDownloadActivityAdapter(listChapter);//Đổ dữ liệu lên adpter
+        rcViewChapter.setAdapter(chapterDownloadActivityAdapter);
         //tạo dòng kẻ ngăn cách các item
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rcViewChapter.addItemDecoration(itemDecoration);
@@ -147,13 +162,15 @@ public class StoryDownloadActivity extends AppCompatActivity {
         ivBack.setOnClickListener(view -> finish());
 
         btDownloadStory.setOnClickListener(view -> {
-            startService();
+            if (listChapter.size() > 0) {
+                startDownloadService();
+            }
         });
     }
 
     // Start the service
-    public void startService() {
-        Intent intent = new Intent(StoryDownloadActivity.this, DownloadService.class);
+    public void startDownloadService() {
+        Intent intent = new Intent(StoryDownloadActivity.this, DownloadStoryService.class);
         intent.putExtra("idStory", idStory);
         intent.putExtra("isFollow", isFollow);
         intent.putExtra("idChapterReading", idChapterReading);

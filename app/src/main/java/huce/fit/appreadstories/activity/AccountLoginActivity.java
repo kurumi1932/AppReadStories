@@ -1,5 +1,6 @@
 package huce.fit.appreadstories.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,8 +31,9 @@ public class AccountLoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btLogin, btCreate;
     private String username, password;
-    private DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private Date currentDate = new Date();
+    @SuppressLint("SimpleDateFormat")
+    private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final Date currentDate = new Date();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class AccountLoginActivity extends AppCompatActivity {
 
             SharedPreferences.Editor myedit = sharedPreferences.edit();
             myedit.putString("username", "");
-            myedit.commit();
+            myedit.apply();
         }
     }
 
@@ -89,12 +92,16 @@ public class AccountLoginActivity extends AppCompatActivity {
         String endDate = simpleDateFormat.format(currentDate);
         Date date1 = simpleDateFormat.parse(startDate);
         Date date2 = simpleDateFormat.parse(endDate);
-        long getDiff = date2.getTime() - date1.getTime();
+        long getDiff = 0;
+        if (date1 != null && date2 != null) {
+            getDiff = date2.getTime() - date1.getTime();
+            Log.e("date1", date1.toString());
+            Log.e("date2", date2.toString());
+        }
+        Log.e("getDiff", String.valueOf(getDiff));
+
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);//24h*60p*60s*1000
         int age = (int) getDaysDiff / 365;
-        Log.e("date1", date1.toString());
-        Log.e("date2", date2.toString());
-        Log.e("getDiff", String.valueOf(getDiff));
         Log.e("getDaysDiff", String.valueOf(getDaysDiff));
         Log.e("age", String.valueOf(age));
         return age;
@@ -108,7 +115,7 @@ public class AccountLoginActivity extends AppCompatActivity {
         } else {
             Api.apiInterface().login(username, password).enqueue(new Callback<TaiKhoan>() {
                 @Override
-                public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
+                public void onResponse(@NonNull Call<TaiKhoan> call,@NonNull Response<TaiKhoan> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         if (response.body().getAccountsuccess() == 1) {
 
@@ -136,14 +143,14 @@ public class AccountLoginActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<TaiKhoan> call, Throwable t) {
+                public void onFailure(@NonNull Call<TaiKhoan> call,@NonNull Throwable t) {
                     Log.e("Err_AccountLogin", "loginAccount", t);
                 }
             });
         }
     }
 
-    private void setSharedPreferences(int idAccount, String password, String name, String email,  String birthDay,int age) {
+    private void setSharedPreferences(int idAccount, String password, String name, String email, String birthDay, int age) {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         SharedPreferences.Editor myedit = sharedPreferences.edit();
 
@@ -153,7 +160,7 @@ public class AccountLoginActivity extends AppCompatActivity {
         myedit.putString("email", email);
         myedit.putString("birthDay", birthDay);
         myedit.putInt("age", age);
-        myedit.commit();
+        myedit.apply();
     }
 
     private void setSharedPreferences(int age) {
@@ -161,13 +168,13 @@ public class AccountLoginActivity extends AppCompatActivity {
         SharedPreferences.Editor myedit = sharedPreferences.edit();
 
         myedit.putInt("age", age);
-        myedit.commit();
+        myedit.apply();
     }
 
     private void getSharedPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         int idAccount = sharedPreferences.getInt("idAccount", 0);
-        String startDate = sharedPreferences.getString("birthDay","1000-1-1");
+        String startDate = sharedPreferences.getString("birthDay", "1000-1-1");
         if (idAccount != 0) {
             try {
                 setSharedPreferences(age(startDate));

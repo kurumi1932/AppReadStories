@@ -9,31 +9,30 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Locale;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.model.ChuongTruyen;
 
-public class ChapterBasicAdapter extends RecyclerView.Adapter<ChapterBasicAdapter.ChapterBasicHoder>{
-    private List<ChuongTruyen> listChapter;
+public class ChapterDownloadActivityAdapter extends RecyclerView.Adapter<ChapterDownloadActivityAdapter.ChapterBasicHoder> {
+    private final List<ChuongTruyen> listChapter;
 
-    public ChapterBasicAdapter(List<ChuongTruyen> listChapter) {
+    public ChapterDownloadActivityAdapter(List<ChuongTruyen> listChapter) {
         this.listChapter = listChapter;
     }
 
     @NonNull
     @Override
-    public ChapterBasicAdapter.ChapterBasicHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ChapterDownloadActivityAdapter.ChapterBasicHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_chapter_item, parent, false);
-        return new ChapterBasicAdapter.ChapterBasicHoder(view);
+        return new ChapterDownloadActivityAdapter.ChapterBasicHoder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChapterBasicAdapter.ChapterBasicHoder holder, int position) {
+    public void onBindViewHolder(@NonNull ChapterDownloadActivityAdapter.ChapterBasicHoder holder, int position) {
         ChuongTruyen ct = listChapter.get(position);
-        if (ct == null) {
-            return;
-        } else {
-            holder.tvNumberChapter.setText(ct.getSochuong());
+        if (ct != null) {
+            holder.tvNumberChapter.setText(String.format(Locale.getDefault(), "%s.", ct.getSochuong()));
             holder.tvChapter.setText(ct.getTenchuong());
             holder.tvPostDay.setText(ct.getThoigiandang());
         }
@@ -46,7 +45,6 @@ public class ChapterBasicAdapter extends RecyclerView.Adapter<ChapterBasicAdapte
         else
             return 0;
     }
-
 
 
     public class ChapterBasicHoder extends RecyclerView.ViewHolder {

@@ -19,8 +19,8 @@ import huce.fit.appreadstories.model.Truyen;
 
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> {
-    private List<Truyen> listStory;
-    private ClickListener clickListener;
+    private final List<Truyen> listStory;
+    private final ClickListener clickListener;
 
 
     public StoryAdapter(List<Truyen> listStory, ClickListener clickListener) {
@@ -39,9 +39,12 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
     @Override
     public void onBindViewHolder(@NonNull StoryHoder holder, int position) {
         Truyen tc = listStory.get(position);
-        if (tc == null) {
-            return;
-        } else {
+        holder.itemView.setOnClickListener((view -> {
+            int idStory = listStory.get(position).getMatruyen();
+            clickListener.onItemClick(idStory, view, false);
+        }));
+
+        if (tc != null) {
             holder.tvStoryName.setText(tc.getTentruyen());
             holder.tvAuthor.setText(tc.getTacgia());
             holder.tvAge.setText(String.valueOf(tc.getGioihantuoi()));
@@ -72,12 +75,6 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvChapter = itemView.findViewById(R.id.tvChapter);
             ivStory = itemView.findViewById(R.id.ivStory);
-
-            itemView.setOnClickListener((view -> {
-                int position = getBindingAdapterPosition();
-                int idStory = listStory.get(position).getMatruyen();
-                clickListener.onItemClick(idStory, view);
-            }));
         }
     }
 }

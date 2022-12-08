@@ -5,25 +5,25 @@
         android:id="@+id/btMenuStory"
         android:icon="@drawable/ic_story"
         android:title="@string/btMenuStory"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/btMenuFilter"
         android:icon="@drawable/ic_filter"
         android:title="@string/btMenuFilter"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/btMenuFollow"
         android:icon="@drawable/ic_follow"
         android:title="@string/btMenuFollow"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/btMenuDownload"
         android:icon="@drawable/ic_download"
         android:title="@string/btMenuDownload"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/btMenuAccount"
         android:icon="@drawable/ic_account"
         android:title="@string/btMenuAccount"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>

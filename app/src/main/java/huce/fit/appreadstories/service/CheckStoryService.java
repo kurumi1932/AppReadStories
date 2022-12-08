@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -24,10 +24,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CheckStoryService extends Service {
-    private int idAccount, idStory, idChapterReading;
+    private int idAccount, idStory;
     private boolean isFollow, checkStory1, checkStory2, checkStory3;
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -42,17 +41,16 @@ public class CheckStoryService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         getSharedPreferences();
+        Log.e("CheckStoryService", "Service_start");
 
         if (intent != null) {
             idStory = intent.getIntExtra("idStory", 0);
             isFollow = intent.getBooleanExtra("isFollow", false);
-            idChapterReading = intent.getIntExtra("idChapterReading", 0);
 
             Log.e("idStory", String.valueOf(idStory));
-            Log.e("idChapterReading", String.valueOf(idChapterReading));
             Log.e("isFollow", String.valueOf(isFollow));
 
-            updateStoryDownload(this);
+            updateStoryServer(this);
             Toast.makeText(this, "Bắt đầu kiểm tra cập nhật của truyện!", Toast.LENGTH_LONG).show();
         }
         return START_STICKY;
@@ -60,32 +58,46 @@ public class CheckStoryService extends Service {
 
     private void updateStoryServer(Context context) {
         Story story = AppDatabase.getInstance(context).appDao().getStory(idStory);
+        if (story != null) {
+            int idChapterReading = story.getChapterReading();
+            if (idChapterReading > 0) {
+                Api.apiInterface().getChapter(idStory, idChapterReading, 2, idAccount).enqueue(new Callback<ChuongTruyen>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            Log.e("CheckStoryService", "updateStoryServer_success");
+                        }
+                    }
 
-        Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>(){
-
-            @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-
+                    @Override
+                    public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
+                        Log.e("CheckStoryService", "updateStoryServer_err", t);
+                    }
+                });
             }
-
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-
-            }
-        });
+        }
+        checkStory1 = true;
+        stopCheckStoryService();
+        Log.e("CheckStoryService", "checkStory1:true");
     }
 
-    private void updateStoryDownload(Context context) {
-        Story story = new Story();
+    private void updateStoryOffline(Context context) {
+        Story story = AppDatabase.getInstance(context).appDao().getStory(idStory);
+        List<Chapter> listChapterOffline = AppDatabase.getInstance(context).appDao().getAllChapter(idStory);
+
         Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
             @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
-                Truyen t = response.body();
-                if (t != null) {
+            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Truyen t = response.body();
+                    int newChapter = response.body().getTongchuong() - listChapterOffline.size();
+                    Log.e("newChapter", String.valueOf(newChapter));
+
                     story.setNameStory(t.getTentruyen());
                     story.setAuthor(t.getTacgia());
                     story.setAge(t.getGioihantuoi());
                     story.setSumChapter(t.getTongchuong());
+                    story.setNewChapter(newChapter);
                     story.setStatus(t.getTrangthai());
                     story.setSpecies(t.getTheloai());
                     story.setTimeUpdate(t.getThoigiancapnhat());
@@ -100,69 +112,31 @@ public class CheckStoryService extends Service {
                     } else {
                         story.setIsFollow(0);
                     }
-                    story.setChapterReading(idChapterReading);
+                    AppDatabase.getInstance(context).appDao().updateStory(story);
 
-                    AppDatabase.getInstance(context).appDao().insertStory(story);
-                    checkStory1 = true;
-                    stopCheckStoryService();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
-                Log.e("Err_CheckStoryService", "updateStoryDownload", t);
-            }
-        });
-    }
-
-    private void updateChapter(Context context) {
-        List<Chapter> listChapter = AppDatabase.getInstance(context).appDao().getAllChapter(idStory);
-        Chapter chapter = new Chapter();
-
-        Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
-            @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    for (int i = 0; i < listChapter.size(); i++) {
-                        for (int j = 0; j < response.body().size(); j++) {
-                            ChuongTruyen c = response.body().get(j);
-                            if (c.getMachuong() == listChapter.get(i).getIdChapter()) {
-                                response.body().remove(i);
-                                break;
-                            }
-                            if (j == (response.body().size() - 1)) {// cuối vòng lặp mà id vẫn khác nhau thì insert chapter vào room database
-                                if (c.getMachuong() != listChapter.get(i).getIdChapter()) {
-                                    chapter.setIdChapter(c.getMachuong());
-                                    chapter.setIdStory(c.getMatruyen());
-                                    chapter.setNumberChapter(c.getSochuong());
-                                    chapter.setNameChapter(c.getTenchuong());
-                                    chapter.setContent(c.getNoidung());
-                                    chapter.setPoster(c.getNguoidang());
-                                    chapter.setPostDay(c.getThoigiandang());
-                                    AppDatabase.getInstance(context).appDao().insertChapter(chapter);
-                                }
-                            }
-                        }
-                    }
                     checkStory2 = true;
                     stopCheckStoryService();
+                    Log.e("CheckStoryService", "checkStory2:true");
+                    Log.e("CheckStoryService", "updateStoryOffline_success");
+                } else {
+                    Log.e("CheckStoryService", "checkStory2:false");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ChuongTruyen>> call1, Throwable t) {
-                Log.e("Err_CheckStoryService", "updateChapter", t);
+            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
+                Log.e("CheckStoryService", "updateStoryOffline_err", t);
             }
         });
     }
 
-    private void updateChapterRead(Context context) {
-        List<ChapterRead> listChapterRead = AppDatabase.getInstance(context).appDao().getAllChapterRead(idStory);
+    private void updateChapterReadServer() {
+        List<ChapterRead> listChapterRead = AppDatabase.getInstance(this).appDao().getAllChapterRead(idStory);
 
         Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                if (response.isSuccessful() && response.body().toString() != null) {
+            public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     for (int i = 0; i < response.body().size(); i++) {
                         for (int j = 0; j < listChapterRead.size(); j++) {
                             if (response.body().get(i).getMachuong() == listChapterRead.get(j).getIdChapter()) {//kiểm tra chương đã đọc trong máy vơi server
@@ -173,47 +147,56 @@ public class CheckStoryService extends Service {
                                 if (response.body().get(i).getMachuong() != listChapterRead.get(j).getIdChapter()) {
                                     Api.apiInterface().getChapter(idStory, listChapterRead.get(j).getIdChapter(), 2, idAccount).enqueue(new Callback<ChuongTruyen>() {
                                         @Override
-                                        public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
-                                            if (response.isSuccessful() && response.body().toString() != null) {
-                                                checkStory3 = true;
-                                                stopCheckStoryService();
+                                        public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
+                                            if (response.isSuccessful() && response.body() != null) {
+                                                Log.e("CheckStoryService", "updateChapterReadServer_success");
                                             }
                                         }
 
                                         @Override
-                                        public void onFailure(Call<ChuongTruyen> call, Throwable t) {
-                                            Log.e("Err_CheckStoryService", "updateChapterRead", t);
+                                        public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
+                                            Log.e("CheckStoryService", "updateChapterReadServer1_err", t);
                                         }
                                     });
                                 }
                             }
                         }
                     }
+                    checkStory3 = true;
+                    Log.e("CheckStoryService", "checkStory3:true");
+                    stopCheckStoryService();
+                } else {
+                    Log.e("CheckStoryService", "checkStory3:false");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                Log.e("Err_CheckStoryService", "updateChapterRead", t);
+            public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
+                Log.e("CheckStoryService", "updateChapterReadServer2_err", t);
             }
         });
     }
 
     private void stopCheckStoryService() {
         if (checkStory1 && !checkStory2 && !checkStory3) {
-            updateChapter(this);
+            updateStoryOffline(this);
         }
         if (checkStory1 && checkStory2 && !checkStory3) {
-            updateChapterRead(this);
+            updateChapterReadServer();
         }
         if (checkStory1 && checkStory2 && checkStory3) {
             onDestroy();
         }
+
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        checkStory1 = false;
+        checkStory2 = false;
+        checkStory3 = false;
+        Log.e("CheckStoryService", "Service_Stop");
         Toast.makeText(this, "Kiểm tra cập nhật của truyện hoàn tất!", Toast.LENGTH_LONG).show();
     }
 }

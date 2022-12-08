@@ -9,6 +9,7 @@ public class Story {
     private int idStory;
     private String nameStory;
     private int sumChapter;
+    private int newChapter;
     private String author;
     private int age;
     private String status;
@@ -48,6 +49,14 @@ public class Story {
 
     public void setSumChapter(int sumChapter) {
         this.sumChapter = sumChapter;
+    }
+
+    public int getNewChapter() {
+        return newChapter;
+    }
+
+    public void setNewChapter(int newChapter) {
+        this.newChapter = newChapter;
     }
 
     public String getAuthor() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -18,11 +19,12 @@
             android:id="@+id/ivBack"
             android:layout_width="50dp"
             android:layout_height="45dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="?android:attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:layout_width="match_parent"
@@ -30,7 +32,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:gravity="center"
-            android:text="@string/text23"
+            android:text="@string/account_information"
             android:textColor="@color/black"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -60,15 +62,18 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="50dp"
-        android:drawableLeft="@drawable/ic_display_name"
+        android:drawableStart="@drawable/ic_display_name"
         android:drawablePadding="5dp"
         android:drawableTint="@color/black"
-        android:hint="@string/text24"
+        android:hint="@string/hint0"
+        android:importantForAutofill="no"
+        android:inputType="text"
         android:textColor="@color/black"
         android:textColorHint="@color/silver"
         android:textSize="17sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivIconApp"/>
+        app:layout_constraintTop_toBottomOf="@id/ivIconApp"
+        tools:targetApi="o" />
 
     <EditText
         android:id="@+id/etEmail"
@@ -77,48 +82,53 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"
-        android:drawableLeft="@drawable/ic_email"
+        android:drawableStart="@drawable/ic_email"
         android:drawablePadding="5dp"
         android:drawableTint="@color/black"
-        android:hint="@string/hint6"
+        android:hint="@string/hint1"
+        android:importantForAutofill="no"
         android:inputType="textEmailAddress"
         android:textColor="@color/black"
         android:textColorHint="@color/silver"
         android:textSize="17sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etName" />
+        app:layout_constraintTop_toBottomOf="@+id/etName"
+        tools:targetApi="O" />
 
     <EditText
         android:id="@+id/etBirthday"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="90dp"
+        android:layout_marginEnd="90dp"
         android:backgroundTint="@color/silver"
-        android:drawableLeft="@drawable/ic_cake"
-        android:drawableTint="@color/black"
+        android:drawableStart="@drawable/ic_cake"
         android:drawablePadding="5dp"
-        android:hint="yyyy-mm-dd"
+        android:drawableTint="@color/black"
+        android:hint="@string/hint_date"
+        android:importantForAutofill="no"
         android:inputType="date"
         android:textColor="@color/black"
         android:textColorHint="@color/silver"
         android:textSize="17sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+        tools:targetApi="O" />
 
     <ImageView
         android:id="@+id/ivDate"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/ic_date"
-        android:padding="8dp"
         android:layout_marginTop="30dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+        android:padding="8dp"
+        android:src="@drawable/ic_date"
         app:layout_constraintLeft_toRightOf="@+id/etBirthday"
-        app:tint="@color/black" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmail"
+        app:tint="@color/black"
+        tools:ignore="contentDescription" />
 
     <EditText
         android:id="@+id/etPassword1"
@@ -127,16 +137,18 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"
-        android:drawableLeft="@drawable/ic_password"
+        android:drawableStart="@drawable/ic_password"
         android:drawablePadding="5dp"
         android:drawableTint="@color/black"
-        android:hint="@string/text27"
+        android:hint="@string/hint5"
+        android:importantForAutofill="no"
         android:inputType="textPassword"
         android:textColor="@color/black"
         android:textColorHint="@color/silver"
         android:textSize="17sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etBirthday" />
+        app:layout_constraintTop_toBottomOf="@+id/etBirthday"
+        tools:targetApi="O" />
 
     <EditText
         android:id="@+id/etPassword2"
@@ -145,16 +157,18 @@
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"
-        android:drawableLeft="@drawable/ic_password"
+        android:drawableStart="@drawable/ic_password"
         android:drawablePadding="5dp"
         android:drawableTint="@color/black"
-        android:hint="@string/text25"
+        android:hint="@string/hint6"
+        android:importantForAutofill="no"
         android:inputType="textPassword"
         android:textColor="@color/black"
         android:textColorHint="@color/silver"
         android:textSize="17sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword1" />
+        app:layout_constraintTop_toBottomOf="@+id/etPassword1"
+        tools:targetApi="O" />
 
     <Button
         android:id="@+id/btSave"

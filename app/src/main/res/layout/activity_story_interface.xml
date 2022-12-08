@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,20 +15,21 @@
             android:id="@+id/ivBack"
             android:layout_width="45dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="?android:attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/black"/>
+            app:tint="@color/black"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/tvStoryName"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="45dp"
+            android:layout_marginStart="45dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:gravity="center|left"
+            android:gravity="center|start"
             android:textColor="@color/black"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -47,9 +49,10 @@
             android:layout_width="100dp"
             android:layout_height="140dp"
             android:layout_alignParentStart="true"
-            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginTop="5dp"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/tvLblAuthor"
@@ -57,7 +60,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/ivStory"
+            android:layout_toEndOf="@+id/ivStory"
             android:gravity="bottom"
             android:text="@string/text1"
             android:textColor="@color/black"
@@ -70,7 +73,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/tvLblAuthor"
+            android:layout_toEndOf="@+id/tvLblAuthor"
             android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
@@ -81,7 +84,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="40dp"
-            android:layout_toRightOf="@+id/ivStory"
+            android:layout_toEndOf="@+id/ivStory"
             android:gravity="bottom"
             android:text="@string/text3"
             android:textColor="@color/black"
@@ -94,7 +97,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="40dp"
-            android:layout_toRightOf="@+id/tvLblStatus"
+            android:layout_toEndOf="@+id/tvLblStatus"
             android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
@@ -105,7 +108,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="75dp"
-            android:layout_toRightOf="@+id/ivStory"
+            android:layout_toEndOf="@+id/ivStory"
             android:gravity="bottom"
             android:text="@string/text5"
             android:textColor="@color/black"
@@ -118,7 +121,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="75dp"
-            android:layout_toRightOf="@+id/tvLblSpecies"
+            android:layout_toEndOf="@+id/tvLblSpecies"
             android:gravity="bottom"
             android:textColor="@color/black"
             android:textSize="17sp" />
@@ -129,7 +132,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="110dp"
-            android:layout_toRightOf="@+id/ivStory"
+            android:layout_toEndOf="@+id/ivStory"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -138,35 +141,40 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_not_rate"/>
+                android:src="@drawable/ic_not_rate"
+                tools:ignore="contentDescription" />
 
             <ImageView
                 android:id="@+id/ivRate2"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_not_rate" />
+                android:src="@drawable/ic_not_rate"
+                tools:ignore="contentDescription" />
 
             <ImageView
                 android:id="@+id/ivRate3"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_not_rate" />
+                android:src="@drawable/ic_not_rate"
+                tools:ignore="contentDescription" />
 
             <ImageView
                 android:id="@+id/ivRate4"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_not_rate" />
+                android:src="@drawable/ic_not_rate"
+                tools:ignore="contentDescription" />
 
             <ImageView
                 android:id="@+id/ivRate5"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="2dp"
-                android:src="@drawable/ic_not_rate" />
+                android:src="@drawable/ic_not_rate"
+                tools:ignore="contentDescription" />
 
             <TextView
                 android:id="@+id/tvRate"
@@ -174,9 +182,9 @@
                 android:layout_height="match_parent"
                 android:gravity="center|bottom"
                 android:padding="2dp"
-                android:text="5.0"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:ignore="contentDescription" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -189,115 +197,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/llLike"
+        <TextView
+            android:id="@+id/tvLike"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvLike1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center|bottom"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/tvLike2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center|top"
-                android:text="@string/like"
-                android:textColor="@color/dim_gray"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center|bottom"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center|top"
-                android:text="@string/view"
-                android:textColor="@color/dim_gray"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llChapterList"
+        <TextView
+            android:id="@+id/tvChapter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tvChapter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center|bottom"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center|top"
-                android:text="@string/chapter"
-                android:textColor="@color/dim_gray"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llComment"
+        <TextView
+            android:id="@+id/tvComment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvComment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center|bottom"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="center|top"
-                android:text="@string/comment"
-                android:textColor="@color/dim_gray"
-                android:textSize="15sp" />
-        </LinearLayout>
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <View
@@ -335,6 +272,7 @@
 
         <Button
             android:id="@+id/btFollow"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -346,10 +284,11 @@
             android:text="@string/btMenuFollow"
             android:textColor="@color/dim_gray"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <Button
             android:id="@+id/btReadStory"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -362,6 +301,7 @@
 
         <Button
             android:id="@+id/btDownload"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -373,23 +313,8 @@
             android:paddingBottom="10dp"
             android:text="@string/btMenuDownload"
             android:textColor="@color/dim_gray"
-            android:textSize="15sp" />
-
-        <!--        <Button-->
-        <!--            android:id="@+id/btComment"-->
-        <!--            android:layout_width="100dp"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:background="@color/white"-->
-        <!--            android:drawableTop="@drawable/ic_comment"-->
-        <!--            android:drawableTint="@color/dim_gray"-->
-        <!--            android:gravity="center"-->
-        <!--            android:paddingTop="10dp"-->
-        <!--            android:paddingBottom="10dp"-->
-        <!--            android:text="@string/btComment"-->
-        <!--            android:textColor="@color/dim_gray"-->
-        <!--            android:textSize="15sp"-->
-        <!--            android:textStyle="bold" />-->
+            android:textSize="15sp"
+            tools:targetApi="o" />
+<!--        style="?android:attr/borderlessButtonStyle" không viền-->
     </LinearLayout>
-
 </LinearLayout>

@@ -27,11 +27,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StoryInterfaceRateFagment extends Fragment {
-    private List<DanhGia> listRate = new ArrayList<>(); //data source
+    private final List<DanhGia> listRate = new ArrayList<>(); //data source
     private RateAdapter rateAdapter;
     private RecyclerView rcViewRate;
 
-    private int idStory;
+    private final int idStory;
 
     public StoryInterfaceRateFagment(int idStory) {
         this.idStory = idStory;
@@ -56,13 +56,12 @@ public class StoryInterfaceRateFagment extends Fragment {
     }
 
     private void rcView() {
-        rateAdapter = new RateAdapter(listRate, (position, view) -> {
-        });//Đổ dữ liệu lên adpter
+        rateAdapter = new RateAdapter(listRate);//Đổ dữ liệu lên adpter
         rcViewRate.setHasFixedSize(true);
         rcViewRate.setLayoutManager(new LinearLayoutManager(getActivity()));
         rcViewRate.setAdapter(rateAdapter);
 
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(requireActivity(), DividerItemDecoration.VERTICAL);
         rcViewRate.addItemDecoration(itemDecoration);
     }
 
@@ -70,8 +69,8 @@ public class StoryInterfaceRateFagment extends Fragment {
         if (isNetwork()) {
             Api.apiInterface().getListRate(idStory).enqueue(new Callback<List<DanhGia>>() {
                 @Override
-                public void onResponse(Call<List<DanhGia>> call, Response<List<DanhGia>> response) {
-                    if (response.isSuccessful()) {
+                public void onResponse(@NonNull Call<List<DanhGia>> call, @NonNull Response<List<DanhGia>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
                         listRate.clear();
                         listRate.addAll(response.body());
                         rateAdapter.notifyDataSetChanged();
@@ -79,7 +78,7 @@ public class StoryInterfaceRateFagment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<DanhGia>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<DanhGia>> call, @NonNull Throwable t) {
                     Log.e("Err_StoryInterfaceF", t.toString());
                 }
             });

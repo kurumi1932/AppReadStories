@@ -4,20 +4,14 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/medium_sea_green</item>
         <item name="colorPrimaryVariant">@color/black</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="o">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppReadStories" parent="Theme.Design.Light.NoActionBar">
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-    </style>
-
-    <!--    animation dialog chapter list-->
-    <style name="DialogChapterlist">
-        <item name="android:windowEnterAnimation">@anim/dialog_chapter_list_up</item>
-        <item name="android:windowExitAnimation">@anim/dialog_chapter_list_down</item>
+        <item name="android:statusBarColor" tools:targetApi="o">?attr/colorPrimaryVariant</item>
     </style>
 
     <!--    animation dialog setting chapter read-->

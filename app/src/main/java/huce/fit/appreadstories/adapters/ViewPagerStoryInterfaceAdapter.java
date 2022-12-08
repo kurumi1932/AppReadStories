@@ -9,7 +9,7 @@ import huce.fit.appreadstories.fragment.StoryInterfaceRateFagment;
 import huce.fit.appreadstories.fragment.StoryInterfaceIntroduceFagment;
 
 public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
-    private int idStory;
+    private final int idStory;
     public ViewPagerStoryInterfaceAdapter(@NonNull FragmentActivity fragmentActivity, int idStory) {
         super(fragmentActivity);
         this.idStory = idStory;

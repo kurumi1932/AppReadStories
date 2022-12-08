@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -26,30 +27,32 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="9dp"
                 android:src="@drawable/ic_back"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                tools:ignore="contentDescription" />
 
             <SearchView
                 android:id="@+id/svChapter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="50dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="5dp"
                 android:background="@drawable/border_corner_silver_10dp"
-                android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
-                android:queryHint="@string/hint8"
+                android:queryBackground="@android:color/transparent"
+                android:queryHint="@string/hint_search_chapter"
                 android:searchIcon="@null" />
 
             <ImageView
                 android:id="@+id/ivReverse"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="-50dp"
+                android:layout_marginStart="-50dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="9dp"
                 android:src="@drawable/ic_reverse"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                tools:ignore="contentDescription" />
         </LinearLayout>
 
         <View

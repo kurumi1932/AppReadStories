@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:background="@color/silver"
@@ -14,14 +15,14 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="65dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="65dp"
             android:scrollbars="none">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center|left"
+                android:gravity="center|start"
                 android:orientation="horizontal">
 
                 <TextView
@@ -33,7 +34,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle1"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/black"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -47,7 +48,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle2"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/black"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -61,7 +62,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle3"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/black"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -75,7 +76,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle4"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -89,7 +90,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle5"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/medium_sea_green"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -103,7 +104,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle6"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -117,7 +118,7 @@
                     android:background="@drawable/bg_circle_white"
                     android:backgroundTint="@color/circle7"
                     android:gravity="center"
-                    android:text="Aa"
+                    android:text="@string/aa"
                     android:textColor="@color/medium_sea_green"
                     android:textSize="19sp"
                     android:textStyle="bold" />
@@ -129,23 +130,24 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="-60dp"
+            android:layout_marginStart="-60dp"
             android:background="@drawable/border_corner_black_10dp"
-            android:src="@drawable/ic_up" />
+            android:src="@drawable/ic_up"
+            tools:ignore="contentDescription" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:gravity="center|left"
+            android:gravity="center|start"
             android:text="@string/font_size"
             android:textColor="@color/black"
             android:textSize="19sp"
@@ -156,18 +158,18 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/border_circle_black"
             android:padding="3dp"
-            android:src="@drawable/ic_down" />
+            android:src="@drawable/ic_down"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/tvFontSize"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="99"
             android:textColor="@color/black"
             android:textSize="19sp"
             android:textStyle="bold" />
@@ -177,24 +179,25 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/border_circle_black"
             android:padding="3dp"
-            android:src="@drawable/ic_up" />
+            android:src="@drawable/ic_up"
+            tools:ignore="contentDescription" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:gravity="center|left"
+            android:gravity="center|start"
             android:text="@string/line_stretch"
             android:textColor="@color/black"
             android:textSize="19sp"
@@ -205,18 +208,18 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="30dp"
             android:background="@drawable/border_circle_black"
             android:padding="3dp"
-            android:src="@drawable/ic_down" />
+            android:src="@drawable/ic_down"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/tvLineStretch"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="100%"
             android:textColor="@color/black"
             android:textSize="19sp"
             android:textStyle="bold" />
@@ -226,10 +229,11 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/border_circle_black"
             android:padding="3dp"
-            android:src="@drawable/ic_up" />
+            android:src="@drawable/ic_up"
+            tools:ignore="contentDescription" />
     </LinearLayout>
 </LinearLayout>

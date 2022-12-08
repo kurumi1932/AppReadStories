@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,10 +37,9 @@ public class ChapterListActivity extends AppCompatActivity {
 
     private List<ChuongTruyen> listChapter;
     private List<ChuongTruyen> listChapterRead;
-    private List<Chapter> listChapter_offline;
-    private List<ChapterRead> listChapterRead_offline;
+    private List<Chapter> listChapter_Download;
+    private List<ChapterRead> listChapterRead_Download;
     private ChapterAdapter chapterAdapter;
-    private ChapterDownloadAdapter chapterDownloadAdapter;
     private RecyclerView rcViewChapter;
     private ImageView ivBack, ivReverse;
     private SearchView svChapter;
@@ -87,8 +87,8 @@ public class ChapterListActivity extends AppCompatActivity {
         if (isNetwork()) {
             Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
-                public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                    if (response.isSuccessful() && response.body().toString() != null) {
+                public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
                         listChapter.clear();
                         listChapter.addAll(response.body());
 
@@ -99,13 +99,13 @@ public class ChapterListActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<ChuongTruyen>> call,@NonNull Throwable t) {
                     Log.e("Err_ChapterList", "getDataListChapter", t);
                 }
             });
         } else {
-            listChapter_offline = AppDatabase.getInstance(this).appDao().getAllChapter(idStory);
-            rcView_offline(idChapterReading);
+            listChapter_Download = AppDatabase.getInstance(this).appDao().getAllChapter(idStory);
+            rcView_Download(idChapterReading);
         }
         pbReload.setVisibility(View.GONE);
     }
@@ -114,20 +114,20 @@ public class ChapterListActivity extends AppCompatActivity {
         if (isNetwork()) {
             Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
-                public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                    if (response.isSuccessful() && response.body().toString() != null) {
+                public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
                         listChapterRead.clear();
                         listChapterRead.addAll(response.body());
                     }
                 }
 
                 @Override
-                public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<ChuongTruyen>> call,@NonNull Throwable t) {
                     Log.e("Err_ChapterList", "getDataListChapterRead", t);
                 }
             });
         } else {
-            listChapterRead_offline = AppDatabase.getInstance(this).appDao().getAllChapterRead(idStory);
+            listChapterRead_Download = AppDatabase.getInstance(this).appDao().getAllChapterRead(idStory);
         }
     }
 
@@ -135,30 +135,29 @@ public class ChapterListActivity extends AppCompatActivity {
         if (isNetwork()) {
             Api.apiInterface().getChapterReading(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
                 @Override
-                public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
-                    if (response.isSuccessful() && response.body().toString() != null) {
+                public void onResponse(@NonNull Call<ChuongTruyen> call,@NonNull Response<ChuongTruyen> response) {
+                    if (response.isSuccessful() && response.body() != null) {
                         idChapterReading = response.body().getMachuong();
                         rcView(idChapterReading);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+                public void onFailure(@NonNull Call<ChuongTruyen> call,@NonNull Throwable t) {
                     Log.e("Err_ChapterList", "getDataChapterReading", t);
                 }
             });
         } else {
             Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
             idChapterReading = story.getChapterReading();
-            rcView_offline(idChapterReading);
+            rcView_Download(idChapterReading);
         }
     }
 
     private void rcView(int id_ChapterReading) {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
-        chapterAdapter = new ChapterAdapter(this, listChapter, listChapterRead, id_ChapterReading, (position, view1) -> {
+        chapterAdapter = new ChapterAdapter(this, listChapter, listChapterRead, id_ChapterReading, (position, view1, isLongClick) -> {
 //            Log.e("idchapterclick: ", String.valueOf(position));
-
             Intent intent = new Intent(this, ChapterReadActivity.class);
             intent.putExtra("idChapterReading", position);
             intent.putExtra("idStory", idStory);
@@ -168,10 +167,9 @@ public class ChapterListActivity extends AppCompatActivity {
         rcViewChapter.setAdapter(chapterAdapter);
     }
 
-    private void rcView_offline(int id_ChapterReading) {
+    private void rcView_Download(int id_ChapterReading) {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
-        chapterDownloadAdapter = new ChapterDownloadAdapter(this, listChapter_offline, listChapterRead_offline, id_ChapterReading, (position, view1) -> {
-//            Log.e("idchapterclick: ", String.valueOf(position));
+        ChapterDownloadAdapter chapterDownloadAdapter = new ChapterDownloadAdapter(this, listChapter_Download, listChapterRead_Download, id_ChapterReading, (position, view1, isLongClick) -> {
 
             Intent intent = new Intent(this, ChapterReadActivity.class);
             intent.putExtra("idChapterReading", position);
@@ -183,9 +181,7 @@ public class ChapterListActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
-        ivBack.setOnClickListener(v -> {
-            finish();
-        });
+        ivBack.setOnClickListener(v -> finish());
 
         svChapter.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -206,17 +202,21 @@ public class ChapterListActivity extends AppCompatActivity {
 
                 //Đầu trang
                 LinearLayoutManager llmanager = (LinearLayoutManager) rcViewChapter.getLayoutManager();
-                llmanager.scrollToPosition(0);
+                if (llmanager != null) {
+                    llmanager.scrollToPosition(0);
+                }
 
                 rcView(idChapterReading);
             } else {
-                Collections.reverse(listChapter_offline);// đảo ngược dánh sách
+                Collections.reverse(listChapter_Download);// đảo ngược dánh sách
 
                 //Đầu trang
                 LinearLayoutManager llmanager = (LinearLayoutManager) rcViewChapter.getLayoutManager();
-                llmanager.scrollToPosition(0);
+                if (llmanager != null) {
+                    llmanager.scrollToPosition(0);
+                }
 
-                rcView_offline(idChapterReading);
+                rcView_Download(idChapterReading);
             }
         });
     }
@@ -229,8 +229,8 @@ public class ChapterListActivity extends AppCompatActivity {
             if (isNetwork()) {
                 Api.apiInterface().searchChapter(idStory, numberChapter).enqueue(new Callback<List<ChuongTruyen>>() {
                     @Override
-                    public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                        if (response.isSuccessful() && response.body().toString() != null) {
+                    public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
                             listChapter.clear();
                             listChapter.addAll(response.body());
 
@@ -240,14 +240,14 @@ public class ChapterListActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+                    public void onFailure(@NonNull Call<List<ChuongTruyen>> call,@NonNull Throwable t) {
                         Log.e("Err_ChapterList", "getDataSearchChapter", t);
                     }
                 });
             } else {
                 Log.e("search", "oke");
-                listChapter_offline = AppDatabase.getInstance(this).appDao().getAllChapterByNumberChapter(idStory, numberChapter);
-                rcView_offline(idChapterReading);
+                listChapter_Download = AppDatabase.getInstance(this).appDao().getAllChapterByNumberChapter(idStory, numberChapter);
+                rcView_Download(idChapterReading);
                 pbReload.setVisibility(View.GONE);
             }
         }

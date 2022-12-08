@@ -15,8 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,25 +24,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
+import huce.fit.appreadstories.activity.StoryInterfaceActivity;
+import huce.fit.appreadstories.adapters.StoryAdapter;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.activity.StoryInterfaceActivity;
-import huce.fit.appreadstories.adapters.StoryAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StoryFilterFragment extends Fragment {
 
-    private List<Truyen> listStory = new ArrayList<>(); //data source
+    private final List<Truyen> listStory = new ArrayList<>(); //data source
     private LinearLayout llFragmentStoryFilter;
     private StoryAdapter storyAdapter;
     private RecyclerView rcViewStory;
     private ProgressBar pbReload;
     private TextView tvSpecies, tvSpecies1, tvSpecies2, tvSpecies3, tvSpecies4, tvSpecies5;
     private TextView tvStatus, tvStatus1, tvStatus2;
-    private Button btCheckConnection;
+    private Button btCheckNetwork;
     private String clickSpecies, clickStatus;
     private int age;
 
@@ -77,7 +77,7 @@ public class StoryFilterFragment extends Fragment {
         pbReload = view.findViewById(R.id.pbReLoad);
         rcViewStory = view.findViewById(R.id.rcViewStory);
 
-        btCheckConnection = view.findViewById(R.id.btCheckConnection);
+        btCheckNetwork = view.findViewById(R.id.btCheckNetwork);
 
         tvSpecies.setBackgroundResource(R.drawable.border_filter_click);
         tvStatus.setBackgroundResource(R.drawable.border_filter_click);
@@ -93,7 +93,7 @@ public class StoryFilterFragment extends Fragment {
     }
 
     private void getSharedPreferences() {
-        SharedPreferences sharedPreferences =  getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =  requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
         age = sharedPreferences.getInt("age", 0);
         Log.e("age", String.valueOf(age));
     }
@@ -107,15 +107,15 @@ public class StoryFilterFragment extends Fragment {
         getData(clickSpecies, clickStatus);
         rcView(listStory);
         llFragmentStoryFilter.setVisibility(View.VISIBLE);
-        btCheckConnection.setVisibility(View.GONE);
+        btCheckNetwork.setVisibility(View.GONE);
     }
 
     private void hide() {
         llFragmentStoryFilter.setVisibility(View.GONE);
         pbReload.setVisibility(View.GONE);
-        btCheckConnection.setVisibility(View.VISIBLE);
+        btCheckNetwork.setVisibility(View.VISIBLE);
 
-        btCheckConnection.setOnClickListener(v -> {
+        btCheckNetwork.setOnClickListener(v -> {
             if (isNetwork()) {
                 show();
             } else {
@@ -129,18 +129,18 @@ public class StoryFilterFragment extends Fragment {
             pbReload.setVisibility(View.VISIBLE);
             Api.apiInterface().getListStoriesFilter(species, status, age).enqueue(new Callback<List<Truyen>>() {
                 @Override
-                public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
+                public void onResponse(@NonNull Call<List<Truyen>> call, Response<List<Truyen>> response) {
                     List<Truyen> list = response.body();
                     if (response.isSuccessful() && list != null) {
                         listStory.clear();
-                        listStory.addAll(response.body());
+                        listStory.addAll(list);
                         storyAdapter.notifyDataSetChanged();
                         pbReload.setVisibility(View.GONE);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<List<Truyen>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<Truyen>> call, Throwable t) {
                     Log.e("Err_StoryFilter", "getData", t);
                 }
             });
@@ -152,7 +152,7 @@ public class StoryFilterFragment extends Fragment {
     private void rcView(List<Truyen> listStory) {
         rcViewStory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        storyAdapter = new StoryAdapter(listStory, (position, view1) -> {
+        storyAdapter = new StoryAdapter(listStory, (position, view1, isLongClick) -> {
             Truyen tc = listStory.get(position);
             int idStory = tc.getMatruyen();
             Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
@@ -160,8 +160,6 @@ public class StoryFilterFragment extends Fragment {
             startActivity(intent);
         });//Đổ dữ liệu lên adpter
         rcViewStory.setAdapter(storyAdapter);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        rcViewStory.addItemDecoration(itemDecoration);
     }
 
     private void colorBackGroundSpecies() {

@@ -21,10 +21,12 @@ import huce.fit.appreadstories.activity.MainActivity;
 
 public class AccountFragment extends Fragment {
 
-    private TextView tvName, tvEditAccount, tvContactInfor, tvLogOut;
+    private TextView tvEditAccount;
+    private TextView tvContactInfor;
+    private TextView tvLogOut;
     private int idAccount;
     private String name;
-    private MainActivity main = new MainActivity();
+    private final MainActivity main = new MainActivity();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,7 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
-        tvName = view.findViewById(R.id.tvName);
+        TextView tvName = view.findViewById(R.id.tvName);
         tvEditAccount = view.findViewById(R.id.tvEditAccount);
         tvContactInfor = view.findViewById(R.id.tvContactInfor);
         tvLogOut = view.findViewById(R.id.tvLogOut);
@@ -50,10 +52,17 @@ public class AccountFragment extends Fragment {
     }
 
     private void getSharedPreferences() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
         idAccount = sharedPreferences.getInt("idAccount", 0);
         name = sharedPreferences.getString("name", "");
         Log.e("idFragmentAccount", String.valueOf(idAccount));
+    }
+
+    private void setSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        SharedPreferences.Editor myedit = sharedPreferences.edit();
+        myedit.remove("idAccount");
+        myedit.apply();
     }
 
     private void processEvents() {
@@ -70,10 +79,7 @@ public class AccountFragment extends Fragment {
             Intent intent = new Intent(getActivity(), AccountLoginActivity.class);
             startActivity(intent);
 
-            SharedPreferences sh = getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
-            SharedPreferences.Editor myedit = sh.edit();
-            myedit.remove("idAccount");
-            myedit.commit();
+            setSharedPreferences();
 
             main.closeMainActivity();
         });

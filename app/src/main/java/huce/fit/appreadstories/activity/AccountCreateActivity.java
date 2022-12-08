@@ -1,5 +1,6 @@
 package huce.fit.appreadstories.activity;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,13 +34,13 @@ public class AccountCreateActivity extends AppCompatActivity {
     private ImageView ivDate;
     private Button btExit, btRegister;
 
-    private Calendar myCalendar = Calendar.getInstance();
-    private DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
+    private final Calendar myCalendar = Calendar.getInstance();
+    private final DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(myCalendar.getTime());
+        @SuppressLint("SimpleDateFormat") String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(myCalendar.getTime());
         etBirthday.setText(dateStr);
     };
 
@@ -67,16 +69,12 @@ public class AccountCreateActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
-        btExit.setOnClickListener(v -> {
-            finish();
-        });
+        btExit.setOnClickListener(v -> finish());
 
-        ivDate.setOnClickListener(v ->{
-            new DatePickerDialog(AccountCreateActivity.this, d,
-                    myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        ivDate.setOnClickListener(v -> new DatePickerDialog(AccountCreateActivity.this, d,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         btRegister.setOnClickListener(v -> {
             String username = etUsername.getText().toString().trim();
@@ -99,7 +97,7 @@ public class AccountCreateActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(AccountCreateActivity.this, "Mật khẩu không khớp!", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(AccountCreateActivity.this, "Định dạng ngày không đúng!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -107,20 +105,19 @@ public class AccountCreateActivity extends AppCompatActivity {
     }
 
     public boolean checkDate(String dateStr) {
-        String[] dateArr = dateStr.split("-");
-        if (Integer.parseInt(dateArr[0]) < 9999) {
-            if (isValid(dateStr)) {
-                return true;
-            }
+        String[] dateArr = dateStr.split("-");//tách từng giá trị vào mảng khi gặp -
+        if (Integer.parseInt(dateArr[0]) < 9999) {//năm ở vị trí 0 phải nhỏ hơn 9999
+            return isValid(dateStr);
+        } else {
+            return false;
         }
-        return false;
     }
 
     public boolean isValid(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
         try {
-            sdf.parse(dateStr);
+            sdf.parse(dateStr);//convert date nếu sai thì chạy catch
         } catch (ParseException e) {
             return false;
         }
@@ -130,7 +127,7 @@ public class AccountCreateActivity extends AppCompatActivity {
     private void createAccount(String username, String password, String email, String name, String birthday) {
         Api.apiInterface().register(username, password, email, name, birthday).enqueue(new Callback<TaiKhoan>() {
             @Override
-            public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
+            public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     int status = response.body().getAccountsuccess();
                     if (status == 0) {
@@ -146,7 +143,7 @@ public class AccountCreateActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TaiKhoan> call, Throwable t) {
+            public void onFailure(@NonNull Call<TaiKhoan> call,@NonNull Throwable t) {
                 Log.e("Err_AccountCreate", "createAccount", t);
             }
         });
@@ -157,6 +154,6 @@ public class AccountCreateActivity extends AppCompatActivity {
         SharedPreferences.Editor myedit = sharedPreferences.edit();
 
         myedit.putString("username", username);
-        myedit.commit();
+        myedit.apply();
     }
 }

@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="huce.fit.appreadstories">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/AppReadStories"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppReadStories">
+        tools:targetApi="o">
         <activity
             android:name=".activity.AccountLoginActivity"
             android:exported="true"
@@ -21,32 +24,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.StorySearchActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.StoryInterfaceActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.StoryDownloadActivity"
-            android:screenOrientation="portrait"></activity>
-        <service android:name=".service.DownloadService" />
+        <activity
+            android:name=".activity.StorySearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.StoryInterfaceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.StoryDownloadActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.ChapterListActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.ChapterReadActivity"
-            android:screenOrientation="portrait"></activity>
+        <service android:name=".service.CheckStoryService" />
+        <service android:name=".service.DeleteStoryService" />
+        <service android:name=".service.DownloadStoryService" />
 
-        <activity android:name=".activity.CommentListActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.ChapterListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ChapterReadActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.AccountCreateActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.AccountUpdateActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.CommentListActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.ContactInforActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.AccountCreateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AccountUpdateActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ContactInforActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

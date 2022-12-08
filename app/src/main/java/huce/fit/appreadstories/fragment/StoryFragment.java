@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.activity.StoryInterfaceActivity;
 import huce.fit.appreadstories.activity.StorySearchActivity;
 import huce.fit.appreadstories.adapters.StoryAdapter;
+import huce.fit.appreadstories.api.Api;
+import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.pagination_croll.PaginationScrollListener;
 import retrofit2.Call;
@@ -44,8 +44,8 @@ public class StoryFragment extends Fragment {
     private ImageView ivSearch;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar pbReload;
-    private Button btCheckConnection;
-    private List<Truyen> listStory = new ArrayList<>(); //data source
+    private Button btCheckNetwork;
+    private final List<Truyen> listStory = new ArrayList<>(); //data source
     private boolean isLoading;
     private boolean isLastPage;
     private int curentPage = 1;// page hiện tại
@@ -65,7 +65,7 @@ public class StoryFragment extends Fragment {
         pbReload = view.findViewById(R.id.pbReLoad);
         ivSearch = view.findViewById(R.id.ivSearch);
         rcViewStory = view.findViewById(R.id.rcViewStory);
-        btCheckConnection = view.findViewById(R.id.btCheckConnection);
+        btCheckNetwork = view.findViewById(R.id.btCheckNetwork);
 
         if (isNetwork()) {
             show();
@@ -77,7 +77,7 @@ public class StoryFragment extends Fragment {
     }
 
     private void getSharedPreferences() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
         age = sharedPreferences.getInt("age", 0);
         Log.e("age", String.valueOf(age));
     }
@@ -93,7 +93,7 @@ public class StoryFragment extends Fragment {
         rcView();
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         llFragmentStory.setVisibility(View.VISIBLE);
-        btCheckConnection.setVisibility(View.GONE);
+        btCheckNetwork.setVisibility(View.GONE);
 
         processEvents();
     }
@@ -102,9 +102,9 @@ public class StoryFragment extends Fragment {
         swipeRefreshLayout.setVisibility(View.GONE);
         llFragmentStory.setVisibility(View.GONE);
         pbReload.setVisibility(View.GONE);
-        btCheckConnection.setVisibility(View.VISIBLE);
+        btCheckNetwork.setVisibility(View.VISIBLE);
 
-        btCheckConnection.setOnClickListener(v -> {
+        btCheckNetwork.setOnClickListener(v -> {
             if (isNetwork()) {
                 show();
             } else {
@@ -116,7 +116,7 @@ public class StoryFragment extends Fragment {
     private void totalPage() {
         Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
             @Override
-            public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
+            public void onResponse(@NonNull Call<List<Truyen>> call, @NonNull Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.e("number_item:", String.valueOf(response.body().size()));
                     totalPage = (response.body().size() / ITEMS_PAGE);
@@ -129,7 +129,7 @@ public class StoryFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Truyen>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Truyen>> call, @NonNull Throwable t) {
                 Log.e("Err_StoryFagment", "totalPage", t);
             }
         });
@@ -139,7 +139,7 @@ public class StoryFragment extends Fragment {
         pbReload.setVisibility(View.VISIBLE);
         Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
             @Override
-            public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
+            public void onResponse(@NonNull Call<List<Truyen>> call, @NonNull Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (a * ITEMS_PAGE > response.body().size()) {
                         for (int i = (a - 1) * ITEMS_PAGE; i < response.body().size(); i++) {
@@ -156,7 +156,7 @@ public class StoryFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Truyen>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Truyen>> call, @NonNull Throwable t) {
                 Log.e("Err_StoryFagment", "getData", t);
             }
         });
@@ -164,7 +164,7 @@ public class StoryFragment extends Fragment {
 
     private void rcView() {
         //1.Đổ dữ liệu lên adpter
-        storyAdapter = new StoryAdapter(listStory, (position, view1) -> {
+        storyAdapter = new StoryAdapter(listStory, (position, view1, isLongClick) -> {
             Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
             intent.putExtra("idStory", position);
             startActivity(intent);
@@ -175,10 +175,6 @@ public class StoryFragment extends Fragment {
         rcViewStory.setLayoutManager(linearLayoutManager);
         // 3.set adapter
         rcViewStory.setAdapter(storyAdapter);
-
-        //tạo dòng kẻ ngăn cách các item
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        rcViewStory.addItemDecoration(itemDecoration);
 
         rcViewStory.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
             @Override

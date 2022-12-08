@@ -21,10 +21,12 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,10 +37,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.adapters.ChapterDialogAdapter;
+import huce.fit.appreadstories.adapters.ChapterNavigationAdapter;
+import huce.fit.appreadstories.adapters.ChapterNavigationDownloadAdapter;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.checknetwork.CheckNetwork;
 import huce.fit.appreadstories.model.ChuongTruyen;
@@ -46,18 +50,26 @@ import huce.fit.appreadstories.model.Truyen;
 import huce.fit.appreadstories.sqlite.AppDatabase;
 import huce.fit.appreadstories.sqlite.Chapter;
 import huce.fit.appreadstories.sqlite.ChapterRead;
+import huce.fit.appreadstories.sqlite.Story;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChapterReadActivity extends AppCompatActivity {
-    private ConstraintLayout constrainLayout;
+    private DrawerLayout drawerLayout;
+    private ConstraintLayout constraintLayout;
     private BottomNavigationView btNavigationView;
     private ProgressBar pbReLoad;
     private ScrollView scView;
-    private TextView tvTitle, tvPostPerson, tvPostDay, tvContent;
+    private TextView tvTitle, tvContent;
     private RelativeLayout rlNextAndPrevious;
     private ImageView ivPrevious, ivNext;
+    //List chapter
+    private ImageView ivStory, ivReverse;
+    private TextView tvStoryName, tvAuthor;
+    private SearchView svChapter;
+    private RecyclerView rcViewChapter;
+
     private int idAccount, idStory, idChapter;
     private int fontSize = 18;
     private int lineStretch = 100;
@@ -65,8 +77,8 @@ public class ChapterReadActivity extends AppCompatActivity {
     private float lineStretchFloat;
     private double progress;
     private boolean isComment;
-    private AtomicInteger status = new AtomicInteger(1);
-    Handler handler = new Handler();
+    private final AtomicInteger status = new AtomicInteger(1);
+    private final Handler handler = new Handler();
 
     private int idChapterFirst, idChapterFinal;
 
@@ -84,7 +96,8 @@ public class ChapterReadActivity extends AppCompatActivity {
         idStory = getIntent().getIntExtra("idStory", 0);
         idChapter = getIntent().getIntExtra("idChapterReading", 0);
 
-        constrainLayout = findViewById(R.id.constrainLayout);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        constraintLayout = findViewById(R.id.constraintLayout);
         btNavigationView = findViewById(R.id.btNavigationView);
         scView = findViewById(R.id.scView);
         rlNextAndPrevious = findViewById(R.id.rlNextAndPrevious);
@@ -93,21 +106,21 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         pbReLoad = findViewById(R.id.pbReLoad);
         tvTitle = findViewById(R.id.tvTitle);
-//        tv0 = findViewById(R.id.tv0);
-//        tv1 = findViewById(R.id.tv1);
-//        tv2 = findViewById(R.id.tv2);
-//        tv3 = findViewById(R.id.tv3);
-//        tvNumberChapter = findViewById(R.id.tvNumberChapter);
-//        tvChapterName = findViewById(R.id.tvChapterName);
-        tvPostPerson = findViewById(R.id.tvPostPerson);
-        tvPostDay = findViewById(R.id.tvPostDay);
         tvContent = findViewById(R.id.tvContent);
 
-        constrainLayout.setBackgroundColor(Color.parseColor(backgroundColor));
+        //list chapter
+        ivStory = findViewById(R.id.ivStory);
+        ivReverse = findViewById(R.id.ivReverse);
+        tvStoryName = findViewById(R.id.tvStoryName);
+        tvAuthor = findViewById(R.id.tvAuthor);
+        svChapter = findViewById(R.id.svChapter);
+        rcViewChapter = findViewById(R.id.rcListChapterOnChapterRead);
+
+        constraintLayout.setBackgroundColor(Color.parseColor(backgroundColor));
         setTextColor();
 
         btNavigationView.setVisibility(View.GONE);
-        constrainLayout.setVisibility(View.GONE);
+        drawerLayout.setVisibility(View.GONE);
         rlNextAndPrevious.setVisibility(View.GONE);
 
         setFontSize(fontSize);
@@ -123,7 +136,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         if (isNetwork()) {
             getData(this, 2, "Không tìm thấy chương!");
         } else {
-            getData_offline();
+            getData_Download();
         }
         processEvents();
     }
@@ -160,35 +173,25 @@ public class ChapterReadActivity extends AppCompatActivity {
 
     private void setTextColor() {
         tvTitle.setTextColor(Color.parseColor(textColor));
-        tvPostPerson.setTextColor(Color.parseColor(textColor));
-        tvPostDay.setTextColor(Color.parseColor(textColor));
         tvContent.setTextColor(Color.parseColor(textColor));
     }
 
     private void setFontSize(int size) {
         int size0 = size + 2;
         tvTitle.setTextSize(size0);
-        tvPostPerson.setTextSize(size);
-        tvPostDay.setTextSize(size);
         tvContent.setTextSize(size);
     }
 
     private void getData(Context context, int chapter_change, String text) {
-//        Log.e("1: ", String.valueOf(idStory));
-//        Log.e("2: ", String.valueOf(idChapter));
-//        Log.e("3: ", String.valueOf(chapter_change));
-//        Log.e("4: ", String.valueOf(idAccount));
         pbReLoad.setVisibility(View.VISIBLE);
         Api.apiInterface().getChapter(idStory, idChapter, chapter_change, idAccount).enqueue(new Callback<ChuongTruyen>() {
             @Override
-            public void onResponse(Call<ChuongTruyen> call, Response<ChuongTruyen> response) {
+            public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ChuongTruyen chuong = response.body();
                     if (chuong.getMachuong() != 0) {
                         tvTitle.setText(String.format("Chương %s: %s", chuong.getSochuong(), chuong.getTenchuong()));
-                        tvPostPerson.setText("Người đăng: "+chuong.getNguoidang());
-                        tvPostDay.setText("Ngày đăng: "+chuong.getThoigiandang());
-                        tvContent.setText(chuong.getNoidung());
+                        tvContent.setText(String.format("Người đăng: %s\nNgày đăng: %s\n\n\n%s", chuong.getNguoidang(), chuong.getThoigiandang(), chuong.getNoidung()));
                         setIdChapter(chuong.getMachuong());
 
                         //update idChapterRead
@@ -203,7 +206,7 @@ public class ChapterReadActivity extends AppCompatActivity {
                         }
 
                         pbReLoad.setVisibility(View.GONE);
-                        constrainLayout.setVisibility(View.VISIBLE);
+                        drawerLayout.setVisibility(View.VISIBLE);
                     } else {
                         Toast.makeText(ChapterReadActivity.this, text, Toast.LENGTH_SHORT).show();
                     }
@@ -211,31 +214,18 @@ public class ChapterReadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ChuongTruyen> call, Throwable t) {
+            public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
                 Log.e("Err_ChapterRead", "getData", t);
             }
         });
-
-
     }
 
-    private boolean checkChapterRead(int idChapter) {
-        ChapterRead chapterRead = AppDatabase.getInstance(this).appDao().checkChapterRead(idStory, idChapter);
-        if (chapterRead != null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public void getData_offline() {
+    public void getData_Download() {
         Chapter chapter = AppDatabase.getInstance(this).appDao().getChapter(idStory, idChapter);
 
         String title = String.format("Chương %s: %s", chapter.getNumberChapter(), chapter.getNameChapter());
         tvTitle.setText(title);
-        tvPostPerson.setText("Người đăng: "+chapter.getPoster());
-        tvPostDay.setText("Ngày đăng: "+chapter.getPostDay());
-        tvContent.setText(chapter.getContent());
+        tvContent.setText(String.format("Người đăng: %s\nNgày đăng: %s\n\n\n%s", chapter.getPoster(), chapter.getPostDay(), chapter.getContent()));
 
         int idChapterRead = chapter.getIdChapter();
 
@@ -250,14 +240,23 @@ public class ChapterReadActivity extends AppCompatActivity {
             AppDatabase.getInstance(this).appDao().insertChapterRead(chapterRead);
         }
 
-        constrainLayout.setVisibility(View.VISIBLE);
+        drawerLayout.setVisibility(View.VISIBLE);
         pbReLoad.setVisibility(View.GONE);
+    }
+
+    private boolean checkChapterRead(int idChapter) {
+        ChapterRead chapterRead = AppDatabase.getInstance(this).appDao().checkChapterRead(idStory, idChapter);
+        if (chapterRead != null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void checkComment() {
         Api.apiInterface().checkLikeStory(idStory, idAccount).enqueue(new Callback<Truyen>() {
             @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Truyen t = response.body();
 
@@ -272,7 +271,7 @@ public class ChapterReadActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
+            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
                 Log.e("Err_ChapterRead", "checkComment", t);
             }
         });
@@ -280,39 +279,43 @@ public class ChapterReadActivity extends AppCompatActivity {
 
     private void processEvents() {
         btNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.btMenuBack:
-                    finish();
-                    break;
-                case R.id.btMenuListChapter:
-                    handler.postDelayed(() -> {
-                        openDialogListChapter();
-                    }, 300);
-                    break;
-                case R.id.btMenuComment:
-                    if (isNetwork()) {
-                        if (isComment) {
-                            Intent intent2 = new Intent(ChapterReadActivity.this, CommentListActivity.class);
-                            intent2.putExtra("idStory", idStory);
-                            startActivity(intent2);
-                        } else {
-                            Toast.makeText(ChapterReadActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case R.id.btMenuSetting:
-                    openDialogSetting();
-                    break;
-                default:
-                    break;
+            int itemId = item.getItemId();
+            if (itemId == R.id.btMenuBack) {
+                finish();
             }
-            return true;
+            if (itemId == R.id.btMenuListChapter) {
+                if (isNetwork()) {
+                    openChapterList();
+                } else {
+                    Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+                    if (story != null) {
+                        openChapterList_Download(this);
+                    } else {
+                        Toast.makeText(this, "Bạn chưa tải truyện nên không thể đọc offline!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            if (itemId == R.id.btMenuComment) {
+                if (isNetwork()) {
+                    if (isComment) {
+                        Intent intent2 = new Intent(ChapterReadActivity.this, CommentListActivity.class);
+                        intent2.putExtra("idStory", idStory);
+                        startActivity(intent2);
+                    } else {
+                        Toast.makeText(ChapterReadActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if (itemId == R.id.btMenuSetting) {
+                openDialogSetting();
+            }
+            return false;
         });
 
         //ẩn hiện btnavigation
-        constrainLayout.setOnClickListener(v -> {
+        constraintLayout.setOnClickListener(v -> {
             status.getAndIncrement();
             if (status.get() % 2 != 0) {
                 btNavigationView.setVisibility(View.GONE);
@@ -329,12 +332,18 @@ public class ChapterReadActivity extends AppCompatActivity {
             if (isNetwork()) {
                 getData(this, 1, "Đây là chương đầu!");
             } else {
-                if (idChapter != idChapterFirst) {
-                    idChapter = AppDatabase.getInstance(this).appDao().getPreviousChapter(idStory, idChapter, idChapterFirst);
-                    getData_offline();
+                Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+                if (story != null) {
+                    if (idChapter != idChapterFirst) {
+                        idChapter = AppDatabase.getInstance(this).appDao().getPreviousChapter(idStory, idChapter, idChapterFirst);
+                        getData_Download();
+                    } else {
+                        Toast.makeText(this, "Đây là chương đầu!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "Đây là chương đầu!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Bạn chưa tải truyện nên không thể đọc offline!", Toast.LENGTH_SHORT).show();
                 }
+
             }
             scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
                 // Ready, move up
@@ -346,11 +355,16 @@ public class ChapterReadActivity extends AppCompatActivity {
             if (isNetwork()) {
                 getData(this, 3, "Đây là chương mới nhất!");
             } else {
-                if (idChapter != idChapterFinal) {
-                    idChapter = AppDatabase.getInstance(this).appDao().getNextChapter(idStory, idChapter, idChapterFinal);
-                    getData_offline();
+                Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+                if (story != null) {
+                    if (idChapter != idChapterFinal) {
+                        idChapter = AppDatabase.getInstance(this).appDao().getNextChapter(idStory, idChapter, idChapterFinal);
+                        getData_Download();
+                    } else {
+                        Toast.makeText(this, "Đây là chương mới nhất!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "Đây là chương mới nhất!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Bạn chưa tải truyện nên không thể đọc offline!", Toast.LENGTH_SHORT).show();
                 }
             }
             scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
@@ -360,61 +374,32 @@ public class ChapterReadActivity extends AppCompatActivity {
         });
     }
 
-    private void openDialogListChapter() {
+    private void openChapterList() {
         List<ChuongTruyen> listChapter = new ArrayList<>();
-        ChapterDialogAdapter chapterDialogAdapter;
-        RecyclerView rcViewChapter;
-
-        status.getAndIncrement();
-
-        Dialog dialogListChapter = new Dialog(this);
-        dialogListChapter.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialogListChapter.setContentView(R.layout.dialog_chapter_list);
-
-        Window window = dialogListChapter.getWindow();
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        //setLayout
-        windowAttributes.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        windowAttributes.height = WindowManager.LayoutParams.MATCH_PARENT;
-        // vị trí dialog
-        windowAttributes.gravity = Gravity.LEFT;
-        //hiệu ứng di chuyển dialog
-        windowAttributes.windowAnimations = R.style.DialogChapterlist;
-        window.setAttributes(windowAttributes);
-
-        // click bên ngoài dialog có thể out
-        dialogListChapter.setCancelable(true);
-//        dialogListChapter.setCanceledOnTouchOutside(true);
-
-        ImageView ivStory = dialogListChapter.findViewById(R.id.ivStory);
-        ImageView ivReverse = dialogListChapter.findViewById(R.id.ivReverse);
-        TextView tvStoryName = dialogListChapter.findViewById(R.id.tvStoryName);
-        TextView tvAuthor = dialogListChapter.findViewById(R.id.tvAuthor);
-        SearchView svChapter = dialogListChapter.findViewById(R.id.svChapter);
+        ChapterNavigationAdapter chapterNavigationAdapter;
 
         //getDataStory
         Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
             @Override
-            public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
                 Truyen tc = response.body();
-                tvStoryName.setText(tc.getTentruyen());
-                tvAuthor.setText(tc.getTacgia());
-                Picasso.get().load(tc.getAnh())
-                        .into(ivStory);
+                if (tc != null) {
+                    tvStoryName.setText(tc.getTentruyen());
+                    tvAuthor.setText(tc.getTacgia());
+                    Picasso.get().load(tc.getAnh())
+                            .into(ivStory);
+                }
             }
 
             @Override
-            public void onFailure(Call<Truyen> call, Throwable t) {
+            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
                 Log.e("Err_ChapterRead", "openDialogListChapter1", t);
             }
         });
 
         //RecyclerView
-        rcViewChapter = dialogListChapter.findViewById(R.id.rcListChapterOnChapterRead);
         rcViewChapter.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        chapterDialogAdapter = new ChapterDialogAdapter(listChapter, (position, view1) -> {
+        chapterNavigationAdapter = new ChapterNavigationAdapter(listChapter, (position, view1, isLongClick) -> {
             pbReLoad.setVisibility(View.VISIBLE);
             Log.e("getIdChapter", String.valueOf(listChapter.get(position).getMachuong()));
             setIdChapter(listChapter.get(position).getMachuong());
@@ -423,31 +408,24 @@ public class ChapterReadActivity extends AppCompatActivity {
                 getData(this, 2, "Không tìm thấy chương!");
                 pbReLoad.setVisibility(View.GONE);
             }, 1500);
-
-            dialogListChapter.dismiss();
         });//Đổ dữ liệu lên adpter
-        rcViewChapter.setAdapter(chapterDialogAdapter);
-        //tạo dòng kẻ ngăn cách các item
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
-        rcViewChapter.addItemDecoration(itemDecoration);
+        rcViewChapter.setAdapter(chapterNavigationAdapter);
 
         //getDataListChapter
         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
-            public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                if (response.isSuccessful() && response.body().toString() != null) {
+            public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
+                if (response.isSuccessful() && response.body() != null) {
                     listChapter.clear();
                     listChapter.addAll(response.body());
-                    chapterDialogAdapter.notifyDataSetChanged();
+                    chapterNavigationAdapter.notifyDataSetChanged();
 
-                    btNavigationView.setVisibility(View.GONE);
-                    rlNextAndPrevious.setVisibility(View.GONE);
-                    dialogListChapter.show();
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
             }
 
             @Override
-            public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
                 Log.e("Err_ChapterRead", "openDialogListChapter2", t);
             }
         });
@@ -455,7 +433,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         //event
         ivReverse.setOnClickListener(view -> {
             Collections.reverse(listChapter);// đảo ngược dánh sách
-            rcViewChapter.setAdapter(chapterDialogAdapter);
+            rcViewChapter.setAdapter(chapterNavigationAdapter);
         });
 
         svChapter.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
@@ -466,24 +444,105 @@ public class ChapterReadActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Api.apiInterface().searchChapter(idStory, newText).enqueue(new Callback<List<ChuongTruyen>>() {
-                    @Override
-                    public void onResponse(Call<List<ChuongTruyen>> call, Response<List<ChuongTruyen>> response) {
-                        if (response.isSuccessful() && response.body().toString() != null) {
-                            listChapter.clear();
-                            listChapter.addAll(response.body());
-                            chapterDialogAdapter.notifyDataSetChanged();
-                        }
-                    }
+                if (newText.equals("")) {
+                    Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
+                        @Override
+                        public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                listChapter.clear();
+                                listChapter.addAll(response.body());
+                                chapterNavigationAdapter.notifyDataSetChanged();
 
-                    @Override
-                    public void onFailure(Call<List<ChuongTruyen>> call, Throwable t) {
-                        Log.e("Err_ChapterRead", "openDialogListChapter3", t);
-                    }
-                });
+                                drawerLayout.openDrawer(GravityCompat.START);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
+                            Log.e("Err_ChapterRead", "openDialogListChapter2", t);
+                        }
+                    });
+                } else {
+                    Api.apiInterface().searchChapter(idStory, newText).enqueue(new Callback<List<ChuongTruyen>>() {
+                        @Override
+                        public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                listChapter.clear();
+                                listChapter.addAll(response.body());
+                                chapterNavigationAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
+                            Log.e("Err_ChapterRead", "openDialogListChapter", t);
+                        }
+                    });
+                }
                 return false;
             }
         });
+    }
+
+    private void openChapterList_Download(Context context) {
+        //get data listchapter
+        List<Chapter> listChapterDownload = AppDatabase.getInstance(context).appDao().getAllChapter(idStory);
+
+        //RecyclerView
+        rcChapterList_Download(listChapterDownload);
+
+        //getDataStoryDownload
+        Story story = AppDatabase.getInstance(context).appDao().getStory(idStory);
+        tvStoryName.setText(story.getNameStory());
+        tvAuthor.setText(story.getAuthor());
+        Picasso.get().load(story.getImage()).into(ivStory);
+
+        //event
+        ivReverse.setOnClickListener(view -> {
+            Collections.reverse(listChapterDownload);// đảo ngược dánh sách
+            rcChapterList_Download(listChapterDownload);
+        });
+
+        svChapter.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.equals("")) {
+                    //RecyclerView
+                    rcChapterList_Download(listChapterDownload);
+                } else {
+                    //get data listchapter
+                    List<Chapter> listChapterDownload1 = AppDatabase.getInstance(context).appDao().getAllChapterByNumberChapter(idStory, newText);
+
+                    //RecyclerView
+                    rcChapterList_Download(listChapterDownload1);
+                }
+                return false;
+            }
+        });
+
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private void rcChapterList_Download(List<Chapter> listChapterDownload1) {
+        //RecyclerView
+        rcViewChapter.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        ChapterNavigationDownloadAdapter chapterNavigationDownloadAdapter = new ChapterNavigationDownloadAdapter(listChapterDownload1, (position, view1, isLongClick) -> {
+            pbReLoad.setVisibility(View.VISIBLE);
+            Log.e("getIdChapter", String.valueOf(listChapterDownload1.get(position).getIdChapter()));
+            setIdChapter(listChapterDownload1.get(position).getIdChapter());
+
+            handler.postDelayed(() -> {
+                getData_Download();
+                pbReLoad.setVisibility(View.GONE);
+            }, 1500);
+        });//Đổ dữ liệu lên adpter
+
+        rcViewChapter.setAdapter(chapterNavigationDownloadAdapter);
     }
 
     private void openDialogSetting() {
@@ -528,7 +587,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         tvColor7 = dialogSetting.findViewById(R.id.tvColor7);
 
         tvFontSize.setText(String.valueOf(fontSize));
-        tvLineStretch.setText(lineStretch + "%");
+        tvLineStretch.setText(String.format(Locale.getDefault(), "%d%%", lineStretch));
 
         //event
         ivSettingColor.setOnClickListener(view -> {
@@ -559,7 +618,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         ivLineStretchDown.setOnClickListener(view -> {
             if (lineStretch > 70 && lineStretch < 305) {
                 lineStretch = lineStretch - 5;
-                tvLineStretch.setText(lineStretch + "%");
+                tvLineStretch.setText(String.format(Locale.getDefault(), "%d%%", lineStretch));
                 setLineStretch(lineStretch);
             }
         });
@@ -567,7 +626,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         ivLineStretchUp.setOnClickListener(view -> {
             if (lineStretch > 65 && lineStretch < 300) {
                 lineStretch = lineStretch + 5;
-                tvLineStretch.setText(lineStretch + "%");
+                tvLineStretch.setText(String.format(Locale.getDefault(), "%d%%", lineStretch));
                 setLineStretch(lineStretch);
             }
         });
@@ -589,7 +648,6 @@ public class ChapterReadActivity extends AppCompatActivity {
         tvColor3.setOnClickListener(view -> {
             backgroundColor = "#" + Integer.toHexString(getResources().getColor(R.color.circle3));
             textColor = "#" + Integer.toHexString(getResources().getColor(R.color.black));
-            ;
 
             setColor();
         });
@@ -627,7 +685,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
     private void setColor() {
         setTextColor();
-        constrainLayout.setBackgroundColor(Color.parseColor(backgroundColor));
+        constraintLayout.setBackgroundColor(Color.parseColor(backgroundColor));
         setSharedPreferences(textColor, backgroundColor);
     }
 
@@ -645,7 +703,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         myedit.putInt("fontSize", font_size);
         myedit.putInt("lineStretch", line_stretch);
-        myedit.commit();
+        myedit.apply();
     }
 
     private void openDialogSettingColor() {
@@ -714,13 +772,9 @@ public class ChapterReadActivity extends AppCompatActivity {
         });
 
 
-        tvUseTextColor.setOnClickListener(view -> {
-            setTextColor();
-        });
+        tvUseTextColor.setOnClickListener(view -> setTextColor());
 
-        tvUseBackgroundColor.setOnClickListener(view -> {
-            constrainLayout.setBackgroundColor(Color.parseColor(backgroundColor));
-        });
+        tvUseBackgroundColor.setOnClickListener(view -> constraintLayout.setBackgroundColor(Color.parseColor(backgroundColor)));
 
         dialogSettingColor.show();
     }
@@ -731,6 +785,6 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         myedit.putString("textColor", textColor);
         myedit.putString("backgroundColor", backgroundColor);
-        myedit.commit();
+        myedit.apply();
     }
 }

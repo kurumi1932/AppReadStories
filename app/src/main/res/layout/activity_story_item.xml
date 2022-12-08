@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStory"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@color/white">
+    android:layout_height="115dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/ivStory"
         android:layout_width="70dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:padding="6dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"
+        tools:ignore="contentDescription" />
 
     <TextView
         android:id="@+id/tvStoryName"
@@ -24,9 +25,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="20dp"
         android:layout_toEndOf="@+id/ivStory"
-        android:layout_toRightOf="@+id/ivStory"
         android:ellipsize="end"
-        android:paddingRight="5dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="5dp"
         android:text="@string/name_story"
         android:textColor="@color/medium_sea_green"
         android:textSize="17sp" />
@@ -36,7 +37,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="-20dp"
-        android:layout_toRightOf="@+id/tvStoryName"
+        android:layout_toEndOf="@+id/tvStoryName"
         android:background="@drawable/border_silver"
         android:gravity="center"
         android:textColor="@color/black"
@@ -49,7 +50,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
-        android:layout_toRightOf="@+id/ivStory"
+        android:layout_toEndOf="@+id/ivStory"
         android:text="@string/text1"
         android:textColor="@color/black"
         android:textSize="15sp" />
@@ -60,7 +61,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="40dp"
-        android:layout_toRightOf="@+id/tv1"
+        android:layout_toEndOf="@+id/tv1"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -71,7 +72,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/ivStory"
+        android:layout_toEndOf="@+id/ivStory"
         android:text="@string/text3"
         android:textColor="@color/black"
         android:textSize="15sp" />
@@ -82,7 +83,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tv2"
+        android:layout_toEndOf="@+id/tv2"
         android:textColor="@color/black"
         android:textSize="15sp" />
 
@@ -92,7 +93,7 @@
         android:layout_height="25dp"
         android:layout_marginStart="125dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tv2"
+        android:layout_toEndOf="@+id/tv2"
         android:text="@string/text4"
         android:textColor="@color/black"
         android:textSize="15sp" />
@@ -103,8 +104,26 @@
         android:layout_height="25dp"
         android:layout_marginStart="5dp"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/tv3"
+        android:layout_toEndOf="@+id/tv3"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvNewChapter"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="95dp"
+        android:gravity="center|start"
+        android:layout_toEndOf="@+id/ivStory"
+        android:textColor="@color/red"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/silver"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

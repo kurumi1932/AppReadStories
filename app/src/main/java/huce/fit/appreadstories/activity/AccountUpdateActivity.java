@@ -1,5 +1,6 @@
 package huce.fit.appreadstories.activity;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,17 +35,18 @@ public class AccountUpdateActivity extends AppCompatActivity {
     private ImageView ivDate;
     private Button btSave;
     private int idAccount;
-    private String name, passwordOld, email, birthday, oldpass, newpass;
-    private DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private Date currentDate = new Date();
+    private String name, passwordOld, email, birthday;
+    @SuppressLint("SimpleDateFormat")
+    private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final Date currentDate = new Date();
 
-    private Calendar myCalendar = Calendar.getInstance();
-    private DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
+    private final Calendar myCalendar = Calendar.getInstance();
+    private final DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(myCalendar.getTime());
+        @SuppressLint("SimpleDateFormat") String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(myCalendar.getTime());
         etBirthday.setText(dateStr);
     };
 
@@ -83,16 +86,12 @@ public class AccountUpdateActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
-        ivBack.setOnClickListener(v -> {
-            finish();
-        });
+        ivBack.setOnClickListener(v -> finish());
 
-        ivDate.setOnClickListener(v -> {
-            new DatePickerDialog(AccountUpdateActivity.this, d,
-                    myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+        ivDate.setOnClickListener(v -> new DatePickerDialog(AccountUpdateActivity.this, d,
+                myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show());
 
         btSave.setOnClickListener(v -> {
             if (isNetwork()) {
@@ -112,15 +111,14 @@ public class AccountUpdateActivity extends AppCompatActivity {
     public boolean checkDate(String dateStr) {
         String[] dateArr = dateStr.split("-");
         if (Integer.parseInt(dateArr[0]) < 9999) {
-            if (isValid(dateStr)) {
-                return true;
-            }
+            return isValid(dateStr);
+        } else {
+            return false;
         }
-        return false;
     }
 
     public boolean isValid(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
         try {
             sdf.parse(dateStr);
@@ -133,8 +131,8 @@ public class AccountUpdateActivity extends AppCompatActivity {
     private void checkPassword() {
         name = etName.getText().toString().trim();
         email = etEmail.getText().toString().trim();
-        oldpass = etOldPassword.getText().toString().trim();
-        newpass = etNewPassword.getText().toString().trim();
+        String oldpass = etOldPassword.getText().toString().trim();
+        String newpass = etNewPassword.getText().toString().trim();
         birthday = etBirthday.getText().toString().trim();
 
         if (checkDate(birthday)) {
@@ -172,7 +170,7 @@ public class AccountUpdateActivity extends AppCompatActivity {
     private void updateAccount(String password) {
         Api.apiInterface().updateAccount(idAccount, password, email, name).enqueue(new Callback<TaiKhoan>() {
             @Override
-            public void onResponse(Call<TaiKhoan> call, Response<TaiKhoan> response) {
+            public void onResponse(@NonNull Call<TaiKhoan> call,@NonNull Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     int status = response.body().getAccountsuccess();
                     if (status == 3) {
@@ -192,7 +190,7 @@ public class AccountUpdateActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TaiKhoan> call, Throwable t) {
+            public void onFailure(@NonNull Call<TaiKhoan> call,@NonNull Throwable t) {
                 Toast.makeText(AccountUpdateActivity.this, "Vui lòng nhập Email khác!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -202,12 +200,16 @@ public class AccountUpdateActivity extends AppCompatActivity {
         String endDate = simpleDateFormat.format(currentDate);
         Date date1 = simpleDateFormat.parse(startDate);
         Date date2 = simpleDateFormat.parse(endDate);
-        long getDiff = date2.getTime() - date1.getTime();
+        long getDiff = 0;
+        if (date1 != null&&date2 != null) {
+            getDiff = date2.getTime() - date1.getTime();
+            Log.e("date1", date1.toString());
+            Log.e("date2", date2.toString());
+        }
+        Log.e("getDiff", String.valueOf(getDiff));
+
         long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);//24h*60p*60s*1000
         int age = (int) getDaysDiff / 365;
-        Log.e("date1", date1.toString());
-        Log.e("date2", date2.toString());
-        Log.e("getDiff", String.valueOf(getDiff));
         Log.e("getDaysDiff", String.valueOf(getDaysDiff));
         Log.e("age", String.valueOf(age));
         return age;
@@ -223,6 +225,6 @@ public class AccountUpdateActivity extends AppCompatActivity {
         myedit.putString("email", email);
         myedit.putString("birthDay", birthDay);
         myedit.putInt("age", age);
-        myedit.commit();
+        myedit.apply();
     }
 }

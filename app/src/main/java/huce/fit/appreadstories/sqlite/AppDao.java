@@ -19,7 +19,7 @@ public interface AppDao {
     @Query("UPDATE story SET chapterReading=:idChapterRead WHERE idStory = :idStory")
     void updateIdChapterRead(int idStory, int idChapterRead);
 
-    @Query("DELETE FROM chapter WHERE idStory = :idStory")
+    @Query("DELETE FROM story WHERE idStory = :idStory")
     void deleteStory(int idStory);
 
     @Query("SELECT * FROM story")
@@ -31,9 +31,6 @@ public interface AppDao {
 //    ----------------Chapter----------------
     @Insert
     void insertChapter(Chapter... chapter);
-
-    @Update
-    void updateStory(Chapter... chapter);
 
     @Query("DELETE FROM chapter WHERE idStory = :idStory")
     void deleteChapter(int idStory);

@@ -11,11 +11,10 @@
     android:paddingBottom="15dp">
 
     <TextView
-        android:id="@+id/tvTitle"
+        android:id="@+id/tvStoryDownload"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center|start"
-        android:text="@string/comment"
         android:textColor="@color/white"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -27,12 +26,13 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvUpdate"
-            android:layout_width="70dp"
+            android:id="@+id/tvReadStory"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
             android:background="?android:attr/selectableItemBackground"
-            android:gravity="center"
-            android:text="@string/btUpdate"
+            android:gravity="center|start"
+            android:text="@string/btReadStory"
             android:textColor="@color/white_smoke"
             android:textSize="17sp"
             android:textStyle="normal" />
@@ -41,8 +41,9 @@
             android:id="@+id/tvDelete"
             android:layout_width="70dp"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
             android:background="?android:attr/selectableItemBackground"
-            android:gravity="center"
+            android:gravity="start|center"
             android:text="@string/btDelete"
             android:textColor="@color/white_smoke"
             android:textSize="17sp"

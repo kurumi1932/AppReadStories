@@ -23,7 +23,7 @@ import retrofit2.Response;
 
 public class StoryInterfaceIntroduceFagment extends Fragment {
     private TextView tvIntroduce;
-    private int idStory;
+    private final int idStory;
 
     public StoryInterfaceIntroduceFagment(int idStory) {
         this.idStory = idStory;
@@ -49,13 +49,15 @@ public class StoryInterfaceIntroduceFagment extends Fragment {
         if (isNetwork()) {
             Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
                 @Override
-                public void onResponse(Call<Truyen> call, Response<Truyen> response) {
+                public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
                     Truyen tc = response.body();
-                    tvIntroduce.setText(tc.getGioithieu());
+                    if (tc != null) {
+                        tvIntroduce.setText(tc.getGioithieu());
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<Truyen> call, Throwable t) {
+                public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
                     Log.e("Err_StoryInterfaceF", t.toString());
                 }
             });

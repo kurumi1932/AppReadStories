@@ -7,22 +7,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.model.DanhGia;
 
 public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
-    private List<DanhGia> listRate;
-    private ClickListener clickListener;
+    private final List<DanhGia> listRate;
 
-    public RateAdapter(List<DanhGia> listRate, ClickListener clickListener) {
+    public RateAdapter(List<DanhGia> listRate) {
         this.listRate = listRate;
-        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -35,9 +31,7 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
     @Override
     public void onBindViewHolder(@NonNull RateAdapter.RateHoder holder, int position) {
         DanhGia dg = listRate.get(position);
-        if (dg == null) {
-            return;
-        } else {
+        if (dg != null) {
             holder.tvName.setText(dg.getTenhienthi());
             int pointRate = dg.getDiemdanhgia();
             if (pointRate >= 1) {
@@ -70,11 +64,9 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
     public class RateHoder extends RecyclerView.ViewHolder {
         private TextView tvName, tvRate;
         private ImageView ivRate1, ivRate2, ivRate3, ivRate4, ivRate5;
-        private ConstraintLayout constraintLayoutRateItem;
 
         public RateHoder(@NonNull View itemView) {
             super(itemView);
-            constraintLayoutRateItem = itemView.findViewById(R.id.constraintLayoutRateItem);
             tvName = itemView.findViewById(R.id.tvName);
             ivRate1 = itemView.findViewById(R.id.ivRate1);
             ivRate2 = itemView.findViewById(R.id.ivRate2);
@@ -82,13 +74,6 @@ public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
             ivRate4 = itemView.findViewById(R.id.ivRate4);
             ivRate5 = itemView.findViewById(R.id.ivRate5);
             tvRate = itemView.findViewById(R.id.tvRate);
-
-            constraintLayoutRateItem.setOnLongClickListener(view -> {
-                int position = getBindingAdapterPosition();
-                int idRate = listRate.get(position).getMadanhgia();
-                clickListener.onItemClick(idRate, view);
-                return false;
-            });
         }
 
     }

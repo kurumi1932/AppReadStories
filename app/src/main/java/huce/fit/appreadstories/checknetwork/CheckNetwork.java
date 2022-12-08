@@ -7,7 +7,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 public class CheckNetwork {
-    private Context context;
+    private final Context context;
 
     public CheckNetwork(Context context) {
         this.context = context;

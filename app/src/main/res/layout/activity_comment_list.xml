@@ -17,11 +17,12 @@
             android:id="@+id/ivBack"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="?android:attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_back"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:layout_width="match_parent"
@@ -57,7 +58,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="50dp">
+            android:layout_marginEnd="50dp">
 
             <EditText
                 android:id="@+id/etComment"
@@ -65,8 +66,10 @@
                 android:layout_height="match_parent"
                 android:layout_margin="7dp"
                 android:background="@drawable/bg_corner_no_color_10dp_boder_black"
-                android:gravity="top|left"
+                android:gravity="top|start"
                 android:hint="@string/comment"
+                android:importantForAutofill="no"
+                android:inputType="text"
                 android:maxLength="2400"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
@@ -83,10 +86,9 @@
                 android:id="@+id/tvCommentLength"
                 android:layout_width="70dp"
                 android:layout_height="20dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="10dp"
-                android:gravity="right"
-                android:text="0/2400"
+                android:gravity="end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -95,13 +97,14 @@
             android:id="@+id/ivSent"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginLeft="-50dp"
+            android:layout_marginStart="-50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:background="?android:attr/selectableItemBackground"
             android:padding="4dp"
             android:src="@drawable/ic_send"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="contentDescription" />
     </LinearLayout>
 
 

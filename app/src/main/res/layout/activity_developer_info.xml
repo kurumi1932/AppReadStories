@@ -17,12 +17,12 @@
             android:id="@+id/ivBack"
             android:layout_width="45dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="?android:attr/selectableItemBackground"
             android:padding="10dp"
             android:src="@drawable/ic_back"
             app:tint="@color/black"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/tv"
@@ -33,7 +33,7 @@
             android:layout_marginRight="45dp"
             android:layout_marginBottom="5dp"
             android:gravity="center"
-            android:text="@string/text31"
+            android:text="@string/dev_information2"
             android:textColor="@color/black"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -47,11 +47,11 @@
         app:layout_constraintTop_toBottomOf="@+id/rl" />
 
     <TextView
-        android:id="@+id/tv0"
+        android:id="@+id/tvUniversity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/text40"
+        android:text="@string/dev_university"
         android:textColor="@color/blue"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -60,17 +60,17 @@
         app:layout_constraintTop_toBottomOf="@+id/rl" />
 
     <TextView
-        android:id="@+id/tv00"
+        android:id="@+id/tvMajors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="@string/text41"
+        android:text="@string/dev_majors"
         android:textColor="@color/blue"
         android:textSize="21sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv0" />
+        app:layout_constraintTop_toBottomOf="@+id/tvUniversity" />
 
     <ImageView
         android:id="@+id/ivHUCE"
@@ -81,139 +81,122 @@
         android:src="@drawable/huce"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv00" />
+        app:layout_constraintTop_toBottomOf="@+id/tvMajors"
+        tools:ignore="contentDescription" />
 
     <TextView
-        android:id="@+id/tv000"
+        android:id="@+id/tvname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/text32"
-        android:textColor="@color/blue"
-        android:textSize="21sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivHUCE" />
-
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="30dp"
         android:text="@string/text33"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv000" />
+        app:layout_constraintTop_toBottomOf="@+id/ivHUCE" />
 
     <TextView
-        android:id="@+id/tv1_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="30dp"
-        android:text="@string/text39"
+        android:text="@string/dev_name"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/tv1"
-        app:layout_constraintTop_toBottomOf="@+id/tv000" />
+        app:layout_constraintLeft_toRightOf="@+id/tvname"
+        app:layout_constraintTop_toBottomOf="@+id/ivHUCE" />
 
     <TextView
-        android:id="@+id/tv2"
+        android:id="@+id/tvClass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:text="@string/text35"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+        app:layout_constraintTop_toBottomOf="@+id/tvname" />
 
     <TextView
-        android:id="@+id/tv2_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:text="63IT3"
+        android:text="@string/dev_class"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/tv2"
-        app:layout_constraintTop_toBottomOf="@+id/tv1" />
+        app:layout_constraintLeft_toRightOf="@+id/tvClass"
+        app:layout_constraintTop_toBottomOf="@+id/tvname" />
 
     <TextView
-        android:id="@+id/tv3"
+        android:id="@+id/tvStudentID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:text="@string/text36"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvClass" />
 
     <TextView
-        android:id="@+id/tv3_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:text="204763"
+        android:text="@string/dev_studentID"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/tv3"
-        app:layout_constraintTop_toBottomOf="@+id/tv2" />
+        app:layout_constraintLeft_toRightOf="@+id/tvStudentID"
+        app:layout_constraintTop_toBottomOf="@+id/tvClass" />
 
     <TextView
-        android:id="@+id/tv4"
+        android:id="@+id/tvPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:text="@string/text37"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+        app:layout_constraintTop_toBottomOf="@+id/tvStudentID" />
 
     <TextView
-        android:id="@+id/tv4_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:text="0898727647"
+        android:text="@string/dev_phone"
         android:textColor="@color/black"
         android:textSize="17sp"
-        app:layout_constraintLeft_toRightOf="@+id/tv4"
-        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+        app:layout_constraintLeft_toRightOf="@+id/tvPhone"
+        app:layout_constraintTop_toBottomOf="@+id/tvStudentID" />
 
     <TextView
-        android:id="@+id/tv5"
+        android:id="@+id/tvEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:text="@string/text38"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv4" />
+        app:layout_constraintTop_toBottomOf="@+id/tvPhone" />
 
     <TextView
-        android:id="@+id/tv5_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:text="tien1932nd@gmail.com"
+        android:text="@string/dev_email"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@+id/tv5"
-        app:layout_constraintTop_toBottomOf="@+id/tv4" />
+        app:layout_constraintLeft_toRightOf="@+id/tvEmail"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

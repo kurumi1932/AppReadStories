@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -27,7 +28,7 @@ import retrofit2.Response;
 
 public class StorySearchActivity extends AppCompatActivity {
 
-    private List<Truyen> listStory = new ArrayList<>(); //data source
+    private final List<Truyen> listStory = new ArrayList<>();
     private StoryAdapter storyAdapter;
     private RecyclerView rcViewStory;
     private ImageView ivBack;
@@ -50,19 +51,16 @@ public class StorySearchActivity extends AppCompatActivity {
     }
 
     private void getSharedPreferences() {
-        SharedPreferences sharedPreferences =  getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
         age = sharedPreferences.getInt("age", 0);
         Log.e("age", String.valueOf(age));
     }
 
     private void rcView(List<Truyen> listStory) {
         rcViewStory.setLayoutManager(new LinearLayoutManager(this));
-        storyAdapter = new StoryAdapter(listStory, (position, view1) -> {
-            Truyen tc = listStory.get(position);
-            int idStory = tc.getMatruyen();
-
+        storyAdapter = new StoryAdapter(listStory, (position, view1, isLongClick) -> {
             Intent intent = new Intent(StorySearchActivity.this, StoryInterfaceActivity.class);
-            intent.putExtra("idStory", idStory);
+            intent.putExtra("idStory", position);
             startActivity(intent);
         });//Đổ dữ liệu lên adpter
         rcViewStory.setAdapter(storyAdapter);
@@ -72,14 +70,14 @@ public class StorySearchActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
-        ivBack.setOnClickListener(v -> {
-            finish();
-        });
+        ivBack.setOnClickListener(v -> finish());
 
         svStory.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getData(query);
+                if (!query.equals("")) {
+                    getData(query);
+                }
                 return false;
             }
 
@@ -93,7 +91,7 @@ public class StorySearchActivity extends AppCompatActivity {
     private void getData(String name) {
         Api.apiInterface().searchStory(name, age).enqueue(new Callback<List<Truyen>>() {
             @Override
-            public void onResponse(Call<List<Truyen>> call, Response<List<Truyen>> response) {
+            public void onResponse(@NonNull Call<List<Truyen>> call,@NonNull Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listStory.clear();
                     listStory.addAll(response.body());
@@ -102,7 +100,7 @@ public class StorySearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Truyen>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Truyen>> call,@NonNull Throwable t) {
                 Toast.makeText(StorySearchActivity.this, "Lỗi cập nhật danh sách truyện!", Toast.LENGTH_SHORT).show();
             }
         });

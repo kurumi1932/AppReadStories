@@ -34,7 +34,7 @@
             android:scrollbars="none">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="@color/white"
                 android:orientation="horizontal">
@@ -44,66 +44,66 @@
                     android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:gravity="center"
                     android:text="@string/all"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvSpecies1"
                     android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:text="@string/text14"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvSpecies2"
                     android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:text="@string/text15"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvSpecies3"
                     android:layout_width="110dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:text="@string/text16"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvSpecies4"
                     android:layout_width="90dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:text="@string/text17"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvSpecies5"
                     android:layout_width="90dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
                     android:gravity="center"
                     android:text="@string/text18"
                     android:textColor="@color/black"
-                    android:textSize="16dp" />
+                    android:textSize="16sp" />
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -123,33 +123,33 @@
                 android:layout_width="70dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:gravity="center"
                 android:text="@string/all"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvStatus1"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="@string/text10"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvStatus2"
                 android:layout_width="110dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:gravity="center"
                 android:text="@string/text11"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <View
@@ -179,13 +179,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btCheckConnection"
+        android:id="@+id/btCheckNetwork"
         android:layout_width="140dp"
         android:layout_height="50dp"
         android:background="@color/medium_sea_green"
         android:text="@string/reload"
         android:textColor="@color/white"
         android:textSize="19sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

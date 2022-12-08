@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,20 +22,21 @@
                 android:id="@+id/ivBack"
                 android:layout_width="45dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="10dp"
                 android:src="@drawable/ic_back"
-                app:tint="@color/black" />
+                app:tint="@color/black"
+                tools:ignore="contentDescription" />
 
             <TextView
                 android:id="@+id/tvStoryName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="45dp"
+                android:layout_marginStart="45dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:gravity="center|left"
+                android:gravity="center|start"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
         </RelativeLayout>
@@ -54,9 +56,10 @@
                 android:layout_width="100dp"
                 android:layout_height="140dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"
                 android:layout_marginTop="5dp"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                tools:ignore="contentDescription" />
 
             <TextView
                 android:id="@+id/tvLblAuthor"
@@ -64,7 +67,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/ivStory"
+                android:layout_toEndOf="@+id/ivStory"
                 android:gravity="bottom"
                 android:text="@string/text2"
                 android:textColor="@color/black"
@@ -77,7 +80,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/tvLblAuthor"
+                android:layout_toEndOf="@+id/tvLblAuthor"
                 android:gravity="bottom"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
@@ -88,7 +91,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="40dp"
-                android:layout_toRightOf="@+id/ivStory"
+                android:layout_toEndOf="@+id/ivStory"
                 android:gravity="bottom"
                 android:text="@string/text3"
                 android:textColor="@color/black"
@@ -101,7 +104,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="40dp"
-                android:layout_toRightOf="@+id/tvLblStatus"
+                android:layout_toEndOf="@+id/tvLblStatus"
                 android:gravity="bottom"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
@@ -112,7 +115,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="75dp"
-                android:layout_toRightOf="@+id/ivStory"
+                android:layout_toEndOf="@+id/ivStory"
                 android:gravity="bottom"
                 android:text="@string/text4"
                 android:textColor="@color/black"
@@ -125,7 +128,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="75dp"
-                android:layout_toRightOf="@+id/tvLblChapter"
+                android:layout_toEndOf="@+id/tvLblChapter"
                 android:gravity="bottom"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
@@ -136,7 +139,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="110dp"
-                android:layout_toRightOf="@+id/ivStory"
+                android:layout_toEndOf="@+id/ivStory"
                 android:gravity="bottom"
                 android:text="@string/text5"
                 android:textColor="@color/black"
@@ -149,7 +152,7 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="110dp"
-                android:layout_toRightOf="@+id/tvLblSpecies"
+                android:layout_toEndOf="@+id/tvLblSpecies"
                 android:gravity="bottom"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
