@@ -95,6 +95,7 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_continue.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_delete.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_display_name.xml" value="0.13" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_down.xml" value="0.25" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_download.xml" value="0.213" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_email.xml" value="0.13" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/drawable/ic_list.xml" value="0.13" />
@@ -115,6 +116,7 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_main.xml" value="0.2418478260869565" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_network_error.xml" value="0.26666666666666666" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_rate_item.xml" value="0.38645833333333335" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_start_app.xml" value="0.33" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_download.xml" value="0.33" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_interface.xml" value="0.33" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/activity_story_item.xml" value="0.33" />

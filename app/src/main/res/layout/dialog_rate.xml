@@ -93,7 +93,6 @@
             android:gravity="top|start"
             android:hint="@string/hint_rate"
             android:importantForAutofill="no"
-            android:inputType="text"
             android:maxLength="400"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
@@ -102,7 +101,8 @@
             android:textColorHint="@color/dim_gray"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="textMultiLine" />
 
         <TextView
             android:id="@+id/tvNumberTextRate"

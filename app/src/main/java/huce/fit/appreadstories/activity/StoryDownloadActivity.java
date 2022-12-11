@@ -44,6 +44,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
 
     private int idStory, idChapterReading;
     private boolean isFollow;
+    private String nameStory;
 
     private ChapterDownloadActivityAdapter chapterDownloadActivityAdapter;
     private RecyclerView rcViewChapter;
@@ -107,6 +108,8 @@ public class StoryDownloadActivity extends AppCompatActivity {
                     tvChapter.setText(String.valueOf(t.getTongchuong()));
                     tvSpecies.setText(t.getTheloai());
                     Picasso.get().load(t.getAnh()).into(ivStory);
+
+                    nameStory = t.getTentruyen();
                 }
             }
 
@@ -172,6 +175,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
     public void startDownloadService() {
         Intent intent = new Intent(StoryDownloadActivity.this, DownloadStoryService.class);
         intent.putExtra("idStory", idStory);
+        intent.putExtra("nameStory", nameStory);
         intent.putExtra("isFollow", isFollow);
         intent.putExtra("idChapterReading", idChapterReading);
         startService(intent);

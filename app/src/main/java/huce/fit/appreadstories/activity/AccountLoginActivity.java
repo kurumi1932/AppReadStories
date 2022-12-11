@@ -39,7 +39,6 @@ public class AccountLoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_login);
-        getSharedPreferences();
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -161,30 +160,5 @@ public class AccountLoginActivity extends AppCompatActivity {
         myedit.putString("birthDay", birthDay);
         myedit.putInt("age", age);
         myedit.apply();
-    }
-
-    private void setSharedPreferences(int age) {
-        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
-        SharedPreferences.Editor myedit = sharedPreferences.edit();
-
-        myedit.putInt("age", age);
-        myedit.apply();
-    }
-
-    private void getSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
-        int idAccount = sharedPreferences.getInt("idAccount", 0);
-        String startDate = sharedPreferences.getString("birthDay", "1000-1-1");
-        if (idAccount != 0) {
-            try {
-                setSharedPreferences(age(startDate));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            Intent intent = new Intent(AccountLoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 }

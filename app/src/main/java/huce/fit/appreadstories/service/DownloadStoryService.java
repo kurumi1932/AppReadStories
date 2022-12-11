@@ -1,5 +1,7 @@
 package huce.fit.appreadstories.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,10 +11,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.api.Api;
 import huce.fit.appreadstories.model.ChuongTruyen;
 import huce.fit.appreadstories.model.Truyen;
@@ -29,35 +34,43 @@ public class DownloadStoryService extends Service {
     private final Chapter chapter = new Chapter();
     private final ChapterRead chapterRead = new ChapterRead();
     private int idAccount, idStory, idChapterReading;
+    private String nameStory;
     private boolean isFollow, checkDownLoad1, checkDownLoad2, checkDownLoad3;
+
+    private static final String CHENNAL_ID = "download_story_service";
+    private int count = 0;
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    private void getSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
-        idAccount = sharedPreferences.getInt("idAccount", 0);
-        Log.e("idAccount", String.valueOf(idAccount));
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("DownloadStoryService", "Download Story Start");
         getSharedPreferences();
+
         if (intent != null) {
+            Toast.makeText(this, "Bắt đầu tải về", Toast.LENGTH_LONG).show();
+
             idStory = intent.getIntExtra("idStory", 0);
+            nameStory = intent.getStringExtra("nameStory");
             isFollow = intent.getBooleanExtra("isFollow", false);
             idChapterReading = intent.getIntExtra("idChapterReading", 0);
-
             Log.e("idStory", String.valueOf(idStory));
+            Log.e("nameStory", nameStory);
             Log.e("idChapterReading", String.valueOf(idChapterReading));
             Log.e("isFollow", String.valueOf(isFollow));
 
             downloadStory(this);
-            Toast.makeText(this, "Download Started", Toast.LENGTH_LONG).show();
         }
         return START_NOT_STICKY;
+    }
+
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        idAccount = sharedPreferences.getInt("idAccount", 0);
+        Log.e("idAccount", String.valueOf(idAccount));
     }
 
     private void downloadStory(Context context) {
@@ -98,12 +111,13 @@ public class DownloadStoryService extends Service {
 
                 @Override
                 public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                    Log.e("Err_DownloadService", "downloadStory", t);
+                    Log.e("DownloadStoryService", "E_downloadStory", t);
                 }
             });
         }
 
         checkDownLoad1 = true;
+        Log.e("DownloadStoryService", "1");
         stopDownloadService();
     }
 
@@ -114,12 +128,14 @@ public class DownloadStoryService extends Service {
             @Override
             public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (listChapterOffline == null) {
+                    if (listChapterOffline.size() == 0) {//truyện chưa tải về máy
                         Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
                             @Override
                             public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
                                 if (response.isSuccessful() && response.body() != null) {
-                                    for (int i = 0; i < response.body().size(); i++) {
+                                    int sumChapter = response.body().size();
+
+                                    for (int i = 0; i < sumChapter; i++) {
                                         ChuongTruyen c = response.body().get(i);
                                         chapter.setIdChapter(c.getMachuong());
                                         chapter.setIdStory(c.getMatruyen());
@@ -129,17 +145,20 @@ public class DownloadStoryService extends Service {
                                         chapter.setPoster(c.getNguoidang());
                                         chapter.setPostDay(c.getThoigiandang());
                                         AppDatabase.getInstance(context).appDao().insertChapter(chapter);
+
+                                        count++;
+                                        sendNotification(count, false);
                                     }
                                 }
                             }
 
                             @Override
                             public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
-                                Log.e("Err_DownloadService", "downloadChapter", t);
+                                Log.e("DownloadStoryService", "E_downloadChapter1", t);
                             }
                         });
                     }
-                    if (listChapterOffline != null) {
+                    if (listChapterOffline.size() > 0) {//truyện đã tải về máy
                         List<ChuongTruyen> listChapter = new ArrayList<>(response.body());
                         for (int i = 0; i < listChapterOffline.size(); i++) {
                             for (int j = 0; j < listChapter.size(); j++) {
@@ -151,7 +170,8 @@ public class DownloadStoryService extends Service {
                             }
                         }
 
-                        for (int i = 0; i < listChapter.size(); i++) {
+                        int sumChapter = listChapter.size();
+                        for (int i = 0; i < sumChapter; i++) {
                             ChuongTruyen ct = listChapter.get(i);
 
                             chapter.setIdChapter(ct.getMachuong());
@@ -163,29 +183,33 @@ public class DownloadStoryService extends Service {
                             chapter.setPostDay(ct.getThoigiandang());
                             AppDatabase.getInstance(context).appDao().insertChapter(chapter);
 
-                            Story story = new Story();
-                            story.setNewChapter(0);
+                            count++;
+                            sendNotification(count, false);
+
+                            story = new Story();
+                            int newChapter = story.getNewChapter() - 1;
+                            story.setNewChapter(newChapter);
                             AppDatabase.getInstance(context).appDao().updateStory(story);
                         }
                     }
 
                     checkDownLoad2 = true;
+                    Log.e("DownloadStoryService", "2");
                     stopDownloadService();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
-                Log.e("Err_DownloadService", "downloadChapter", t);
+                Log.e("DownloadStoryService", "E_downloadChapter2", t);
             }
         });
 
     }
 
-
     private void downloadChapterRead(Context context) {
         List<ChapterRead> listChapterRead = AppDatabase.getInstance(context).appDao().getAllChapterRead(idStory);
-        if (listChapterRead == null) {
+        if (listChapterRead.size() == 0) {
             Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
@@ -201,12 +225,34 @@ public class DownloadStoryService extends Service {
 
                 @Override
                 public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
-                    Log.e("Err_DownloadService", "downloadChapterRead", t);
+                    Log.e("DownloadStoryService", "E_downloadChapterRead", t);
+
                 }
             });
         }
+
         checkDownLoad3 = true;
+        Log.e("DownloadStoryService", "3");
         stopDownloadService();
+    }
+
+    private void sendNotification(int count, boolean finish) {
+        int icon;
+        if (finish) {
+            icon = R.drawable.ic_download;
+        } else {
+            icon = R.drawable.ic_check;
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHENNAL_ID);
+        builder.setContentTitle(nameStory)
+                .setContentText(String.format(Locale.getDefault(), "Chương tải về: %d", count))
+                .setSmallIcon(icon)
+                .setOngoing(true)// thông báo không thể loại bỏ khi vẫn còn hoạt động
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_DEFAULT);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, builder.build());
     }
 
     private void stopDownloadService() {
@@ -217,6 +263,7 @@ public class DownloadStoryService extends Service {
             downloadChapterRead(this);
         }
         if (checkDownLoad1 && checkDownLoad2 && checkDownLoad3) {
+            sendNotification(count, true);
             onDestroy();
         }
     }
@@ -228,6 +275,12 @@ public class DownloadStoryService extends Service {
         checkDownLoad2 = false;
         checkDownLoad3 = false;
         // Stopping the player when service is destroyed
-        Toast.makeText(this, "Download Success", Toast.LENGTH_LONG).show();
+
+        //tắt notification
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(1);
+
+        Log.e("DownloadStoryService", "Download Story Stop");
+        Toast.makeText(this, "Tải thành công", Toast.LENGTH_LONG).show();
     }
 }

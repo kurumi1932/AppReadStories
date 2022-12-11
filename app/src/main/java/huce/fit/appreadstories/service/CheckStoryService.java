@@ -32,28 +32,28 @@ public class CheckStoryService extends Service {
         return null;
     }
 
-    private void getSharedPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
-        idAccount = sharedPreferences.getInt("idAccount", 0);
-        Log.e("idAccount", String.valueOf(idAccount));
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("CheckStoryService", "Check Story Start");
         getSharedPreferences();
-        Log.e("CheckStoryService", "Service_start");
 
         if (intent != null) {
+            Toast.makeText(this, "Kiểm tra cập nhật của truyện!", Toast.LENGTH_LONG).show();
+
             idStory = intent.getIntExtra("idStory", 0);
             isFollow = intent.getBooleanExtra("isFollow", false);
-
             Log.e("idStory", String.valueOf(idStory));
             Log.e("isFollow", String.valueOf(isFollow));
 
             updateStoryServer(this);
-            Toast.makeText(this, "Bắt đầu kiểm tra cập nhật của truyện!", Toast.LENGTH_LONG).show();
         }
         return START_STICKY;
+    }
+
+    private void getSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CheckLogin", MODE_PRIVATE);
+        idAccount = sharedPreferences.getInt("idAccount", 0);
+        Log.e("idAccount", String.valueOf(idAccount));
     }
 
     private void updateStoryServer(Context context) {
@@ -65,32 +65,33 @@ public class CheckStoryService extends Service {
                     @Override
                     public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            Log.e("CheckStoryService", "updateStoryServer_success");
+                            Log.e("CheckStoryService", "S_updateStoryServer");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
-                        Log.e("CheckStoryService", "updateStoryServer_err", t);
+                        Log.e("CheckStoryService", "E_updateStoryServer", t);
                     }
                 });
             }
         }
+
         checkStory1 = true;
+        Log.e("CheckStoryService", "1");
         stopCheckStoryService();
-        Log.e("CheckStoryService", "checkStory1:true");
     }
 
-    private void updateStoryOffline(Context context) {
+    private void updateStoryDownload(Context context) {
         Story story = AppDatabase.getInstance(context).appDao().getStory(idStory);
-        List<Chapter> listChapterOffline = AppDatabase.getInstance(context).appDao().getAllChapter(idStory);
+        List<Chapter> listChapterDownload = AppDatabase.getInstance(context).appDao().getAllChapter(idStory);
 
         Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
             @Override
             public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Truyen t = response.body();
-                    int newChapter = response.body().getTongchuong() - listChapterOffline.size();
+                    int newChapter = response.body().getTongchuong() - listChapterDownload.size();
                     Log.e("newChapter", String.valueOf(newChapter));
 
                     story.setNameStory(t.getTentruyen());
@@ -115,17 +116,14 @@ public class CheckStoryService extends Service {
                     AppDatabase.getInstance(context).appDao().updateStory(story);
 
                     checkStory2 = true;
+                    Log.e("CheckStoryService", "2");
                     stopCheckStoryService();
-                    Log.e("CheckStoryService", "checkStory2:true");
-                    Log.e("CheckStoryService", "updateStoryOffline_success");
-                } else {
-                    Log.e("CheckStoryService", "checkStory2:false");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("CheckStoryService", "updateStoryOffline_err", t);
+                Log.e("CheckStoryService", "E_updateStoryDownload", t);
             }
         });
     }
@@ -149,13 +147,13 @@ public class CheckStoryService extends Service {
                                         @Override
                                         public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
                                             if (response.isSuccessful() && response.body() != null) {
-                                                Log.e("CheckStoryService", "updateChapterReadServer_success");
+                                                Log.e("CheckStoryService", "S_updateChapterReadServer");
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
-                                            Log.e("CheckStoryService", "updateChapterReadServer1_err", t);
+                                            Log.e("CheckStoryService", "E_updateChapterReadServer1", t);
                                         }
                                     });
                                 }
@@ -163,23 +161,21 @@ public class CheckStoryService extends Service {
                         }
                     }
                     checkStory3 = true;
-                    Log.e("CheckStoryService", "checkStory3:true");
+                    Log.e("CheckStoryService", "3");
                     stopCheckStoryService();
-                } else {
-                    Log.e("CheckStoryService", "checkStory3:false");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ChuongTruyen>> call, @NonNull Throwable t) {
-                Log.e("CheckStoryService", "updateChapterReadServer2_err", t);
+                Log.e("CheckStoryService", "E_updateChapterReadServer2", t);
             }
         });
     }
 
     private void stopCheckStoryService() {
         if (checkStory1 && !checkStory2 && !checkStory3) {
-            updateStoryOffline(this);
+            updateStoryDownload(this);
         }
         if (checkStory1 && checkStory2 && !checkStory3) {
             updateChapterReadServer();
@@ -196,7 +192,8 @@ public class CheckStoryService extends Service {
         checkStory1 = false;
         checkStory2 = false;
         checkStory3 = false;
-        Log.e("CheckStoryService", "Service_Stop");
-        Toast.makeText(this, "Kiểm tra cập nhật của truyện hoàn tất!", Toast.LENGTH_LONG).show();
+
+        Log.e("CheckStoryService", "Check Story Stop");
+        Toast.makeText(this, "Kiểm tra hoàn tất", Toast.LENGTH_LONG).show();
     }
 }

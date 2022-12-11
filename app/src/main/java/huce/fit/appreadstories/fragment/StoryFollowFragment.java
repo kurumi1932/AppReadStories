@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,6 @@ public class StoryFollowFragment extends Fragment {
     private StoryAdapter storyFollowAdapter;
     private LinearLayout llFragmentStoryFollow;
     private RecyclerView rcViewStory;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar pbReload;
     private Button btCheckNetwork;
 
@@ -60,7 +58,6 @@ public class StoryFollowFragment extends Fragment {
         getSharedPreferences();
 
         llFragmentStoryFollow = view.findViewById(R.id.llFragmentStoryFollow);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         pbReload = view.findViewById(R.id.pbReLoad);
         rcViewStory = view.findViewById(R.id.rcViewStory);
         btCheckNetwork = view.findViewById(R.id.btCheckNetwork);
@@ -92,23 +89,11 @@ public class StoryFollowFragment extends Fragment {
     private void show() {
         getData();
         rcView();
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
         llFragmentStoryFollow.setVisibility(View.VISIBLE);
         btCheckNetwork.setVisibility(View.GONE);
-
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(false);
-            if (isNetwork()) {
-                pbReload.setVisibility(View.VISIBLE);
-                show();
-            } else {
-                hide();
-            }
-        });
     }
 
     private void hide() {
-        swipeRefreshLayout.setVisibility(View.GONE);
         llFragmentStoryFollow.setVisibility(View.GONE);
         pbReload.setVisibility(View.GONE);
         btCheckNetwork.setVisibility(View.VISIBLE);
