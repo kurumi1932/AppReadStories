@@ -114,7 +114,7 @@ public class StoryFragment extends Fragment {
     }
 
     private void totalPage() {
-        Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
+        Api.apiInterface().getListStories(age).enqueue(new Callback<List<Truyen>>() {
             @Override
             public void onResponse(@NonNull Call<List<Truyen>> call, @NonNull Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -137,7 +137,7 @@ public class StoryFragment extends Fragment {
 
     private void getData(int a) {
         pbReload.setVisibility(View.VISIBLE);
-        Api.apiInterface().getListStories(0, age).enqueue(new Callback<List<Truyen>>() {
+        Api.apiInterface().getListStories(age).enqueue(new Callback<List<Truyen>>() {
             @Override
             public void onResponse(@NonNull Call<List<Truyen>> call, @NonNull Response<List<Truyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {

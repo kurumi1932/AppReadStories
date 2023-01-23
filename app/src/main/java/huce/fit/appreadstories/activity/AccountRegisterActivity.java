@@ -28,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class AccountCreateActivity extends AppCompatActivity {
+public class AccountRegisterActivity extends AppCompatActivity {
 
     private EditText etName, etEmail, etUsername, etPasswword1, etPasswword2, etBirthday;
     private ImageView ivDate;
@@ -47,7 +47,7 @@ public class AccountCreateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_create);
+        setContentView(R.layout.activity_account_register);
 
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
@@ -71,7 +71,7 @@ public class AccountCreateActivity extends AppCompatActivity {
     private void processEvents() {
         btExit.setOnClickListener(v -> finish());
 
-        ivDate.setOnClickListener(v -> new DatePickerDialog(AccountCreateActivity.this, d,
+        ivDate.setOnClickListener(v -> new DatePickerDialog(AccountRegisterActivity.this, d,
                 myCalendar.get(Calendar.YEAR),
                 myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show());
@@ -85,20 +85,20 @@ public class AccountCreateActivity extends AppCompatActivity {
             String birthday = etBirthday.getText().toString().trim();
 
             if (username.equals("") || password1.equals("") || password2.equals("") || email.equals("") || name.equals("") || birthday.equals("")) {
-                Toast.makeText(AccountCreateActivity.this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AccountRegisterActivity.this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             } else {
                 if (checkDate(birthday)) {
                     if (password1.equals(password2)) {
                         if (isNetwork()) {
                             createAccount(username, password1, email, name, birthday);
                         } else {
-                            Toast.makeText(AccountCreateActivity.this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountRegisterActivity.this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(AccountCreateActivity.this, "Mật khẩu không khớp!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountRegisterActivity.this, "Mật khẩu không khớp!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(AccountCreateActivity.this, "Định dạng ngày không đúng!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountRegisterActivity.this, "Định dạng ngày không đúng!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -131,13 +131,13 @@ public class AccountCreateActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     int status = response.body().getAccountsuccess();
                     if (status == 0) {
-                        Toast.makeText(AccountCreateActivity.this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountRegisterActivity.this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
                     } else if (status == 1) {
-                        Toast.makeText(AccountCreateActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountRegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                         setSharedPreferences(username);
                         finish();
                     } else {
-                        Toast.makeText(AccountCreateActivity.this, "Lỗi đăng ký!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AccountRegisterActivity.this, "Lỗi đăng ký!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

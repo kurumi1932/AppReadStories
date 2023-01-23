@@ -28,8 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $index['matruyen'] = $row['matruyen'];
         $index['tentruyen'] = $row['tentruyen'];
         $index['tacgia'] = $row['tacgia'];
+        $index['gioihantuoi'] = $row['gioihantuoi'];
         $index['theloai'] = $row['theloai'];
-        $index['sochuong'] = $row['sochuong'];
+        $index['tongchuong'] = $row['tongchuong'];
         $index['trangthai'] = $row['trangthai'];
         $index['gioithieu'] = $row['gioithieu'];
         $index['thoigiancapnhat'] = $row['thoigiancapnhat'];

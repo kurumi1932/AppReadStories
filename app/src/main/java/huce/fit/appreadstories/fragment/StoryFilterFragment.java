@@ -82,14 +82,20 @@ public class StoryFilterFragment extends Fragment {
         tvSpecies.setBackgroundResource(R.drawable.border_filter_click);
         tvStatus.setBackgroundResource(R.drawable.border_filter_click);
 
+        processEvents();
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         if (isNetwork()) {
             show();
         } else {
             hide();
         }
-        processEvents();
-
-        return view;
     }
 
     private void getSharedPreferences() {
@@ -153,10 +159,8 @@ public class StoryFilterFragment extends Fragment {
         rcViewStory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         storyAdapter = new StoryAdapter(listStory, (position, view1, isLongClick) -> {
-            Truyen tc = listStory.get(position);
-            int idStory = tc.getMatruyen();
             Intent intent = new Intent(getActivity(), StoryInterfaceActivity.class);
-            intent.putExtra("idStory", idStory);
+            intent.putExtra("idStory", position);
             startActivity(intent);
         });//Đổ dữ liệu lên adpter
         rcViewStory.setAdapter(storyAdapter);

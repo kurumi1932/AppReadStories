@@ -28,12 +28,12 @@ import retrofit2.http.Query;
 public interface ApiInterface {
     //Tài khoản
     @FormUrlEncoded
-    @POST(URL_LOGIN)//oke
+    @POST(URL_LOGIN)
     Call<TaiKhoan> login(@Field("taikhoan") String username,
                          @Field("matkhau") String password);
 
     @FormUrlEncoded
-    @POST(URL_REGISTER)//oke
+    @POST(URL_REGISTER)
     Call<TaiKhoan> register(@Field("taikhoan") String username,
                             @Field("matkhau") String password,
                             @Field("email") String email,
@@ -41,15 +41,16 @@ public interface ApiInterface {
                             @Field("ngaysinh") String birthday);
 
     @FormUrlEncoded
-    @POST(URL_ACCOUNT)//oke
+    @POST(URL_ACCOUNT)
     Call<TaiKhoan> updateAccount(@Field("mataikhoan") int idAccount,
                                  @Field("matkhau") String password,
                                  @Field("email") String email,
-                                 @Field("tenhienthi") String name);
+                                 @Field("tenhienthi") String name,
+                                 @Field("ngaysinh") String birthday);
 
     //Truyện
     @GET(URL_STORY)//oke
-    Call<List<Truyen>> getListStories(@Query("matruyen") int idStory, @Query("gioihantuoi") int age);
+    Call<List<Truyen>> getListStories(@Query("gioihantuoi") int age);
 
     @GET(URL_STORY)//oke
     Call<Truyen> getStory(@Query("matruyen") int idStory);
@@ -100,7 +101,7 @@ public interface ApiInterface {
     Call<List<ChuongTruyen>> getListChapterRead(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
-    Call<ChuongTruyen> getChapterReading(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount, @Query("so") int num);
+    Call<ChuongTruyen> getChapterRead(@Query("matruyen") int idStory, @Query("mataikhoan") int idAccount, @Query("so") int num);
 
     @GET(URL_CHAPTER)//oke
     Call<List<ChuongTruyen>> searchChapter(@Query("matruyen") int idStory, @Query("sochuong") String num);

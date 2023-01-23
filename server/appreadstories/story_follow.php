@@ -3,7 +3,6 @@
 $conn = mysqli_connect("localhost", "root", "", "appreadstories");
 
 switch ($_SERVER['REQUEST_METHOD']) {
-
         //-------------get-------------//
     case 'GET':
         $id_account = $_GET['mataikhoan'];
@@ -18,7 +17,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $index['matruyen'] = $row['matruyen'];
                     $index['tentruyen'] = $row['tentruyen'];
                     $index['tacgia'] = $row['tacgia'];
-                    $index['sochuong'] = $row['sochuong'];
+                    $index['gioihantuoi'] = $row['gioihantuoi'];
+                    $index['tongchuong'] = $row['tongchuong'];
                     $index['trangthai'] = $row['trangthai'];
                     $index['anh'] = $row['anh'];
 
@@ -31,7 +31,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $index['matruyen'] = 0;
                 $index['tentruyen'] = 0;
                 $index['tacgia'] = 0;
-                $index['sochuong'] = 0;
+                $index['gioihantuoi'] = 0;
+                $index['tongchuong'] = 0;
                 $index['trangthai'] = 0;
                 $index['anh'] = 0;
 
@@ -68,8 +69,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $id_story = $_POST['matruyen'];
         $story = $_POST['tentruyen'];
         $author = $_POST['tacgia'];
-        $chapter_number = $_POST['sochuong'];
+        $sum_chapter = $_POST['tongchuong'];
         $status = $_POST['trangthai'];
+        $age = $_POST['gioihantuoi'];
         $image = $_POST['anh'];
         $update_time = $_POST['thoigiancapnhat'];
 
@@ -92,7 +94,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 mysqli_close($conn);
             }
         } else {
-            $sql_insert = "INSERT INTO truyentheodoi(mataikhoan, matruyen, tentruyen, tacgia, sochuong, trangthai, anh, thoigiancapnhat) VALUES ('$id_account','$id_story','$story','$author','$chapter_number','$status','$image','$update_time')";
+            $sql_insert = "INSERT INTO truyentheodoi(mataikhoan, matruyen, tentruyen, tacgia, tongchuong, trangthai, gioihantuoi, anh, thoigiancapnhat) VALUES ('$id_account','$id_story','$story','$author','$sum_chapter','$status','$age','$image','$update_time')";
             $response1 = mysqli_query($conn, $sql_insert);
 
             if ($response1) {

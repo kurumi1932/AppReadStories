@@ -128,42 +128,46 @@ public class CheckStoryService extends Service {
         });
     }
 
-    private void updateChapterReadServer() {
-        List<ChapterRead> listChapterRead = AppDatabase.getInstance(this).appDao().getAllChapterRead(idStory);
+    private void updateChapterReadServer(Context context) {
+        List<ChapterRead> listChapterRead = AppDatabase.getInstance(context).appDao().getAllChapterRead(idStory);
 
         Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
             @Override
             public void onResponse(@NonNull Call<List<ChuongTruyen>> call, @NonNull Response<List<ChuongTruyen>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        for (int j = 0; j < listChapterRead.size(); j++) {
-                            if (response.body().get(i).getMachuong() == listChapterRead.get(j).getIdChapter()) {//kiểm tra chương đã đọc trong máy vơi server
-                                listChapterRead.remove(j);
-                                break;
-                            }
-                            if (j == (listChapterRead.size() - 1)) {// cuối vòng lặp mà id vẫn khác nhau thì insert chapterRead lên server
-                                if (response.body().get(i).getMachuong() != listChapterRead.get(j).getIdChapter()) {
-                                    Api.apiInterface().getChapter(idStory, listChapterRead.get(j).getIdChapter(), 2, idAccount).enqueue(new Callback<ChuongTruyen>() {
-                                        @Override
-                                        public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
-                                            if (response.isSuccessful() && response.body() != null) {
-                                                Log.e("CheckStoryService", "S_updateChapterReadServer");
-                                            }
-                                        }
+                    Log.e("response.body(): ", String.valueOf(response.body().size()));
+                    Log.e("listChapterRead: ", String.valueOf(listChapterRead.size()));
 
-                                        @Override
-                                        public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
-                                            Log.e("CheckStoryService", "E_updateChapterReadServer1", t);
-                                        }
-                                    });
+                    if (response.body().size() < listChapterRead.size()) {// nếu có chương đã đọc mới
+                        boolean isRemove;
+                        for (int i = 0; i < listChapterRead.size(); i++) {
+                            isRemove = false;
+//                            Log.e("response.size1: ", String.valueOf(response.body().size()));
+                            if (response.body().size() == 0) {
+                                addChapterReadServer(listChapterRead.get(i).getIdChapter());
+                                continue;
+                            }
+//                            Log.e("listChapterRead.id: ", String.valueOf(listChapterRead.get(i).getIdChapter()));
+                            for (int j = 0; j < response.body().size(); j++) {
+//                                Log.e("response.id: ", String.valueOf(response.body().get(j).getMachuong()));
+                                if (listChapterRead.get(i).getIdChapter() == response.body().get(j).getMachuong()) {//kiểm tra chương đã đọc trong máy vơi server
+                                    response.body().remove(j);
+//                                    Log.e("response.size2: ", String.valueOf(response.body().size()));
+                                    isRemove = true;
+                                    break;
                                 }
+                            }
+
+                            if (!isRemove) {// hết vòng lặp mà vẫn chuwa remove thì insert chapterRead lên server
+                                Log.e("isremove: ", String.valueOf(isRemove));
+                                addChapterReadServer(listChapterRead.get(i).getIdChapter());
                             }
                         }
                     }
-                    checkStory3 = true;
-                    Log.e("CheckStoryService", "3");
-                    stopCheckStoryService();
                 }
+                checkStory3 = true;
+                Log.e("CheckStoryService", "3");
+                stopCheckStoryService();
             }
 
             @Override
@@ -173,12 +177,29 @@ public class CheckStoryService extends Service {
         });
     }
 
+    private void addChapterReadServer(int idchapter) {
+        Log.e("idchapter: ", String.valueOf(idchapter));
+        Api.apiInterface().getChapter(idStory, idchapter, 2, idAccount).enqueue(new Callback<ChuongTruyen>() {
+            @Override
+            public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("CheckStoryService", "S_updateChapterReadServer");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
+                Log.e("CheckStoryService", "E_updateChapterReadServer1", t);
+            }
+        });
+    }
+
     private void stopCheckStoryService() {
         if (checkStory1 && !checkStory2 && !checkStory3) {
             updateStoryDownload(this);
         }
         if (checkStory1 && checkStory2 && !checkStory3) {
-            updateChapterReadServer();
+            updateChapterReadServer(this);
         }
         if (checkStory1 && checkStory2 && checkStory3) {
             onDestroy();

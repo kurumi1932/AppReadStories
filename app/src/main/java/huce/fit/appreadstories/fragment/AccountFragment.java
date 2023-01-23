@@ -15,15 +15,14 @@ import androidx.fragment.app.Fragment;
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.activity.AccountLoginActivity;
 import huce.fit.appreadstories.activity.AccountUpdateActivity;
-import huce.fit.appreadstories.activity.ContactInforActivity;
+import huce.fit.appreadstories.activity.DeveloperInfoActivity;
+import huce.fit.appreadstories.activity.GuideActivity;
 import huce.fit.appreadstories.activity.MainActivity;
 
 
 public class AccountFragment extends Fragment {
 
-    private TextView tvEditAccount;
-    private TextView tvContactInfor;
-    private TextView tvLogOut;
+    private TextView tvEditAccount, tvGuide, tvDevelopInfo, tvLogOut;
     private int idAccount;
     private String name;
     private final MainActivity main = new MainActivity();
@@ -41,7 +40,8 @@ public class AccountFragment extends Fragment {
 
         TextView tvName = view.findViewById(R.id.tvName);
         tvEditAccount = view.findViewById(R.id.tvEditAccount);
-        tvContactInfor = view.findViewById(R.id.tvContactInfor);
+        tvGuide = view.findViewById(R.id.tvGuide);
+        tvDevelopInfo = view.findViewById(R.id.tvDevelopInfo);
         tvLogOut = view.findViewById(R.id.tvLogOut);
 
         tvName.setText(name);
@@ -58,21 +58,18 @@ public class AccountFragment extends Fragment {
         Log.e("idFragmentAccount", String.valueOf(idAccount));
     }
 
-    private void setSharedPreferences() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
-        SharedPreferences.Editor myedit = sharedPreferences.edit();
-        myedit.remove("idAccount");
-        myedit.apply();
-    }
-
     private void processEvents() {
         tvEditAccount.setOnClickListener(v -> { //lambda
             Intent intent = new Intent(getActivity(), AccountUpdateActivity.class);
             intent.putExtra("idAccount", idAccount);
             startActivity(intent);
         });
-        tvContactInfor.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ContactInforActivity.class);
+        tvGuide.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), GuideActivity.class);
+            startActivity(intent);
+        });
+        tvDevelopInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DeveloperInfoActivity.class);
             startActivity(intent);
         });
         tvLogOut.setOnClickListener(v -> {
@@ -80,8 +77,14 @@ public class AccountFragment extends Fragment {
             startActivity(intent);
 
             setSharedPreferences();
-
             main.closeMainActivity();
         });
+    }
+
+    private void setSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("CheckLogin", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.remove("idAccount");
+        edit.apply();
     }
 }

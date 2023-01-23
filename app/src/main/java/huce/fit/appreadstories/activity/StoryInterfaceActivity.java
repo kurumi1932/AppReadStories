@@ -99,9 +99,11 @@ public class StoryInterfaceActivity extends AppCompatActivity {
         btDownLoad = findViewById(R.id.btDownload);
 
         story = AppDatabase.getInstance(this).appDao().getStory(idStory);
+
         if (isNetwork() && story != null) {
             startCheckStoryService();
         }
+
         getDataViewPager();
         processEvents();
     }
@@ -121,7 +123,6 @@ public class StoryInterfaceActivity extends AppCompatActivity {
             checkInteractive();// kiểm tra tương tác
             checkAge();
         } else {
-            Story story = AppDatabase.getInstance(this).appDao().getStory(idStory);
             if (story == null) {
                 finish();
             } else {
@@ -459,7 +460,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     }
 
     private void readStory() {
-        Api.apiInterface().getChapterReading(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
+        Api.apiInterface().getChapterRead(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
             @Override
             public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -493,6 +494,7 @@ public class StoryInterfaceActivity extends AppCompatActivity {
     }
 
     private void readStory_Download() {
+        story = AppDatabase.getInstance(this).appDao().getStory(idStory);
         idChapterReading = story.getChapterReading();
     }
 

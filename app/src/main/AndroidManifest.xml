@@ -59,14 +59,17 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.AccountCreateActivity"
+            android:name=".activity.AccountRegisterActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AccountUpdateActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.ContactInforActivity"
+            android:name=".activity.GuideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.DeveloperInfoActivity"
             android:screenOrientation="portrait" />
     </application>
 

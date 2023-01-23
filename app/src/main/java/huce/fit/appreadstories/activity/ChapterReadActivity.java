@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -78,7 +77,6 @@ public class ChapterReadActivity extends AppCompatActivity {
     private double progress;
     private boolean isComment;
     private final AtomicInteger status = new AtomicInteger(1);
-    private final Handler handler = new Handler();
 
     private int idChapterFirst, idChapterFinal;
 
@@ -136,7 +134,7 @@ public class ChapterReadActivity extends AppCompatActivity {
         if (isNetwork()) {
             getData(this, 2, "Không tìm thấy chương!");
         } else {
-            getData_Download();
+            getData_Download(this);
         }
         processEvents();
     }
@@ -208,6 +206,7 @@ public class ChapterReadActivity extends AppCompatActivity {
                         pbReLoad.setVisibility(View.GONE);
                         drawerLayout.setVisibility(View.VISIBLE);
                     } else {
+                        pbReLoad.setVisibility(View.GONE);
                         Toast.makeText(ChapterReadActivity.this, text, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -220,24 +219,24 @@ public class ChapterReadActivity extends AppCompatActivity {
         });
     }
 
-    public void getData_Download() {
-        Chapter chapter = AppDatabase.getInstance(this).appDao().getChapter(idStory, idChapter);
+    public void getData_Download(Context context) {
+        Chapter chapter = AppDatabase.getInstance(context).appDao().getChapter(idStory, idChapter);
 
         String title = String.format("Chương %s: %s", chapter.getNumberChapter(), chapter.getNameChapter());
         tvTitle.setText(title);
         tvContent.setText(String.format("Người đăng: %s\nNgày đăng: %s\n\n\n%s", chapter.getPoster(), chapter.getPostDay(), chapter.getContent()));
 
-        int idChapterRead = chapter.getIdChapter();
-
         //update idChapterRead
-        AppDatabase.getInstance(this).appDao().updateIdChapterRead(idStory, idChapterRead);
+        AppDatabase.getInstance(context).appDao().updateIdChapterRead(idStory, idChapter);
+//        Story story1  = AppDatabase.getInstance(context).appDao().getStory(idStory);
+//        Log.e("idChapter: ", String.valueOf(story1.getChapterReading()));
 
         //insert chapterRead
         if (checkChapterRead(chapter.getIdChapter())) {
             ChapterRead chapterRead = new ChapterRead();
             chapterRead.setIdStory(idStory);
-            chapterRead.setIdChapter(idChapterRead);
-            AppDatabase.getInstance(this).appDao().insertChapterRead(chapterRead);
+            chapterRead.setIdChapter(idChapter);
+            AppDatabase.getInstance(context).appDao().insertChapterRead(chapterRead);
         }
 
         drawerLayout.setVisibility(View.VISIBLE);
@@ -246,11 +245,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
     private boolean checkChapterRead(int idChapter) {
         ChapterRead chapterRead = AppDatabase.getInstance(this).appDao().checkChapterRead(idStory, idChapter);
-        if (chapterRead != null) {
-            return false;
-        } else {
-            return true;
-        }
+        return chapterRead == null;
     }
 
     private void checkComment() {
@@ -336,19 +331,21 @@ public class ChapterReadActivity extends AppCompatActivity {
                 if (story != null) {
                     if (idChapter != idChapterFirst) {
                         idChapter = AppDatabase.getInstance(this).appDao().getPreviousChapter(idStory, idChapter, idChapterFirst);
-                        getData_Download();
+                        getData_Download(this);
                     } else {
+                        pbReLoad.setVisibility(View.GONE);
                         Toast.makeText(this, "Đây là chương đầu!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
+                    pbReLoad.setVisibility(View.GONE);
                     Toast.makeText(this, "Bạn chưa tải truyện nên không thể đọc offline!", Toast.LENGTH_SHORT).show();
                 }
 
+                scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                    // trở lại đầu trang
+                    scView.fullScroll(View.FOCUS_UP);
+                });
             }
-            scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                // Ready, move up
-                scView.fullScroll(View.FOCUS_UP);
-            });
         });
 
         ivNext.setOnClickListener(v -> {
@@ -359,16 +356,19 @@ public class ChapterReadActivity extends AppCompatActivity {
                 if (story != null) {
                     if (idChapter != idChapterFinal) {
                         idChapter = AppDatabase.getInstance(this).appDao().getNextChapter(idStory, idChapter, idChapterFinal);
-                        getData_Download();
+                        getData_Download(this);
                     } else {
+                        pbReLoad.setVisibility(View.GONE);
                         Toast.makeText(this, "Đây là chương mới nhất!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
+                    pbReLoad.setVisibility(View.GONE);
                     Toast.makeText(this, "Bạn chưa tải truyện nên không thể đọc offline!", Toast.LENGTH_SHORT).show();
                 }
             }
+
             scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                // Ready, move up
+                // trở lại đầu trang
                 scView.fullScroll(View.FOCUS_UP);
             });
         });
@@ -401,13 +401,16 @@ public class ChapterReadActivity extends AppCompatActivity {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         chapterNavigationAdapter = new ChapterNavigationAdapter(listChapter, (position, view1, isLongClick) -> {
             pbReLoad.setVisibility(View.VISIBLE);
-            Log.e("getIdChapter", String.valueOf(listChapter.get(position).getMachuong()));
-            setIdChapter(listChapter.get(position).getMachuong());
+            Log.e("getIdChapter", String.valueOf(position));
+            setIdChapter(position);
 
-            handler.postDelayed(() -> {
-                getData(this, 2, "Không tìm thấy chương!");
-                pbReLoad.setVisibility(View.GONE);
-            }, 1500);
+            getData(this, 2, "Không tìm thấy chương!");
+            scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                // trở lại đầu trang
+                scView.fullScroll(View.FOCUS_UP);
+            });
+
+            drawerLayout.closeDrawers();
         });//Đổ dữ liệu lên adpter
         rcViewChapter.setAdapter(chapterNavigationAdapter);
 
@@ -533,13 +536,16 @@ public class ChapterReadActivity extends AppCompatActivity {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         ChapterNavigationDownloadAdapter chapterNavigationDownloadAdapter = new ChapterNavigationDownloadAdapter(listChapterDownload1, (position, view1, isLongClick) -> {
             pbReLoad.setVisibility(View.VISIBLE);
-            Log.e("getIdChapter", String.valueOf(listChapterDownload1.get(position).getIdChapter()));
-            setIdChapter(listChapterDownload1.get(position).getIdChapter());
+            Log.e("getIdChapter", String.valueOf(position));
+            setIdChapter(position);
 
-            handler.postDelayed(() -> {
-                getData_Download();
-                pbReLoad.setVisibility(View.GONE);
-            }, 1500);
+            getData_Download(this);
+            scView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                // trở lại đầu trang
+                scView.fullScroll(View.FOCUS_UP);
+            });
+
+            drawerLayout.closeDrawers();
         });//Đổ dữ liệu lên adpter
 
         rcViewChapter.setAdapter(chapterNavigationDownloadAdapter);

@@ -106,23 +106,22 @@
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="10dp"
         android:padding="8dp"
-        android:src="@drawable/ic_contact_info"
+        android:src="@drawable/ic_guide"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivAccount"
-        app:tint="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/tvEditAccount"
         tools:ignore="contentDescription" />
 
     <TextView
-        android:id="@+id/tvContactInfor"
+        android:id="@+id/tvGuide"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"
         android:gravity="start|center"
-        android:text="@string/dev_information1"
+        android:text="@string/guide"
         android:textColor="@color/black"
         android:textSize="17sp"
         app:drawableEndCompat="@drawable/ic_continue"
@@ -137,17 +136,54 @@
         android:layout_marginStart="40dp"
         android:background="@color/gainsboro"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvContactInfor"
+        app:layout_constraintTop_toBottomOf="@+id/tvGuide"
         tools:ignore="MissingConstraints" />
 
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="10dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_contact_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGuide"
+        app:tint="@color/black"
+        tools:ignore="contentDescription" />
+
+    <TextView
+        android:id="@+id/tvDevelopInfo"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="start|center"
+        android:text="@string/dev_information1"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:drawableEndCompat="@drawable/ic_continue"
+        app:drawableTint="@color/silver"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGuide" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="40dp"
+        android:background="@color/gainsboro"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDevelopInfo"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
         android:padding="8dp"
         android:src="@drawable/ic_logout"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivAccount"
+        app:layout_constraintTop_toBottomOf="@+id/tvDevelopInfo"
         app:tint="@color/black"
         tools:ignore="contentDescription" />
 
@@ -166,7 +202,7 @@
         app:drawableTint="@color/silver"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvContactInfor" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDevelopInfo" />
 
     <View
         android:layout_width="match_parent"

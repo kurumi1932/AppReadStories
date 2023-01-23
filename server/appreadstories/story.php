@@ -6,7 +6,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
         //-------------get-------------//
     case 'GET':
-        if (isset($_GET['matruyen'])) {
+        if (isset($_GET['matruyen']) && empty($_GET['gioihantuoi'])) {
             $id_story = $_GET['matruyen'];
             //check like story
             if (isset($_GET['mataikhoan'])) {
@@ -44,85 +44,89 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 echo json_encode($result);
                 mysqli_close($conn);
             } else {
-                //get list story
-                if ($id_story == 0) {
-                    $age = $_GET['gioihantuoi'];
+                // get story
+                $sql_select = "SELECT * FROM truyen WHERE matruyen = '$id_story'";
+                $response = mysqli_query($conn, $sql_select);
 
-                    $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' ORDER BY thoigiancapnhat DESC";
-                    $response = mysqli_query($conn, $sql_select);
-                    $result = array();
+                if (mysqli_num_rows($response) === 1) {
+                    $row = mysqli_fetch_assoc($response);
 
-                    while ($row = mysqli_fetch_array($response)) {
-                        $index['matruyen'] = $row['matruyen'];
-                        $index['tentruyen'] = $row['tentruyen'];
-                        $index['tacgia'] = $row['tacgia'];
-                        $index['theloai'] = $row['theloai'];
-                        $index['sochuong'] = $row['sochuong'];
-                        $index['trangthai'] = $row['trangthai'];
-                        $index['gioithieu'] = $row['gioithieu'];
-                        $index['thoigiancapnhat'] = $row['thoigiancapnhat'];
-                        $index['anh'] = $row['anh'];
+                    $result['matruyen'] = $row['matruyen'];
+                    $result['tentruyen'] = $row['tentruyen'];
+                    $result['tacgia'] = $row['tacgia'];
+                    $result['gioihantuoi'] = $row['gioihantuoi'];
+                    $result['theloai'] = $row['theloai'];
+                    $result['tongchuong'] = $row['tongchuong'];
+                    $result['trangthai'] = $row['trangthai'];
+                    $result['gioithieu'] = $row['gioithieu'];
+                    $result['thoigiancapnhat'] = $row['thoigiancapnhat'];
+                    $result['anh'] = $row['anh'];
+                    $result['luotxem'] = $row['luotxem'];
+                    $result['luotthich'] = $row['luotthich'];
+                    $result['luotbinhluan'] = $row['luotbinhluan'];
+                    $result['diemdanhgia'] = $row['diemdanhgia'];
 
-                        array_push($result, $index);
-                    }
                     echo json_encode($result);
                     mysqli_close($conn);
-                }
-                // get story
-                if ($id_story > 0) {
-                    $sql_select = "SELECT * FROM truyen WHERE matruyen = '$id_story'";
-                    $response = mysqli_query($conn, $sql_select);
-
-                    if (mysqli_num_rows($response) === 1) {
-                        $row = mysqli_fetch_assoc($response);
-
-                        $result['matruyen'] = $row['matruyen'];
-                        $result['tentruyen'] = $row['tentruyen'];
-                        $result['tacgia'] = $row['tacgia'];
-                        $result['theloai'] = $row['theloai'];
-                        $result['sochuong'] = $row['sochuong'];
-                        $result['trangthai'] = $row['trangthai'];
-                        $result['gioithieu'] = $row['gioithieu'];
-                        $result['thoigiancapnhat'] = $row['thoigiancapnhat'];
-                        $result['anh'] = $row['anh'];
-                        $result['luotxem'] = $row['luotxem'];
-                        $result['luotthich'] = $row['luotthich'];
-                        $result['luotbinhluan'] = $row['luotbinhluan'];
-                        $result['diemdanhgia'] = $row['diemdanhgia'];
-
-                        echo json_encode($result);
-                        mysqli_close($conn);
-                    }
                 }
             }
         }
 
-        //search story
-        if (isset($_GET['tentruyen'])) {
-            $story_name = $_GET['tentruyen'];
-            $str = '%';
-            $str_search = $str . $story_name . $str;
+        if (empty($_GET['matruyen']) && isset($_GET['gioihantuoi'])) {
             $age = $_GET['gioihantuoi'];
 
-            $sql_select = "SELECT * FROM truyen WHERE tentruyen like '$str_search' AND gioihantuoi <= '$age'";
-            $response = mysqli_query($conn, $sql_select);
-            $result = array();
+            //get list story
+            if (empty($_GET['tentruyen'])) {
 
-            while ($row = mysqli_fetch_array($response)) {
-                $index['matruyen'] = $row['matruyen'];
-                $index['tentruyen'] = $row['tentruyen'];
-                $index['tacgia'] = $row['tacgia'];
-                $index['theloai'] = $row['theloai'];
-                $index['sochuong'] = $row['sochuong'];
-                $index['trangthai'] = $row['trangthai'];
-                $index['gioithieu'] = $row['gioithieu'];
-                $index['thoigiancapnhat'] = $row['thoigiancapnhat'];
-                $index['anh'] = $row['anh'];
+                $sql_select = "SELECT * FROM truyen WHERE gioihantuoi <= '$age' ORDER BY thoigiancapnhat DESC";
+                $response = mysqli_query($conn, $sql_select);
+                $result = array();
 
-                array_push($result, $index);
+                while ($row = mysqli_fetch_array($response)) {
+                    $index['matruyen'] = $row['matruyen'];
+                    $index['tentruyen'] = $row['tentruyen'];
+                    $index['tacgia'] = $row['tacgia'];
+                    $index['gioihantuoi'] = $row['gioihantuoi'];
+                    $index['theloai'] = $row['theloai'];
+                    $index['tongchuong'] = $row['tongchuong'];
+                    $index['trangthai'] = $row['trangthai'];
+                    $index['gioithieu'] = $row['gioithieu'];
+                    $index['thoigiancapnhat'] = $row['thoigiancapnhat'];
+                    $index['anh'] = $row['anh'];
+
+                    array_push($result, $index);
+                }
+                echo json_encode($result);
+                mysqli_close($conn);
             }
-            echo json_encode($result);
-            mysqli_close($conn);
+
+            //search story
+            if (isset($_GET['tentruyen'])) {
+                $story_name = $_GET['tentruyen'];
+                $str = '%';
+                $str_search = $str . $story_name . $str;
+
+                $sql_select = "SELECT * FROM truyen WHERE tentruyen like '$str_search' AND gioihantuoi <= '$age'";
+                $response = mysqli_query($conn, $sql_select);
+                $result = array();
+
+                while ($row = mysqli_fetch_array($response)) {
+                    $index['matruyen'] = $row['matruyen'];
+                    $index['tentruyen'] = $row['tentruyen'];
+                    $index['tacgia'] = $row['tacgia'];
+                    $index['gioihantuoi'] = $row['gioihantuoi'];
+                    $index['theloai'] = $row['theloai'];
+                    $index['tongchuong'] = $row['tongchuong'];
+                    $index['trangthai'] = $row['trangthai'];
+                    $index['gioithieu'] = $row['gioithieu'];
+                    $index['thoigiancapnhat'] = $row['thoigiancapnhat'];
+                    $index['anh'] = $row['anh'];
+
+                    array_push($result, $index);
+                }
+                echo json_encode($result);
+                mysqli_close($conn);
+            }
         }
         break;
         //-------------post-------------//

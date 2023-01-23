@@ -79,7 +79,7 @@ public class AccountLoginActivity extends AppCompatActivity {
         });
         btCreate.setOnClickListener(v -> {
             if (isNetwork()) {
-                Intent intent = new Intent(AccountLoginActivity.this, AccountCreateActivity.class);
+                Intent intent = new Intent(AccountLoginActivity.this, AccountRegisterActivity.class);
                 startActivity(intent);
             } else {
                 Toast.makeText(AccountLoginActivity.this, "Vui lòng kết nối mạng!", Toast.LENGTH_SHORT).show();

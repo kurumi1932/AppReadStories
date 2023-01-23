@@ -153,7 +153,7 @@ public class AccountUpdateActivity extends AppCompatActivity {
                 if (!oldpass.equals("") && !newpass.equals("")) {
                     if (oldpass.equals(passwordOld)) {
                         if (oldpass.equals(newpass)) {
-                            Toast.makeText(AccountUpdateActivity.this, "Mật khẩu mới phải trùng với mật khẩu hiện tại!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountUpdateActivity.this, "Mật khẩu mới trùng với mật khẩu hiện tại!", Toast.LENGTH_SHORT).show();
                         } else {
                             updateAccount(newpass);
                         }
@@ -168,7 +168,7 @@ public class AccountUpdateActivity extends AppCompatActivity {
     }
 
     private void updateAccount(String password) {
-        Api.apiInterface().updateAccount(idAccount, password, email, name).enqueue(new Callback<TaiKhoan>() {
+        Api.apiInterface().updateAccount(idAccount, password, email, name, birthday).enqueue(new Callback<TaiKhoan>() {
             @Override
             public void onResponse(@NonNull Call<TaiKhoan> call,@NonNull Response<TaiKhoan> response) {
                 if (response.isSuccessful() && response.body() != null) {

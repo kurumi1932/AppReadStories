@@ -44,8 +44,19 @@
     <string name="btReadStory">-> Đọc truyện</string>
 
 <!--   Fragment Account-->
+    <!--    Account Update-->
     <string name="account_information">Thông tin tài khoản</string>
+    <string name="save">Lưu</string>
 
+    <!--    Guide-->
+    <string name="guide">Hướng dẫn sử dụng</string>
+    <string name="gtext1">Để chỉnh lại cỡ chữ, giãn dòng, màu chữ và màu nền, bạn cần thực hiện các bước sau:\nB1: Vào đọc bất kỳ 1 truyện nào đó.\n Sau đó, chạm vào giữa màn hình, thanh menu sẽ hiện lên.</string>
+    <string name="gtext2">B2: Chọn nút cài đặt trên thanh menu.</string>
+    <string name="gtext3">B3: Đổi cỡ chữ, giãn dòng, màu chữ, màu nền theo sở thích.</string>
+    <string name="gtext4">Hướng dẫn sử dụng</string>
+
+
+    <!--    Dev Information-->
     <string name="dev_information1">Thông tin nhà phát triển</string>
     <string name="dev_information2">Thông tin sinh viên</string>
     <string name="dev_university">Đại học Xây dựng (HUCE)</string>
@@ -61,6 +72,7 @@
     <string name="text38">Email:</string>
     <string name="dev_email">tien1932nd@gmail.com</string>
 
+    <!--    Log Out-->
     <string name="btLogOut">Đăng xuất</string>
 
 <!--    Chapter Read-->
@@ -81,6 +93,10 @@
     <string name="btUpdate">-> Sửa</string>
     <string name="btDelete">-> Xóa</string>
 
+<!--    Dialog Notify Yes No-->
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+
 <!--    Bottom Navigation Main-->
     <string name="btMenuStory">Truyện</string>
     <string name="btMenuFilter">Lọc</string>
@@ -94,17 +110,14 @@
     <string name="hint2">Tài khoản</string>
     <string name="hint3">Mật khẩu</string>
     <string name="hint4">Nhập lại mật khẩu</string>
-    <string name="hint5">Mật khẩu mới</string>
-    <string name="hint6">Mật khẩu hiện tại</string>
+    <string name="hint5">Mật khẩu hiện tại</string>
+    <string name="hint6">Mật khẩu mới</string>
     <string name="hint_date">yyyy-mm-dd</string>
     <string name="hint_search_story">Nhập tên truyện cần tìm</string>
     <string name="hint_search_chapter">Nhập chương cần tìm</string>
     <string name="hint_rate">Đánh giá của bạn sẽ giúp những độc giả sau tham khảo truyện trước khi đọc.</string>
 
 <!--    Button-->
-    <string name="save">Lưu</string>
-    <string name="yes">Có</string>
-    <string name="no">Không</string>
     <string name="destroy">Hủy</string>
     <string name="confirm">Xác nhận</string>
     <string name="reload">Tải lại</string>

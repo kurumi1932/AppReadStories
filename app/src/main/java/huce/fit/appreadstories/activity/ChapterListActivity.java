@@ -64,9 +64,9 @@ public class ChapterListActivity extends AppCompatActivity {
         listChapter = new ArrayList<>();
         listChapterRead = new ArrayList<>();
 
-        getDataListChapter();
-        getDataListChapterRead();
-        getDataChapterReading();
+        getListChapter();
+        getListChapterRead();
+        getChapterRead();
 
         processEvents();
     }
@@ -82,7 +82,7 @@ public class ChapterListActivity extends AppCompatActivity {
         Log.e("idAccount", String.valueOf(idAccount));
     }
 
-    private void getDataListChapter() {
+    private void getListChapter() {
         pbReload.setVisibility(View.VISIBLE);
         if (isNetwork()) {
             Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
@@ -110,7 +110,7 @@ public class ChapterListActivity extends AppCompatActivity {
         pbReload.setVisibility(View.GONE);
     }
 
-    private void getDataListChapterRead() {
+    private void getListChapterRead() {
         if (isNetwork()) {
             Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
@@ -131,9 +131,9 @@ public class ChapterListActivity extends AppCompatActivity {
         }
     }
 
-    private void getDataChapterReading() {
+    private void getChapterRead() {
         if (isNetwork()) {
-            Api.apiInterface().getChapterReading(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
+            Api.apiInterface().getChapterRead(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
                 @Override
                 public void onResponse(@NonNull Call<ChuongTruyen> call,@NonNull Response<ChuongTruyen> response) {
                     if (response.isSuccessful() && response.body() != null) {
@@ -191,7 +191,7 @@ public class ChapterListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getDataSearchChapter(newText.trim());
+                searchChapter(newText.trim());
                 return false;
             }
         });
@@ -221,10 +221,10 @@ public class ChapterListActivity extends AppCompatActivity {
         });
     }
 
-    private void getDataSearchChapter(String numberChapter) {
+    private void searchChapter(String numberChapter) {
         pbReload.setVisibility(View.VISIBLE);
         if (numberChapter.equals("")) {
-            getDataListChapter();
+            getListChapter();
         } else {
             if (isNetwork()) {
                 Api.apiInterface().searchChapter(idStory, numberChapter).enqueue(new Callback<List<ChuongTruyen>>() {

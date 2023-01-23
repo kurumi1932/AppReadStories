@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import huce.fit.appreadstories.R;
 
-public class ContactInforActivity extends AppCompatActivity {
+public class DeveloperInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

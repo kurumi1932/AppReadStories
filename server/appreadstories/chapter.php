@@ -3,7 +3,6 @@
 $conn = mysqli_connect("localhost", "root", "", "appreadstories");
 
 switch ($_SERVER['REQUEST_METHOD']) {
-
         //-------------get-------------//
     case 'GET':
         $id_story = $_GET['matruyen'];
@@ -171,7 +170,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $response = mysqli_query($conn, $sql_select);
 
                     if (mysqli_num_rows($response) === 1) {
-
                         $row = mysqli_fetch_array($response);
 
                         $result['matruyen'] = $row['matruyen'];
