@@ -9,16 +9,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.model.DanhGia;
 
 public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
-    private final List<DanhGia> listRate;
+    private List<DanhGia> listRate = new ArrayList<>();
 
-    public RateAdapter(List<DanhGia> listRate) {
-        this.listRate = listRate;
+    public RateAdapter() {
+    }
+
+    public void setDataRate(List<DanhGia> rates){
+        if(listRate!=null||listRate.size()>0){
+            listRate.clear();
+        }
+        listRate.addAll(rates);
+        notifyDataSetChanged();
     }
 
     @NonNull

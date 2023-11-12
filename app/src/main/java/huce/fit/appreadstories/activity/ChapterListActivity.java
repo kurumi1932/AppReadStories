@@ -39,11 +39,16 @@ public class ChapterListActivity extends AppCompatActivity {
     private List<ChuongTruyen> listChapterRead;
     private List<Chapter> listChapter_Download;
     private List<ChapterRead> listChapterRead_Download;
+    private CheckNetwork checkNetwork;
+
     private ChapterAdapter chapterAdapter;
     private RecyclerView rcViewChapter;
     private ImageView ivBack, ivReverse;
     private SearchView svChapter;
     private ProgressBar pbReload;
+    private Intent intent;
+    private LinearLayoutManager llmanager;
+
     private int idAccount, idStory, idChapterReading;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,7 @@ public class ChapterListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chapter_list);
 
         getSharedPreferences();
-        idStory = getIntent().getIntExtra("idStory", 0);
+        idStory = getIntent().getIntExtra("storyId", 0);
 
         pbReload = findViewById(R.id.pbReLoad);
         rcViewChapter = findViewById(R.id.rcViewChapter);
@@ -63,17 +68,14 @@ public class ChapterListActivity extends AppCompatActivity {
 
         listChapter = new ArrayList<>();
         listChapterRead = new ArrayList<>();
+        checkNetwork = new CheckNetwork(this);
+        llmanager = (LinearLayoutManager) rcViewChapter.getLayoutManager();
 
         getListChapter();
         getListChapterRead();
         getChapterRead();
 
         processEvents();
-    }
-
-    private boolean isNetwork() {
-        CheckNetwork checkNetwork = new CheckNetwork(this);
-        return checkNetwork.isNetwork();
     }
 
     private void getSharedPreferences() {
@@ -84,7 +86,7 @@ public class ChapterListActivity extends AppCompatActivity {
 
     private void getListChapter() {
         pbReload.setVisibility(View.VISIBLE);
-        if (isNetwork()) {
+        if (checkNetwork.isNetwork()) {
             Api.apiInterface().getListChapter(idStory).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
@@ -111,7 +113,7 @@ public class ChapterListActivity extends AppCompatActivity {
     }
 
     private void getListChapterRead() {
-        if (isNetwork()) {
+        if (checkNetwork.isNetwork()) {
             Api.apiInterface().getListChapterRead(idStory, idAccount, 0).enqueue(new Callback<List<ChuongTruyen>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
@@ -132,7 +134,7 @@ public class ChapterListActivity extends AppCompatActivity {
     }
 
     private void getChapterRead() {
-        if (isNetwork()) {
+        if (checkNetwork.isNetwork()) {
             Api.apiInterface().getChapterRead(idStory, idAccount, 1).enqueue(new Callback<ChuongTruyen>() {
                 @Override
                 public void onResponse(@NonNull Call<ChuongTruyen> call,@NonNull Response<ChuongTruyen> response) {
@@ -158,9 +160,9 @@ public class ChapterListActivity extends AppCompatActivity {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
         chapterAdapter = new ChapterAdapter(this, listChapter, listChapterRead, id_ChapterReading, (position, view1, isLongClick) -> {
 //            Log.e("idchapterclick: ", String.valueOf(position));
-            Intent intent = new Intent(this, ChapterReadActivity.class);
+            intent = new Intent(this, ChapterReadActivity.class);
             intent.putExtra("idChapterReading", position);
-            intent.putExtra("idStory", idStory);
+            intent.putExtra("storyId", idStory);
             startActivity(intent);
             finish();
         });//Đổ dữ liệu lên adpter
@@ -171,9 +173,9 @@ public class ChapterListActivity extends AppCompatActivity {
         rcViewChapter.setLayoutManager(new LinearLayoutManager(this));
         ChapterDownloadAdapter chapterDownloadAdapter = new ChapterDownloadAdapter(this, listChapter_Download, listChapterRead_Download, id_ChapterReading, (position, view1, isLongClick) -> {
 
-            Intent intent = new Intent(this, ChapterReadActivity.class);
+            intent = new Intent(this, ChapterReadActivity.class);
             intent.putExtra("idChapterReading", position);
-            intent.putExtra("idStory", idStory);
+            intent.putExtra("storyId", idStory);
             startActivity(intent);
             finish();
         });//Đổ dữ liệu lên adpter
@@ -197,11 +199,10 @@ public class ChapterListActivity extends AppCompatActivity {
         });
 
         ivReverse.setOnClickListener(view -> {
-            if (isNetwork()) {
+            if (checkNetwork.isNetwork()) {
                 Collections.reverse(listChapter);// đảo ngược dánh sách
 
                 //Đầu trang
-                LinearLayoutManager llmanager = (LinearLayoutManager) rcViewChapter.getLayoutManager();
                 if (llmanager != null) {
                     llmanager.scrollToPosition(0);
                 }
@@ -211,7 +212,6 @@ public class ChapterListActivity extends AppCompatActivity {
                 Collections.reverse(listChapter_Download);// đảo ngược dánh sách
 
                 //Đầu trang
-                LinearLayoutManager llmanager = (LinearLayoutManager) rcViewChapter.getLayoutManager();
                 if (llmanager != null) {
                     llmanager.scrollToPosition(0);
                 }
@@ -222,11 +222,11 @@ public class ChapterListActivity extends AppCompatActivity {
     }
 
     private void searchChapter(String numberChapter) {
-        pbReload.setVisibility(View.VISIBLE);
         if (numberChapter.equals("")) {
             getListChapter();
         } else {
-            if (isNetwork()) {
+            pbReload.setVisibility(View.VISIBLE);
+            if (checkNetwork.isNetwork()) {
                 Api.apiInterface().searchChapter(idStory, numberChapter).enqueue(new Callback<List<ChuongTruyen>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<ChuongTruyen>> call,@NonNull Response<List<ChuongTruyen>> response) {
@@ -235,7 +235,6 @@ public class ChapterListActivity extends AppCompatActivity {
                             listChapter.addAll(response.body());
 
                             chapterAdapter.notifyDataSetChanged();
-                            pbReload.setVisibility(View.GONE);
                         }
                     }
 
@@ -248,8 +247,8 @@ public class ChapterListActivity extends AppCompatActivity {
                 Log.e("search", "oke");
                 listChapter_Download = AppDatabase.getInstance(this).appDao().getAllChapterByNumberChapter(idStory, numberChapter);
                 rcView_Download(idChapterReading);
-                pbReload.setVisibility(View.GONE);
             }
+            pbReload.setVisibility(View.GONE);
         }
     }
 }

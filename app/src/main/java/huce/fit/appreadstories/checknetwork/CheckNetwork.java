@@ -28,10 +28,6 @@ public class CheckNetwork {
         }
         Log.e("Wifi connected: ", String.valueOf(isWifiConn));
         Log.e("Mobile connected: ", String.valueOf(isMobileConn));
-        if (!isWifiConn && !isMobileConn) {
-            return false;
-        } else {
-            return true;
-        }
+        return isWifiConn || isMobileConn;
     }
 }

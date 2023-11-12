@@ -91,7 +91,7 @@ public class ChapterReadActivity extends AppCompatActivity {
 
         getSharedPreferences();
 
-        idStory = getIntent().getIntExtra("idStory", 0);
+        idStory = getIntent().getIntExtra("storyId", 0);
         idChapter = getIntent().getIntExtra("idChapterReading", 0);
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -294,7 +294,7 @@ public class ChapterReadActivity extends AppCompatActivity {
                 if (isNetwork()) {
                     if (isComment) {
                         Intent intent2 = new Intent(ChapterReadActivity.this, CommentListActivity.class);
-                        intent2.putExtra("idStory", idStory);
+                        intent2.putExtra("storyId", idStory);
                         startActivity(intent2);
                     } else {
                         Toast.makeText(ChapterReadActivity.this, "Tiến độ đọc truyện chưa đạt 5%\n\tKhông thể bình luận!", Toast.LENGTH_SHORT).show();

@@ -1,5 +1,7 @@
 package huce.fit.appreadstories.adapters;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,37 +13,43 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.model.Truyen;
 
 
-public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> {
-    private final List<Truyen> listStory;
-    private final ClickListener clickListener;
+public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHolder> {
+    private final List<Truyen> mListStory = new ArrayList<>();
+    private final ClickListener mClickListener;
 
 
-    public StoryAdapter(List<Truyen> listStory, ClickListener clickListener) {
-        this.listStory = listStory;
-        this.clickListener = clickListener;
+    public StoryAdapter(ClickListener clickListener) {
+        mClickListener = clickListener;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setDataStory(List<Truyen> listStory) {
+        mListStory.clear();
+        mListStory.addAll(listStory);
+        notifyDataSetChanged();
     }
 
 
     @NonNull
     @Override
-    public StoryHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_story_item, parent, false);
-        return new StoryHoder(view);
+        return new StoryHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StoryHoder holder, int position) {
-        Truyen tc = listStory.get(position);
+    public void onBindViewHolder(@NonNull StoryHolder holder, int position) {
+        Truyen tc = mListStory.get(position);
         holder.itemView.setOnClickListener((view -> {
-            int idStory = listStory.get(position).getMatruyen();
-            clickListener.onItemClick(idStory, view, false);
+            int idStory = mListStory.get(position).getMatruyen();
+            mClickListener.onItemClick(idStory, view, false);
         }));
 
         if (tc != null) {
@@ -57,17 +65,15 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryHoder> 
 
     @Override
     public int getItemCount() {
-        if (listStory != null && listStory.size() > 0)
-            return listStory.size();
-        else
-            return 0;
+        Log.e("StoryAdapter","NHT itemCount= "+mListStory.size());
+        return mListStory.size();
     }
 
-    public class StoryHoder extends RecyclerView.ViewHolder {
-        private TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter;
-        private ImageView ivStory;
+    public static class StoryHolder extends RecyclerView.ViewHolder {
+        private final TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter;
+        private final ImageView ivStory;
 
-        public StoryHoder(@NonNull View itemView) {
+        public StoryHolder(@NonNull View itemView) {
             super(itemView);
             tvStoryName = itemView.findViewById(R.id.tvStoryName);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);

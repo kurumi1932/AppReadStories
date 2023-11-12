@@ -10,6 +10,7 @@ import huce.fit.appreadstories.fragment.StoryInterfaceIntroduceFagment;
 
 public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
     private final int idStory;
+
     public ViewPagerStoryInterfaceAdapter(@NonNull FragmentActivity fragmentActivity, int idStory) {
         super(fragmentActivity);
         this.idStory = idStory;
@@ -18,14 +19,10 @@ public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0:
-                return new StoryInterfaceIntroduceFagment(idStory);
-            case 1:
-                return new StoryInterfaceRateFagment(idStory);
-
+        if (position == 0) {
+            return new StoryInterfaceIntroduceFagment(idStory);
         }
-        return null;
+        return new StoryInterfaceRateFagment(idStory);
     }
 
     @Override

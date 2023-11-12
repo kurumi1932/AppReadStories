@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.model.ChuongTruyen;
 
 public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterHoder> {

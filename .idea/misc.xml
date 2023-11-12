@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -48,6 +47,7 @@
         <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_item.xml" value="0.33" />
         <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_read.xml" value="0.2171875" />
         <entry key="..\:/AppReadStories/app/src/main/res/layout/activity_story_search.xml" value="0.33" />
+        <entry key="..\:/AppReadStories/app/src/main/res/layout/dialog_story_download.xml" value="0.3875" />
         <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_account.xml" value="0.33" />
         <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_story.xml" value="0.21666666666666667" />
         <entry key="..\:/AppReadStories/app/src/main/res/layout/fragment_story_filter.xml" value="0.33106884057971014" />
@@ -133,6 +133,9 @@
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/dialog_setting.xml" value="0.25" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/dialog_setting_color.xml" value="0.33" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/dialog_story_download.xml" value="0.24322916666666666" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_1.xml" value="0.28072916666666664" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_2.xml" value="0.28177083333333336" />
+        <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_3.xml" value="0.2311965811965812" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_account.xml" value="0.33" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_network_error.xml" value="0.21458333333333332" />
         <entry key="..\:/Users/tien1/Desktop/AppReadStories/app/src/main/res/layout/fragment_not_network.xml" value="0.21693840579710144" />
@@ -175,7 +178,7 @@
       <writeAnnotation name="com.google.gson.annotations.SerializedName" />
     </writeAnnotations>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

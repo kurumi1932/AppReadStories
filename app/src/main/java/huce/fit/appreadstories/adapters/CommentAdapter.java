@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.model.BinhLuan;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHoder> {

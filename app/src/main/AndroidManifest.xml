@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="o">
         <activity
-            android:name=".activity.StartAppActivity"
+            android:name=".startapp.StartAppActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -27,25 +27,20 @@
         </activity>
 
         <activity
-            android:name=".activity.AccountLoginActivity"
+            android:name=".account.login.AccountLoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.StorySearchActivity"
+            android:name=".main.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.StoryInterfaceActivity"
+            android:name=".story.search.StorySearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".story.information.StoryInformationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.StoryDownloadActivity"
             android:screenOrientation="portrait" />
-
-        <service android:name=".service.CheckStoryService" />
-        <service android:name=".service.DeleteStoryService" />
-        <service android:name=".service.DownloadStoryService" />
 
         <activity
             android:name=".activity.ChapterListActivity"
@@ -59,18 +54,20 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.AccountRegisterActivity"
+            android:name=".account.register.AccountRegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AccountUpdateActivity"
+            android:name=".account.update.AccountUpdateActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.GuideActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.DeveloperInfoActivity"
-            android:screenOrientation="portrait" />
+
+        <service android:name=".service.CheckStoryService" />
+        <service android:name=".service.DeleteStoryService" />
+        <service android:name=".service.DownloadStoryService" />
+
     </application>
 
 </manifest>

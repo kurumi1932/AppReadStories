@@ -1,12 +1,11 @@
 package huce.fit.appreadstories.api;
 
-import huce.fit.appreadstories.interfaces.ApiInterface;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Api {
     private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://192.168.43.78/appreadstories/";
+    private static final String BASE_URL = "http://192.168.89.102/appreadstories/";
 
     public static final String URL_LOGIN = "login.php";
     public static final String URL_REGISTER = "register.php";

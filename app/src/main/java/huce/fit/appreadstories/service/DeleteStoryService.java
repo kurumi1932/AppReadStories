@@ -27,8 +27,8 @@ public class DeleteStoryService extends Service {
         Log.e("DeleteStoryService", "Delete Story Start");
 
         if (intent != null) {
-            idStory = intent.getIntExtra("idStory", 0);
-            Log.e("idStory", String.valueOf(idStory));
+            idStory = intent.getIntExtra("storyId", 0);
+            Log.e("storyId", String.valueOf(idStory));
 
             deleteChapterRead();
         }

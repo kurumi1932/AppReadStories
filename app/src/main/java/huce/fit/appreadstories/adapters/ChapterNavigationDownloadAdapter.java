@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.sqlite.Chapter;
 
 public class ChapterNavigationDownloadAdapter extends RecyclerView.Adapter<ChapterNavigationDownloadAdapter.ChapterNavigationDownloadHoder> {

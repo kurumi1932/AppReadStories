@@ -24,15 +24,12 @@ import retrofit2.Response;
 public class StoryInterfaceIntroduceFagment extends Fragment {
     private TextView tvIntroduce;
     private final int idStory;
+
     private Story story;
+    private CheckNetwork checkNetwork;
 
     public StoryInterfaceIntroduceFagment(int idStory) {
         this.idStory = idStory;
-    }
-
-    private boolean isNetwork() {
-        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
-        return checkNetwork.isNetwork();
     }
 
     @Nullable
@@ -41,32 +38,32 @@ public class StoryInterfaceIntroduceFagment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_story_interface_introduce, container, false);
 
         tvIntroduce = view.findViewById(R.id.tvIntroduce);
+        checkNetwork = new CheckNetwork(getActivity());
         story = AppDatabase.getInstance(getActivity()).appDao().getStory(idStory);
-        getData();
+        if (story != null) {
+            tvIntroduce.setText(story.getIntroduce());
+        } else {
+            getData();
+        }
 
         return view;
     }
 
     private void getData() {
-        if (story != null) {
-            tvIntroduce.setText(story.getIntroduce());
-        } else {
-            if (isNetwork()) {
-                Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
-                        Truyen tc = response.body();
-                        if (tc != null) {
-                            tvIntroduce.setText(tc.getGioithieu());
-                        }
+        if (checkNetwork.isNetwork()) {
+            Api.apiInterface().getStory(idStory).enqueue(new Callback<Truyen>() {
+                @Override
+                public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+                    if (response.body() != null) {
+                        tvIntroduce.setText(response.body().getGioithieu());
                     }
+                }
 
-                    @Override
-                    public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                        Log.e("Err_StoryInterfaceF", t.toString());
-                    }
-                });
-            }
+                @Override
+                public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
+                    Log.e("Err_StoryInterfaceF", t.toString());
+                }
+            });
         }
     }
 }

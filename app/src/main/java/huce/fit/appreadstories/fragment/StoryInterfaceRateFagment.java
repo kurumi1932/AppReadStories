@@ -31,15 +31,12 @@ public class StoryInterfaceRateFagment extends Fragment {
     private RateAdapter rateAdapter;
     private RecyclerView rcViewRate;
 
+    private CheckNetwork checkNetwork;
+
     private final int idStory;
 
     public StoryInterfaceRateFagment(int idStory) {
         this.idStory = idStory;
-    }
-
-    private boolean isNetwork() {
-        CheckNetwork checkNetwork = new CheckNetwork(getActivity());
-        return checkNetwork.isNetwork();
     }
 
     @Nullable
@@ -47,16 +44,18 @@ public class StoryInterfaceRateFagment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_story_interface_rate, container, false);
 
+        checkNetwork = new CheckNetwork(getActivity());
+
         rcViewRate = view.findViewById(R.id.rcViewRate);
+        rcView();
 
         getDataRate();
-        rcView();
 
         return view;
     }
 
     private void rcView() {
-        rateAdapter = new RateAdapter(listRate);//Đổ dữ liệu lên adpter
+        rateAdapter = new RateAdapter();//Đổ dữ liệu lên adpter
         rcViewRate.setHasFixedSize(true);
         rcViewRate.setLayoutManager(new LinearLayoutManager(getActivity()));
         rcViewRate.setAdapter(rateAdapter);
@@ -66,14 +65,14 @@ public class StoryInterfaceRateFagment extends Fragment {
     }
 
     public void getDataRate() {
-        if (isNetwork()) {
+        if (checkNetwork.isNetwork()) {
             Api.apiInterface().getListRate(idStory).enqueue(new Callback<List<DanhGia>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<DanhGia>> call, @NonNull Response<List<DanhGia>> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         listRate.clear();
                         listRate.addAll(response.body());
-                        rateAdapter.notifyDataSetChanged();
+                        rateAdapter.setDataRate(listRate);
                     }
                 }
 

@@ -25,8 +25,13 @@ public class TaiKhoan{
 	@SerializedName("accountsuccess")
 	private int accountsuccess;
 
+
 	public int getMataikhoan(){
 		return mataikhoan;
+	}
+
+	public void setMataikhoan(int mataikhoan) {
+		this.mataikhoan = mataikhoan;
 	}
 
 	public String getMatkhau(){
@@ -37,12 +42,24 @@ public class TaiKhoan{
 		return email;
 	}
 
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getTenhienthi(){
 		return tenhienthi;
 	}
 
+	public void setTenhienthi(String tenhienthi) {
+		this.tenhienthi = tenhienthi;
+	}
+
 	public String getNgaysinh() {
 		return ngaysinh;
+	}
+
+	public void setNgaysinh(String ngaysinh) {
+		this.ngaysinh = ngaysinh;
 	}
 
 	public int getAccountsuccess() {

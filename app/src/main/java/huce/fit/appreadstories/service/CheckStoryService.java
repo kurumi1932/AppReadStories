@@ -40,9 +40,9 @@ public class CheckStoryService extends Service {
         if (intent != null) {
             Toast.makeText(this, "Kiểm tra cập nhật của truyện!", Toast.LENGTH_LONG).show();
 
-            idStory = intent.getIntExtra("idStory", 0);
+            idStory = intent.getIntExtra("storyId", 0);
             isFollow = intent.getBooleanExtra("isFollow", false);
-            Log.e("idStory", String.valueOf(idStory));
+            Log.e("storyId", String.valueOf(idStory));
             Log.e("isFollow", String.valueOf(isFollow));
 
             updateStoryServer(this);

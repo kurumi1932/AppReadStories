@@ -53,11 +53,11 @@ public class DownloadStoryService extends Service {
         if (intent != null) {
             Toast.makeText(this, "Bắt đầu tải về", Toast.LENGTH_LONG).show();
 
-            idStory = intent.getIntExtra("idStory", 0);
+            idStory = intent.getIntExtra("storyId", 0);
             nameStory = intent.getStringExtra("nameStory");
             isFollow = intent.getBooleanExtra("isFollow", false);
             idChapterReading = intent.getIntExtra("idChapterReading", 0);
-            Log.e("idStory", String.valueOf(idStory));
+            Log.e("storyId", String.valueOf(idStory));
             Log.e("nameStory", nameStory);
             Log.e("idChapterReading", String.valueOf(idChapterReading));
             Log.e("isFollow", String.valueOf(isFollow));

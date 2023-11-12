@@ -55,10 +55,10 @@ public class StoryDownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_download);
 
-        idStory = getIntent().getIntExtra("idStory", 0);
+        idStory = getIntent().getIntExtra("storyId", 0);
         isFollow = getIntent().getBooleanExtra("isFollow", false);
         idChapterReading = getIntent().getIntExtra("idChapterReading", 0);
-        Log.e("idStory:", String.valueOf(idStory));
+        Log.e("storyId:", String.valueOf(idStory));
         Log.e("isFollow:", String.valueOf(isFollow));
         Log.e("idChapterRead:", String.valueOf(idChapterReading));
 
@@ -174,7 +174,7 @@ public class StoryDownloadActivity extends AppCompatActivity {
     // Start the service
     public void startDownloadService() {
         Intent intent = new Intent(StoryDownloadActivity.this, DownloadStoryService.class);
-        intent.putExtra("idStory", idStory);
+        intent.putExtra("storyId", idStory);
         intent.putExtra("nameStory", nameStory);
         intent.putExtra("isFollow", isFollow);
         intent.putExtra("idChapterReading", idChapterReading);

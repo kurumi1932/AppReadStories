@@ -1,5 +1,6 @@
 package huce.fit.appreadstories.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,41 +12,46 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.interfaces.ClickListener;
 import huce.fit.appreadstories.sqlite.Story;
 
 
-public class StoryDownloadAdapter extends RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHoder> {
-    private final List<Story> listStoryDownload;
+public class StoryDownloadAdapter extends RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHolder> {
+    private final List<Story> mListStory = new ArrayList<>();
     private final ClickListener clickListener;
 
-    public StoryDownloadAdapter(List<Story> listStoryDownload, ClickListener clickListener) {
-        this.listStoryDownload = listStoryDownload;
+    public StoryDownloadAdapter(ClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setDataStory(List<Story> listStory) {
+        mListStory.clear();
+        mListStory.addAll(listStory);
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
-    public StoryDownloadHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StoryDownloadHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_story_item, parent, false);
-        return new StoryDownloadHoder(view);
+        return new StoryDownloadHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StoryDownloadHoder holder, int position) {
-        Story story = listStoryDownload.get(position);
+    public void onBindViewHolder(@NonNull StoryDownloadHolder holder, int position) {
+        Story story = mListStory.get(position);
         if (story != null) {
             holder.itemView.setOnClickListener(view -> {
-                int idStory = listStoryDownload.get(position).getIdStory();
+                int idStory = mListStory.get(position).getIdStory();
                 clickListener.onItemClick(idStory, view, false);
             });
             holder.itemView.setOnLongClickListener(view -> {
-                int idStory = listStoryDownload.get(position).getIdStory();
+                int idStory = mListStory.get(position).getIdStory();
                 clickListener.onItemClick(idStory, view, true);
                 return false;
             });
@@ -68,18 +74,18 @@ public class StoryDownloadAdapter extends RecyclerView.Adapter<StoryDownloadAdap
 
     @Override
     public int getItemCount() {
-        if (listStoryDownload != null && listStoryDownload.size() > 0)
-            return listStoryDownload.size();
+        if (mListStory != null && mListStory.size() > 0)
+            return mListStory.size();
         else
             return 0;
     }
 
 
-    public class StoryDownloadHoder extends RecyclerView.ViewHolder {
-        private TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter, tvNewChapter;
-        private ImageView ivStory;
+    public static class StoryDownloadHolder extends RecyclerView.ViewHolder {
+        private final TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter, tvNewChapter;
+        private final ImageView ivStory;
 
-        public StoryDownloadHoder(@NonNull View itemView) {
+        public StoryDownloadHolder(@NonNull View itemView) {
             super(itemView);
             tvStoryName = itemView.findViewById(R.id.tvStoryName);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);

@@ -53,7 +53,7 @@ public class CommentListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment_list);
 
         getSharedPreferences();
-        idStory = getIntent().getIntExtra("idStory", 0);
+        idStory = getIntent().getIntExtra("storyId", 0);
 
         rcViewComment = findViewById(R.id.rcViewComment);
         ivBack = findViewById(R.id.ivBack);

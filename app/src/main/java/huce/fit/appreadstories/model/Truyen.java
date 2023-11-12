@@ -49,8 +49,8 @@ public class Truyen {
 	@SerializedName("tylechuongdadoc")
 	private String tylechuongdadoc;
 
-	@SerializedName("storysuccess")
-	private int storysuccess;
+	@SerializedName("storySuccess")
+	private int storySuccess;
 
 	public int getMatruyen() {
 		return matruyen;
@@ -112,7 +112,7 @@ public class Truyen {
 		return tylechuongdadoc;
 	}
 
-	public int getStorysuccess() {
-		return storysuccess;
+	public int getStorySuccess() {
+		return storySuccess;
 	}
 }
