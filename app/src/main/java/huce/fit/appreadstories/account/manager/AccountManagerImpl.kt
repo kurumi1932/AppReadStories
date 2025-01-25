@@ -1,21 +1,18 @@
-package huce.fit.appreadstories.account.manager;
+package huce.fit.appreadstories.account.manager
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import huce.fit.appreadstories.account.BaseAccountImpl
 
-import huce.fit.appreadstories.account.BaseAccountImpl;
+class AccountManagerImpl(accountManagerView: AccountManagerView, context: Context): BaseAccountImpl(context) , AccountManagerPresenter {
 
-public class AccountManagerImpl extends BaseAccountImpl implements AccountManagerPresenter {
-
-    private static final String TAG = "AccountManagerImpl";
-    AccountManagerImpl(AccountManagerView accountManagerView, Context context) {
-        super(context);
-        Log.e(TAG, "AccountManagerImpl");
-        accountManagerView.setName(getSharedPreferences().getName());
+    companion object{
+        const val TAG = "AccountManagerImpl"
+    }
+    init{
+        accountManagerView.setName(getAccount().getName()!!)
     }
 
-    @Override
-    public void logout() {
-        setSharedPreferences().myRemove();
+    override fun logout() {
+        setAccount().myRemove()
     }
 }

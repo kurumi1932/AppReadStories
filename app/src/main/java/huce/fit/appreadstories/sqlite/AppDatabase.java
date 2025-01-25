@@ -6,6 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import huce.fit.appreadstories.model.Chapter;
+import huce.fit.appreadstories.model.ChapterRead;
+import huce.fit.appreadstories.model.Story;
+
 @Database(entities = {Story.class, Chapter.class, ChapterRead.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "story.dp";

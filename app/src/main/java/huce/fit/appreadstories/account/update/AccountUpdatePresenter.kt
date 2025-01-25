@@ -1,10 +1,10 @@
-package huce.fit.appreadstories.account.update;
+package huce.fit.appreadstories.account.update
 
-import huce.fit.appreadstories.account.BaseAccountPresenter;
+import huce.fit.appreadstories.account.BaseAccountPresenter
 
-public interface AccountUpdatePresenter extends BaseAccountPresenter {
+interface AccountUpdatePresenter : BaseAccountPresenter {
 
-    void updateAccount(int idAccount, String email, String name, String birthday);
-    void changePassword(int idAccount, String oldPass, String newPass);
-    void openDatePicker();
+    fun updateAccount(accountId: Int, email: String, name: String, birthday: String)
+    fun changePassword(accountId: Int, oldPass: String, newPass: String)
+    fun openDatePicker()
 }

@@ -1,6 +1,6 @@
-package huce.fit.appreadstories.account.login;
+package huce.fit.appreadstories.account.login
 
-public interface AccountLoginView {
+interface AccountLoginView {
 
-    void login(int status);
+    fun login(status: Int)
 }

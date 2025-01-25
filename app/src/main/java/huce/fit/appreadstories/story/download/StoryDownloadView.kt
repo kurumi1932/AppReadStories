@@ -1,10 +1,10 @@
-package huce.fit.appreadstories.story.download;
+package huce.fit.appreadstories.story.download
 
-import java.util.List;
+import huce.fit.appreadstories.model.Chapter
+import huce.fit.appreadstories.model.Story
 
-import huce.fit.appreadstories.sqlite.Story;
 
-public interface StoryDownloadView {
-
-    void setData(List<Story> listStory);
+interface StoryDownloadView {
+    fun setDataStory(story: Story)
+    fun setChapterList(chapterList: List<Chapter>)
 }

@@ -7,6 +7,10 @@ import androidx.room.Update;
 
 import java.util.List;
 
+import huce.fit.appreadstories.model.Chapter;
+import huce.fit.appreadstories.model.ChapterRead;
+import huce.fit.appreadstories.model.Story;
+
 @Dao
 public interface AppDao {
 //    ----------------Story----------------
@@ -16,56 +20,59 @@ public interface AppDao {
     @Update
     void updateStory(Story... story);
 
-    @Query("UPDATE story SET chapterReading=:idChapterRead WHERE idStory = :idStory")
-    void updateIdChapterRead(int idStory, int idChapterRead);
+    @Query("UPDATE story SET chapterReading=:chapterReadId WHERE storyId = :storyId")
+    void updateChapterReadId(int storyId, int chapterReadId);
 
-    @Query("DELETE FROM story WHERE idStory = :idStory")
-    void deleteStory(int idStory);
+    @Query("DELETE FROM story WHERE storyId = :storyId")
+    void deleteStory(int storyId);
 
     @Query("SELECT * FROM story")
     List<Story> getAllStory();
 
-    @Query("SELECT * FROM story WHERE idStory = :idStory")
-    Story getStory(int idStory);
+    @Query("SELECT * FROM story WHERE storyId = :storyId")
+    Story getStory(int storyId);
 
 //    ----------------Chapter----------------
     @Insert
     void insertChapter(Chapter... chapter);
 
-    @Query("DELETE FROM chapter WHERE idStory = :idStory")
-    void deleteChapter(int idStory);
+    @Query("DELETE FROM chapter WHERE storyId = :storyId")
+    void deleteChapter(int storyId);
 
-    @Query("SELECT * FROM chapter WHERE idStory = :idStory")
-    List<Chapter> getAllChapter(int idStory);
+    @Query("SELECT * FROM chapter WHERE storyId = :storyId")
+    List<Chapter> getChapterList(int storyId);
 
-    @Query("SELECT * FROM chapter WHERE idStory = :idStory AND numberChapter LIKE '%' || :number || '%'")
-    List<Chapter> getAllChapterByNumberChapter(int idStory, String number);
+    @Query("SELECT COUNT(*) FROM chapter WHERE storyId = :storyId")
+    int getSumChapter(int storyId);
 
-    @Query("SELECT * FROM chapter WHERE idStory = :idStory AND idChapter = :idChapter")
-    Chapter getChapter(int idStory, int idChapter);
+    @Query("SELECT * FROM chapter WHERE storyId = :storyId AND chapterId = :chapterId")
+    Chapter getChapter(int storyId, int chapterId);
 
-    @Query("SELECT idChapter FROM chapter WHERE idStory = :idStory ORDER BY idChapter ASC LIMIT 1")
-    int getChapterFirst(int idStory);
+    @Query("SELECT chapterId FROM chapter WHERE storyId = :storyId ORDER BY chapterId ASC LIMIT 1")
+    int getChapterFirst(int storyId);
 
-    @Query("SELECT idChapter FROM chapter WHERE  idStory = :idStory AND idChapter < :idChapter AND idChapter >= :idChapterFirst ORDER BY idChapter DESC LIMIT 1")
-    int getPreviousChapter(int idStory, int idChapter, int idChapterFirst);
+    @Query("SELECT chapterId FROM chapter WHERE  storyId = :storyId AND chapterId < :chapterId AND chapterId >= :chapterFirstId ORDER BY chapterId DESC LIMIT 1")
+    int getPreviousChapter(int storyId, int chapterId, int chapterFirstId);
 
-    @Query("SELECT idChapter FROM chapter WHERE idStory = :idStory ORDER BY idChapter DESC LIMIT 1")
-    int getChapterFinal(int idStory);
+    @Query("SELECT chapterId FROM chapter WHERE storyId = :storyId ORDER BY chapterId DESC LIMIT 1")
+    int getChapterFinal(int storyId);
 
-    @Query("SELECT idChapter FROM chapter WHERE  idStory = :idStory AND idChapter > :idChapter AND idChapter <= :idChapterFinal ORDER BY idChapter ASC LIMIT 1")
-    int getNextChapter(int idStory, int idChapter, int idChapterFinal);
+    @Query("SELECT chapterId FROM chapter WHERE  storyId = :storyId AND chapterId > :chapterId AND chapterId <= :chapterFinalId ORDER BY chapterId ASC LIMIT 1")
+    int getNextChapter(int storyId, int chapterId, int chapterFinalId);
 
 //    ----------------Chapter Read----------------
     @Insert
     void insertChapterRead(ChapterRead... chapterRead);
 
-    @Query("DELETE FROM chapter_read WHERE idStory = :idStory")
-    void deleteChapterRead(int idStory);
+    @Query("DELETE FROM chapter_read WHERE storyId = :storyId")
+    void deleteChapterRead(int storyId);
 
-    @Query("SELECT * FROM chapter_read WHERE idStory = :idStory")
-    List<ChapterRead> getAllChapterRead(int idStory);
+    @Query("SELECT * FROM chapter_read WHERE storyId = :storyId")
+    List<ChapterRead> getChapterReadList(int storyId);
 
-    @Query("SELECT * FROM chapter_read WHERE idStory = :idStory AND idChapter = :idChapter")
-    ChapterRead checkChapterRead(int idStory, int idChapter);
+    @Query("SELECT COUNT(*) FROM chapter_read WHERE storyId = :storyId")
+    int getSumChapterRead(int storyId);
+
+    @Query("SELECT * FROM chapter_read WHERE storyId = :storyId AND chapterId = :chapterId")
+    ChapterRead checkChapterRead(int storyId, int chapterId);
 }

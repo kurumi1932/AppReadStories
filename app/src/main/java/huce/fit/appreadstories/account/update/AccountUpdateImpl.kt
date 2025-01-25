@@ -1,124 +1,140 @@
-package huce.fit.appreadstories.account.update;
+package huce.fit.appreadstories.account.update
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.util.Log;
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Context
+import android.util.Log
+import android.widget.DatePicker
+import huce.fit.appreadstories.account.BaseAccountImpl
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.checknetwork.isConnecting
+import huce.fit.appreadstories.model.Account
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
-import androidx.annotation.NonNull;
+class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : BaseAccountImpl(accountUpdateView as Context), AccountUpdatePresenter {
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import huce.fit.appreadstories.account.BaseAccountImpl;
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.TaiKhoan;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class AccountUpdateImpl extends BaseAccountImpl implements AccountUpdatePresenter {
-
-    private static final String TAG = "AccountUpdateImpl";
-    private AccountUpdateView mAccountUpdateView;
-    private final Calendar mCalendar = Calendar.getInstance();
-    private final DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, monthOfYear);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-        @SuppressLint("SimpleDateFormat") String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(mCalendar.getTime());
-        mAccountUpdateView.changeDatePicker(dateStr);
-    };
-
-    public AccountUpdateImpl(AccountUpdateView accountUpdateView) {
-        super((Context) accountUpdateView);
-        mAccountUpdateView = accountUpdateView;
-        MySharedPreferences mySharedPreferences = getSharedPreferences();
-        mAccountUpdateView.getInfoAccount(mySharedPreferences.getName(), mySharedPreferences.getEmail(), mySharedPreferences.getBirthday());
+    companion object{
+        const val TAG = "AccountUpdateImpl"
     }
 
-    @Override
-    public void updateAccount(int idAccount, String email, String name, String birthday) {
-        if (checkDate(birthday))
-            if (isNetwork())
-                Api.apiInterface().updateAccount(idAccount, email, name, birthday).enqueue(new Callback<TaiKhoan>() {
-                    @Override
-                    public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
-                        if (response.isSuccessful() && response.body() != null)
-                            if (response.body().getAccountsuccess() == 1) {
-                                setSharedPreferences(email, name, birthday, age(birthday));
-                                mAccountUpdateView.update(1);
-                            } else {
-                                mAccountUpdateView.update(0);
-                            }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<TaiKhoan> call, @NonNull Throwable t) {
-                        Log.e(TAG, "update_info_err", t);
-                    }
-                });
-            else
-                mAccountUpdateView.update(2);
-        else
-            mAccountUpdateView.update(3);
+    val d = OnDateSetListener { _: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, monthOfYear)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        @SuppressLint("SimpleDateFormat") val dateStr =
+            SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+        accountUpdateView.changeDatePicker(dateStr)
     }
 
-    @Override
-    public void changePassword(int idAccount, String oldPass, String newPass) {
-        if (isNetwork())
-            Api.apiInterface().checkPassword(idAccount, oldPass).enqueue(new Callback<TaiKhoan>() {
-                @Override
-                public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
-                    if (response.isSuccessful() && response.body() != null)
-                        if (response.body().getAccountsuccess() == 1)
-                            if (oldPass.equals(newPass))
-                                mAccountUpdateView.update(4);
-                            else
-                                Api.apiInterface().updatePassword(idAccount, newPass).enqueue(new Callback<TaiKhoan>() {
-                                    @Override
-                                    public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
-                                        if (response.isSuccessful() && response.body() != null)
-                                            if (response.body().getAccountsuccess() == 1)
-                                                mAccountUpdateView.update(1);
-                                            else
-                                                mAccountUpdateView.update(5);
-                                    }
+    init {
+        setAccountInfo()
+    }
 
-                                    @Override
-                                    public void onFailure(@NonNull Call<TaiKhoan> call, @NonNull Throwable t) {
-                                        Log.e(TAG, "update_pass_err", t);
-                                    }
-                                });
-                        else
-                            mAccountUpdateView.update(6);
+    private fun setAccountInfo() {
+        val account: AccountSharedPreferences = getAccount()
+        accountUpdateView.getInfoAccount(
+            account.getName()!!,
+            account.getEmail()!!,
+            account.getBirthday()!!
+        )
+    }
+
+    override fun updateAccount(accountId: Int, email: String, name: String, birthday: String) {
+        if (!checkDate(birthday)) {
+            accountUpdateView.update(3)
+            return
+        }
+        if (!isConnecting(context)) {
+            accountUpdateView.update(2)
+            return
+        }
+        Api().apiInterface().updateAccount(accountId, email, name, birthday)
+            .enqueue(object : Callback<Account?> {
+                override fun onResponse(call: Call<Account?>, response: Response<Account?>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        if (response.body()!!.success == 1) {
+                            setAccount(email, name, birthday, age(birthday))
+                            accountUpdateView.update(1)
+                        } else {
+                            accountUpdateView.update(0)
+                        }
+                    }
+                    Log.e(TAG, "api updateAccount: success")
                 }
 
-                @Override
-                public void onFailure(@NonNull Call<TaiKhoan> call, @NonNull Throwable t) {
-                    Log.e(TAG, "check_pass_err", t);
+                override fun onFailure(call: Call<Account?>, t: Throwable) {
+                    Log.e(TAG, "api updateAccount: fail")
                 }
-            });
-        else
-            mAccountUpdateView.update(2);
+            })
     }
 
-    @Override
-    public void openDatePicker() {
-        new DatePickerDialog((Context) mAccountUpdateView, d,
-                mCalendar.get(Calendar.YEAR),
-                mCalendar.get(Calendar.MONTH),
-                mCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    override fun changePassword(accountId: Int, oldPass: String, newPass: String) {
+        if (!isConnecting(context)) {
+            accountUpdateView.update(2)
+            return
+        }
+        Api().apiInterface().checkPassword(accountId, oldPass).enqueue(object : Callback<Account?> {
+            override fun onResponse(call: Call<Account?>, response: Response<Account?>) {
+                if (response.isSuccessful && response.body() != null) {
+                    if (response.body()!!.success == 1) {
+                        if (oldPass == newPass) {
+                            accountUpdateView.update(4)
+                        } else {
+                            Api().apiInterface().updatePassword(accountId, newPass)
+                                .enqueue(object : Callback<Account?> {
+                                    override fun onResponse(
+                                        call: Call<Account?>,
+                                        response: Response<Account?>
+                                    ) {
+                                        if (response.isSuccessful && response.body() != null) {
+                                            if (response.body()!!.success == 1) {
+                                                accountUpdateView.update(1)
+                                            } else {
+                                                accountUpdateView.update(5)
+                                            }
+                                        }
+                                        Log.e(TAG, "api changePassword update: success")
+                                    }
+
+                                    override fun onFailure(call: Call<Account?>, t: Throwable) {
+                                        Log.e(TAG, "api changePassword update: fail")
+                                    }
+                                })
+                        }
+                    } else {
+                        accountUpdateView.update(6)
+                    }
+                }
+                Log.e(TAG, "api changePassword check: success")
+            }
+
+            override fun onFailure(call: Call<Account?>, t: Throwable) {
+                Log.e(TAG, "api changePassword check: fail")
+            }
+        })
     }
 
-    public void setSharedPreferences(String email, String name, String birthday, int age) {
-        MySharedPreferences mySharedPreferences = setSharedPreferences();
-        mySharedPreferences.setEmail(email);
-        mySharedPreferences.setName(name);
-        mySharedPreferences.setBirthday(birthday);
-        mySharedPreferences.setAge(age);
-        mySharedPreferences.myApply();
+    override fun openDatePicker() {
+        DatePickerDialog(
+            (accountUpdateView as Context), d,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    fun setAccount(email: String, name: String, birthday: String, age: Int) {
+        val account: AccountSharedPreferences = setAccount()
+        account.setEmail(email)
+        account.setName(name)
+        account.setBirthday(birthday)
+        account.setAge(age)
+        account.myApply()
     }
 }

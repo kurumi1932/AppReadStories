@@ -1,8 +1,7 @@
-package huce.fit.appreadstories.account.register;
+package huce.fit.appreadstories.account.register
 
-public interface AccountRegisterView {
+interface AccountRegisterView {
 
-    void changeDatePicker(String birthday);
-
-    void register(int status);
+    fun changeDatePicker(birthday: String)
+    fun register(status: Int)
 }

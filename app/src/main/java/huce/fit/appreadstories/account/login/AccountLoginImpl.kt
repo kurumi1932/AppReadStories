@@ -1,62 +1,69 @@
-package huce.fit.appreadstories.account.login;
+package huce.fit.appreadstories.account.login
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.account.BaseAccountImpl
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.checknetwork.isConnecting
+import huce.fit.appreadstories.model.Account
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import androidx.annotation.NonNull;
+class AccountLoginImpl(val accountLoginView: AccountLoginView) : BaseAccountImpl(accountLoginView as Context), AccountPresenter {
 
-import huce.fit.appreadstories.account.BaseAccountImpl;
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.TaiKhoan;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class AccountLoginImpl extends BaseAccountImpl implements AccountPresenter{
-
-    private static final String TAG = "AccountImpl";
-    private final AccountLoginView mAccountLoginView;
-
-    AccountLoginImpl(AccountLoginView accountLoginView) {
-        super((Context) accountLoginView);
-        mAccountLoginView = accountLoginView;
+    companion object{
+        const val TAG = "AccountImpl"
     }
 
-    @Override
-    public void login(String username, String password) {
-        if (isNetwork()) {
-            Api.apiInterface().login(username, password).enqueue(new Callback<TaiKhoan>() {
-                @Override
-                public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        TaiKhoan tk = response.body();
-                        if (tk.getAccountsuccess() == 1) {
-                            setSharedPreferences(tk.getMataikhoan(), tk.getTenhienthi(), tk.getEmail(), tk.getNgaysinh(), age(tk.getNgaysinh()));
-                            mAccountLoginView.login(1);
+    override fun login(username: String, password: String) {
+        if (isConnecting(context)) {
+            Log.e(TAG, "api login: username: $username password: $password")
+            Api().apiInterface().login(username, password).enqueue(object : Callback<Account> {
+                override fun onResponse(call: Call<Account>, response: Response<Account>) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val account = response.body()
+                        if (account!!.success == 1) {
+                            setSharedPreferences(
+                                account.accountId,
+                                account.displayName,
+                                account.email,
+                                account.birthday,
+                                age(
+                                    account.birthday
+                                )
+                            )
+                            accountLoginView.login(1)
                         } else {
-                            mAccountLoginView.login(0);
+                            accountLoginView.login(0)
                         }
                     }
+                    Log.e(TAG, "api login: success")
                 }
 
-                @Override
-                public void onFailure(@NonNull Call<TaiKhoan> call, @NonNull Throwable t) {
-                    Log.e(TAG, "login_err", t);
+                override fun onFailure(call: Call<Account>, t: Throwable) {
+                    Log.e(TAG, "api login: fail \n$t")
                 }
-            });
+            })
         } else {
-            mAccountLoginView.login(2);
+            accountLoginView.login(2)
         }
     }
 
-    public void setSharedPreferences(int idAccount, String name, String email, String birthDay, int age) {
-        MySharedPreferences mySharedPreferences = setSharedPreferences();
-        mySharedPreferences.setIdAccount(idAccount);
-        mySharedPreferences.setName(name);
-        mySharedPreferences.setEmail(email);
-        mySharedPreferences.setBirthday(birthDay);
-        mySharedPreferences.setAge(age);
-        mySharedPreferences.myApply();
+    fun setSharedPreferences(
+        accountId: Int,
+        name: String,
+        email: String,
+        birthday: String,
+        age: Int
+    ) {
+        val account: AccountSharedPreferences = setAccount()
+        account.setAccountId(accountId)
+        account.setName(name)
+        account.setEmail(email)
+        account.setBirthday(birthday)
+        account.setAge(age)
+        account.myApply()
     }
 }

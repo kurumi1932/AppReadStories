@@ -1,120 +1,127 @@
-package huce.fit.appreadstories.adapters;
+package huce.fit.appreadstories.adapters
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.model.Chapter
+import huce.fit.appreadstories.model.ChapterRead
+import java.util.Collections
+import java.util.Locale
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<ChapterAdapter.ChapterHolder>() , Filterable {
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.model.ChuongTruyen;
-
-public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterHoder> {
-    private final List<ChuongTruyen> listChapter;
-    private final List<ChuongTruyen> listChapterReadOld;
-    private final List<ChuongTruyen> listChapterRead = new ArrayList<>();
-    private final ClickListener clickListener;
-    private final Context context;
-    private final int idChapterReading;
-
-    public ChapterAdapter(Context context, List<ChuongTruyen> listChapter, List<ChuongTruyen> listChapterRead, int idChapterReading, ClickListener clickListener) {
-        this.context = context;
-        this.listChapter = listChapter;
-        this.listChapterReadOld = listChapterRead;
-        this.idChapterReading = idChapterReading;
-        this.clickListener = clickListener;
+    companion object{
+        private const val TAG = "ChapterAdapter"
     }
 
-    @NonNull
-    @Override
-    public ChapterHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_chapter_item, parent, false);
-        return new ChapterHoder(view);
+    class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvChapterNumber: TextView = itemView.findViewById(R.id.tvChapterNumber)
+        val tvChapterName: TextView = itemView.findViewById(R.id.tvChapterName)
+        val tvPostDay: TextView= itemView.findViewById(R.id.tvPostDay)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ChapterHoder holder, int position) {
-        int count = 0;
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterHolder {
+        val view: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.activity_chapter_item, parent, false)
+        return ChapterHolder(view)
+    }
 
-        holder.itemView.setOnClickListener(view -> {
-            int idChapter = listChapter.get(position).getMachuong();
-            clickListener.onItemClick(idChapter, view, false);
-        });
-
-        if (listChapterRead.size() == 0) {
-            if (count == 0) {
-                for (ChuongTruyen c : listChapterReadOld) {
-                    if (c.getMachuong() != idChapterReading) {
-                        listChapterRead.add(c);
-                    }
-                }
+    override fun onBindViewHolder(holder: ChapterHolder, position: Int) {
+        val chapter = mChapterList[position]
+        val chapterId = chapter.chapterId
+        holder.tvChapterNumber.text = String.format(
+            Locale.getDefault(), "%s.", chapter.chapterNumber
+        )
+        holder.tvChapterName.text = chapter.chapterName
+        holder.tvPostDay.text = chapter.postDay
+        holder.itemView.setOnClickListener { view: View ->
+            mClickListener.onItemClick(chapterId, view, false)
+        }
+        if (mChapterReadMap.containsKey(chapterId)) {
+            if (mChapterReadingId != chapterId) {
+                holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.dim_gray))
+                holder.tvChapterName.setTextColor(mContext.getColor(R.color.dim_gray))
+                holder.tvPostDay.setTextColor(mContext.getColor(R.color.dim_gray))
             } else {
-                listChapterRead.clear();
+                holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.orange))
+                holder.tvChapterName.setTextColor(mContext.getColor(R.color.orange))
+                holder.tvPostDay.setTextColor(mContext.getColor(R.color.orange))
             }
+        } else {
+            holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.black))
+            holder.tvChapterName.setTextColor(mContext.getColor(R.color.black))
+            holder.tvPostDay.setTextColor(mContext.getColor(R.color.black))
         }
+    }
+
+    override fun getItemCount(): Int {
+        return mChapterList.size
+    }
 
 
-        ChuongTruyen ct = listChapter.get(position);
-        if (ct != null) {
-            holder.tvNumberChapter.setText(String.format(Locale.getDefault(),"%s.", ct.getSochuong()));
-            holder.tvChapter.setText(ct.getTenchuong());
-            holder.tvPostDay.setText(ct.getThoigiandang());
-
-            int idChapter = ct.getMachuong();
-
-            if (idChapter == idChapterReading) {
-                holder.tvNumberChapter.setTextColor(context.getResources().getColor(R.color.orange));
-                holder.tvChapter.setTextColor(context.getResources().getColor(R.color.orange));
-                holder.tvPostDay.setTextColor(context.getResources().getColor(R.color.orange));
-            }
-
-            //so sánh mã chương trong danh sách truyện đã đọc với mã chương
-            if (listChapterRead.size() > 0 && idChapterReading > 0) {
-                for (int i = 0; i < listChapterRead.size(); i++) {
-                    int idChapterRead = listChapterRead.get(i).getMachuong();
-
-                    if (idChapterRead == idChapter) {
-                        holder.tvNumberChapter.setTextColor(context.getResources().getColor(R.color.dim_gray));
-                        holder.tvChapter.setTextColor(context.getResources().getColor(R.color.dim_gray));
-                        holder.tvPostDay.setTextColor(context.getResources().getColor(R.color.dim_gray));
-
-                        listChapterRead.remove(listChapterRead.get(i));
-                        count++;
-                        break;
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence): FilterResults {
+                val searchStr = charSequence.toString()
+                mChapterList = if (searchStr.isEmpty()) {
+                    mChapterListOld
+                } else {
+                    val list: MutableList<Chapter> = mutableListOf()
+                    for (chapter in mChapterListOld) {
+                        if (chapter.chapterNumber.contains(searchStr)) {
+                            list.add(chapter)
+                        }
                     }
-                    if (idChapterRead != idChapter && idChapterReading != idChapter) {
-                        holder.tvNumberChapter.setTextColor(context.getResources().getColor(R.color.black));
-                        holder.tvChapter.setTextColor(context.getResources().getColor(R.color.black));
-                        holder.tvPostDay.setTextColor(context.getResources().getColor(R.color.black));
-                    }
+                    list
                 }
+                val filterResults = FilterResults()
+                filterResults.values = mChapterList
+                return filterResults
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
+                mChapterList = filterResults.values as MutableList<Chapter>
+                notifyDataSetChanged()
             }
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (listChapter != null && listChapter.size() > 0)
-            return listChapter.size();
-        else
-            return 0;
+
+    var mChapterList: MutableList<Chapter> = mutableListOf()
+    var mChapterListOld: MutableList<Chapter> = mutableListOf()
+    private val mChapterReadMap = HashMap<Int, ChapterRead?>()
+    private lateinit var mClickListener: ClickListener
+    private var mChapterReadingId = 0
+
+    fun clickListener(clickListener: ClickListener) {
+        mClickListener = clickListener
     }
 
-    public class ChapterHoder extends RecyclerView.ViewHolder {
-        private TextView tvNumberChapter, tvChapter, tvPostDay;
+    fun reverseData() {
+        mChapterList.reverse()
+    }
 
-        public ChapterHoder(@NonNull View itemView) {
-            super(itemView);
-            tvNumberChapter = itemView.findViewById(R.id.tvNumberChapter);
-            tvChapter = itemView.findViewById(R.id.tvChapter);
-            tvPostDay = itemView.findViewById(R.id.tvPostDay);
+    @SuppressLint("NotifyDataSetChanged")
+    fun setChapterList(chapterList: MutableList<Chapter>) {
+        mChapterList = chapterList
+        mChapterListOld = chapterList
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setChapterReadList(chapterReadList: List<ChapterRead>, chapterReadingId: Int) {
+        for (chapterRead in chapterReadList) {
+            mChapterReadMap[chapterRead.chapterId] = null
         }
+        mChapterReadingId = chapterReadingId
+        notifyDataSetChanged()
     }
 }

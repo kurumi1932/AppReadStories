@@ -1,5 +1,7 @@
 package huce.fit.appreadstories.main;
 
+import static huce.fit.appreadstories.checknetwork.NetworkKt.isConnecting;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -13,16 +15,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import huce.fit.appreadstories.R;
 import huce.fit.appreadstories.account.manager.AccountManagerFragment;
-import huce.fit.appreadstories.story.download.StoryDownloadFragment;
-import huce.fit.appreadstories.story.filter.StoryFilterFragment;
-import huce.fit.appreadstories.story.follow.StoryFollowFragment;
-import huce.fit.appreadstories.story.story.StoryFragment;
+import huce.fit.appreadstories.story.list.download.StoryDownloadFragment;
+import huce.fit.appreadstories.story.list.filter.StoryFilterFragment;
+import huce.fit.appreadstories.story.list.follow.StoryFollowFragment;
+import huce.fit.appreadstories.story.list.online.StoryFragment;
 
 public class MainActivity extends AppCompatActivity implements MainView {
     private FragmentTransaction mFragmentTransaction;
     private FragmentManager mFragmentManager;
     private BottomNavigationView btNavigationView;
-
     private MainPresenter mainPresenter;
 
 
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
         btNavigationView = findViewById(R.id.btNavigationView);
 
-        if (mainPresenter.isNetwork()) {
+        if (isConnecting(this)) {
             addFragment(new StoryFragment(), R.id.btMenuStory);
         } else {
             addFragment(new StoryDownloadFragment(), R.id.btMenuDownload);
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mainPresenter.isNetwork()) {
+        if (!isConnecting(this)) {
             changeFragment(R.id.btMenuDownload, new StoryDownloadFragment());
         }
     }
@@ -69,10 +70,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction1 = mFragmentManager.beginTransaction();
-        fragmentTransaction1.replace(R.id.fragment, fragment);
-        fragmentTransaction1.addToBackStack(null);
-        fragmentTransaction1.commit();
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void changeFragment(int id, Fragment fragment) {

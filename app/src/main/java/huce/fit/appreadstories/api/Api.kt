@@ -1,34 +1,37 @@
-package huce.fit.appreadstories.api;
+package huce.fit.appreadstories.api
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.google.gson.GsonBuilder
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-public class Api {
-    private static Retrofit retrofit = null;
-    private static final String BASE_URL = "http://192.168.89.102/appreadstories/";
+class Api {
 
-    public static final String URL_LOGIN = "login.php";
-    public static final String URL_REGISTER = "register.php";
-    public static final String URL_ACCOUNT = "account.php";
+    private lateinit var retrofit: Retrofit
+    companion object {
+        private const val BASE_URL = "http://192.168.1.104/appstory/"
 
-    public static final String URL_STORY = "story.php";
-    public static final String URL_STORY_FILTER = "story_filter.php";
+        const val URL_LOGIN: String = "login.php"
+        const val URL_REGISTER = "register.php"
+        const val URL_ACCOUNT = "account.php"
 
-    public static final String URL_CHAPTER = "chapter.php";
+        const val URL_STORY = "story.php"
+        const val URL_STORY_FILTER = "story_filter.php"
 
-    public static final String URL_STORY_FOLLOW = "story_follow.php";
+        const val URL_CHAPTER = "chapter.php"
 
-    public static final String URL_COMMENT = "comment.php";
+        const val URL_STORY_FOLLOW = "story_follow.php"
 
-    public static final String URL_RATE = "rate.php";
+        const val URL_COMMENT = "comment.php"
 
-    public static ApiInterface apiInterface(){
-        if(retrofit == null){
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        return retrofit.create(ApiInterface.class);
+        const val URL_RATE = "rate.php"
+    }
+
+    fun apiInterface(): ApiInterface {
+        val gson = GsonBuilder().setLenient().create()
+        retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build()
+        return retrofit.create(ApiInterface::class.java)
     }
 }

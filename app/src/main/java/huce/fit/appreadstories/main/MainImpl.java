@@ -4,22 +4,16 @@ import android.content.Context;
 
 import java.util.HashMap;
 
-import huce.fit.appreadstories.checknetwork.CheckNetwork;
+public class MainImpl implements MainPresenter {
 
-public class MainImpl implements MainPresenter{
-
-    private final CheckNetwork mCheckNetwork;
+    private static final String TAG = "MainImpl";
     private final HashMap<Integer, Integer> mFragmentOld = new HashMap<>();
-    int mCount=1;
+    private final int NUMBER = 1;
+    int mCount = NUMBER;
 
-    public MainImpl(MainView context){
-        mCheckNetwork = new CheckNetwork((Context) context);
+    public MainImpl(MainView mainView) {
     }
 
-    @Override
-    public boolean isNetwork(){
-        return mCheckNetwork.isNetwork();
-    }
 
     @Override
     public void addFragment(int id) {
@@ -28,14 +22,15 @@ public class MainImpl implements MainPresenter{
 
     @Override
     public void changeFragment(int id) {
-        if (mCount == 0)
-            mCount = 1;
+        if (mCount == 0) {
+            mCount = NUMBER;
+        }
         mFragmentOld.put(++mCount, id);
     }
 
     @Override
     public int backPressed() {
-        return -- mCount;
+        return --mCount;
     }
 
     @Override
@@ -45,7 +40,8 @@ public class MainImpl implements MainPresenter{
 
     @Override
     public void removeCount() {
-        if (mCount != 1)
+        if (mCount != NUMBER) {
             mFragmentOld.remove(mCount);
+        }
     }
 }

@@ -154,7 +154,7 @@
             android:textStyle="normal" />
 
         <ImageView
-            android:id="@+id/ivFontSizeDown"
+            android:id="@+id/ivTextSizeDown"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
@@ -166,7 +166,7 @@
             tools:ignore="contentDescription" />
 
         <TextView
-            android:id="@+id/tvFontSize"
+            android:id="@+id/tvTextSize"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -175,7 +175,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/ivFontSizeUP"
+            android:id="@+id/ivTextSizeUp"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"

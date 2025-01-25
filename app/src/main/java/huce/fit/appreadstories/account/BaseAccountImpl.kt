@@ -1,102 +1,72 @@
-package huce.fit.appreadstories.account;
+package huce.fit.appreadstories.account
 
-import static android.content.Context.MODE_PRIVATE;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
+open class BaseAccountImpl(val context: Context) : BaseAccountPresenter {
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+    companion object{
+        private const val TAG = "BaseAccountImpl"
+    }
 
-import huce.fit.appreadstories.checknetwork.CheckNetwork;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferencesImpl;
-
-public class BaseAccountImpl implements BaseAccountPresenter {
-
-    private static final String TAG = "BaseAccountImpl";
-    private final MySharedPreferences mMySharedPreferences;
-    private final CheckNetwork mCheckNetwork;
+    private var account: AccountSharedPreferences = AccountSharedPreferences(context)
+    val calendar: Calendar = Calendar.getInstance()
 
     @SuppressLint("SimpleDateFormat")
-    private final DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private val simpleDateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
 
-    protected BaseAccountImpl(Context context) {
-        mCheckNetwork = new CheckNetwork(context);
-        mMySharedPreferences = new MySharedPreferencesImpl(context);
+    override fun getAccount(): AccountSharedPreferences {
+        account.getSharedPreferences("Account", Context.MODE_PRIVATE)
+        return account
     }
 
-    @Override
-    public boolean isNetwork() {
-        return mCheckNetwork.isNetwork();
+    override fun setAccount(): AccountSharedPreferences {
+        account.setSharedPreferences("Account", Context.MODE_PRIVATE)
+        return account
     }
 
-    @Override
-    public MySharedPreferences getSharedPreferences(){
-        Log.e(TAG +"1", "getSharedPreferences");
-        mMySharedPreferences.getMySharedPreferences("CheckLogin", MODE_PRIVATE);
-        Log.e(TAG +"1", "birthday= "+ mMySharedPreferences.getBirthday());
-        return mMySharedPreferences;
+    override fun age(birthday: String): Int {
+        val endDate = simpleDateFormat.format(Date())
+        Log.e(TAG, "NHT birthday: $birthday")
+        val date1: Date?= simpleDateFormat.parse(birthday)
+        val date2: Date?= simpleDateFormat.parse(endDate)
+        val getDiff: Long
+        return if (date1 != null && date2 != null) {
+            getDiff = date2.time - date1.time
+            Log.e(TAG, "NHT getDiff: $getDiff")
+            val getDaysDiff = getDiff / (24 * 60 * 60 * 1000) //24h*60p*60s*1000
+            Log.e(TAG, "NHT getDaysDiff: $getDaysDiff")
+            Log.e(TAG, "NHT age: " + getDaysDiff.toInt() / 365)
+            getDaysDiff.toInt() / 365//return
+        }else{
+            0
+        }
     }
 
-    @Override
-    public MySharedPreferences setSharedPreferences(){
-        Log.e(TAG, "getSharedPreferences");
-        mMySharedPreferences.setMySharedPreferences("CheckLogin", MODE_PRIVATE);
-        return mMySharedPreferences;
+    fun checkDate(dateStr: String): Boolean {
+        val dateArr = dateStr.split("-".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray() //tách từng giá trị vào mảng khi gặp -
+        if (dateArr[0].length > 4) return false
+        val year = dateArr[0].toInt()
+        return if (year in 1901..3000) //năm ở vị trí 0 phải nhỏ hơn 3000 và lớn hơn 1900
+            isValid(dateStr) else false
     }
 
-    @Override
-    public int age(String birthday) {
-        String endDate = simpleDateFormat.format(new Date());
-        Log.e(TAG, "birthday= "+birthday);
-        Date date1, date2;
+    private fun isValid(dateStr: String): Boolean {
+        @SuppressLint("SimpleDateFormat") val sdf: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        sdf.isLenient = false
         try {
-            date1 = simpleDateFormat.parse(birthday);
-            Log.e(TAG, "date1= "+date1);
-            date2 = simpleDateFormat.parse(endDate);
-            Log.e(TAG, "date2= "+date2);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            sdf.parse(dateStr) //convert date nếu sai thì chạy catch
+        } catch (e: ParseException) {
+            return false
         }
-
-        long getDiff = 0;
-        if (date1 != null && date2 != null) {
-            getDiff = date2.getTime() - date1.getTime();
-            Log.e(TAG, "date1= "+ date1);
-            Log.e(TAG, "date2= "+ date2);
-        }
-        Log.e(TAG, "getDiff"+ getDiff);
-
-        long getDaysDiff = getDiff / (24 * 60 * 60 * 1000);//24h*60p*60s*1000
-        Log.e(TAG,"getDaysDiff= "+ getDaysDiff);
-        Log.e(TAG, "age= "+ (int) getDaysDiff / 365);
-
-        return (int) getDaysDiff / 365;
-    }
-
-    protected boolean checkDate(String dateStr) {
-        String[] dateArr = dateStr.split("-");//tách từng giá trị vào mảng khi gặp -
-        if (dateArr[0].length() > 4)
-            return false;
-        int year = Integer.parseInt(dateArr[0]);
-        if (year < 9999 && year > 1900) //năm ở vị trí 0 phải nhỏ hơn 9999 và lớn hơn 1900
-            return isValid(dateStr);
-        else
-            return false;
-    }
-
-    private boolean isValid(String dateStr) {
-        @SuppressLint("SimpleDateFormat") DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setLenient(false);
-        try {
-            sdf.parse(dateStr);//convert date nếu sai thì chạy catch
-        } catch (ParseException e) {
-            return false;
-        }
-        return true;
+        return true
     }
 }

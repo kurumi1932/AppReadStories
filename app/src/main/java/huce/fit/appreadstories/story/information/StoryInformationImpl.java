@@ -1,5 +1,7 @@
 package huce.fit.appreadstories.story.information;
 
+import static huce.fit.appreadstories.checknetwork.NetworkKt.isConnecting;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -9,59 +11,79 @@ import androidx.annotation.NonNull;
 
 import java.util.Locale;
 
-import huce.fit.appreadstories.activity.ChapterListActivity;
-import huce.fit.appreadstories.activity.ChapterReadActivity;
-import huce.fit.appreadstories.activity.CommentListActivity;
-import huce.fit.appreadstories.activity.StoryDownloadActivity;
 import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.ChuongTruyen;
-import huce.fit.appreadstories.model.DanhGia;
-import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.service.CheckStoryService;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
+import huce.fit.appreadstories.chapter.information.ChapterInformationActivity;
+import huce.fit.appreadstories.chapter.list.ChapterListActivity;
+import huce.fit.appreadstories.comment.CommentActivity;
+import huce.fit.appreadstories.model.Chapter;
+import huce.fit.appreadstories.model.Rate;
+import huce.fit.appreadstories.model.Story;
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences;
+import huce.fit.appreadstories.shared_preferences.RateSharedPreferences;
+import huce.fit.appreadstories.shared_preferences.StorySharedPreferences;
+import huce.fit.appreadstories.sqlite.AppDao;
 import huce.fit.appreadstories.sqlite.AppDatabase;
-import huce.fit.appreadstories.sqlite.Story;
-import huce.fit.appreadstories.story.BaseListStoryImpl;
+import huce.fit.appreadstories.story.download.StoryDownloadActivity;
+import huce.fit.appreadstories.story.list.BaseStoryListImpl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoryInformationImpl extends BaseListStoryImpl implements StoryInformationPresenter {
+public class StoryInformationImpl extends BaseStoryListImpl implements StoryInformationPresenter {
 
     private static final String TAG = "StoryInformationImpl";
     private final StoryInformationView mStoryInformationView;
-    private final Context mContext;
-    private Truyen mTruyen;
-    private final Story mStory;
-    private boolean isRate = false, isComment = false, isFollow = false;
-    private final int mStoryId, mAccountId;
-    private int mChapterReadingId;
-    private final String mName;
+    private StorySharedPreferences mStory;
+    private Story mStoryDao;
+    private AppDao mAppDao;
+    private boolean isFirst = true;
+    private int mStoryId, mAccountId, mRateId;
+    private String mName;
 
-    StoryInformationImpl(StoryInformationView storyInformationView, Intent intent) {
+    StoryInformationImpl(StoryInformationView storyInformationView) {
         super((Context) storyInformationView);
         mStoryInformationView = storyInformationView;
-        mContext = (Context) storyInformationView;
-        mStoryId = intent.getIntExtra("storyId", 0);
-        mStory = AppDatabase.getInstance(mContext).appDao().getStory(mStoryId);
 
-        if (isNetwork() && mStory != null) {
-            checkStoryService();
-        }
+        init();
+    }
 
-        MySharedPreferences mySharedPreferences = getSharedPreferences();
-        mAccountId = mySharedPreferences.getIdAccount();
-        mName = mySharedPreferences.getName();
+    private void init(){
+        mAppDao = AppDatabase.getInstance(getContext()).appDao();
+        getAccountSharedPreferences();
+        getStorySharedPreferences();
+    }
+
+    private void getAccountSharedPreferences() {
+        AccountSharedPreferences account = getAccount();
+        mAccountId = account.getAccountId();
+        mName = account.getName();
+    }
+
+    private void getStorySharedPreferences() {
+        mStory = new StorySharedPreferences(getContext());
+        mStory.getSharedPreferences("Story", Context.MODE_PRIVATE);
+        mStoryId = mStory.getStoryId();
+        mStory.setSharedPreferences("Story", Context.MODE_PRIVATE);
     }
 
     @Override
-    public void checkStoryService() {
-        Log.e("StoryInterfaceActivity", "startCheckStoryService");
-        Intent intent = new Intent(mContext, CheckStoryService.class);
-        intent.putExtra("storyId", mStoryId);
-        intent.putExtra("isFollow", isFollow);
-        mContext.startService(intent);
-        Log.e("intent", intent.toString());
+    public void start() {
+        mStoryDao = mAppDao.getStory(mStoryId);
+        if (isConnecting(getContext())) {
+            getStory();
+            readStory();
+            checkFollowStory();
+            checkInteractive();
+            if (mStoryDao != null) {
+                mStoryInformationView.checkStory();
+            }
+        } else {
+            if (mStoryDao != null) {
+                getDataOffline();
+                readStoryDownload();
+                checkFollowStoryDownload();
+            }
+        }
     }
 
     @Override
@@ -69,300 +91,303 @@ public class StoryInformationImpl extends BaseListStoryImpl implements StoryInfo
         return mStoryId;
     }
 
-    @Override
-    public void getData() {
-        Api.apiInterface().getStory(mStoryId).enqueue(new Callback<Truyen>() {
+    private void getStory() {
+        new Api().apiInterface().getStory(mStoryId).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    mTruyen = response.body();
-                    mStoryInformationView.setData(response.body());
+                    mStoryDao = response.body();
+                    mStoryInformationView.setData(mStoryDao);
+                    if (isFirst) {
+                        mStory.setStoryName(mStoryDao.getStoryName());
+                        mStory.setAuthor(mStoryDao.getAuthor());
+                        mStory.setStatus(mStoryDao.getStatus());
+                        mStory.setSpecies(mStoryDao.getSpecies());
+                        mStory.setSumChapter(mStoryDao.getSumChapter());
+                        mStory.setTotalLikes(mStoryDao.getTotalLikes());
+                        mStory.setTotalViews(mStoryDao.getTotalViews());
+                        mStory.setTotalComments(mStoryDao.getTotalComments());
+                        mStory.setRatePoint(mStoryDao.getRatePoint());
+                        mStory.setIntroduce(mStoryDao.getIntroduce());
+                        mStory.setImage(mStoryDao.getImage());
+                        mStory.setAgeLimit(mStoryDao.getAgeLimit());
+                        mStory.setTimeUpdate(mStoryDao.getTimeUpdate());
+                        mStory.myApply();
+
+                        mStoryInformationView.checkAge(checkAge());
+                        isFirst = false;
+                    }
                 }
+                Log.e(TAG, "api getStory: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_getDataStory", t);
+            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
+                Log.e(TAG, "api getStory: false");
             }
         });
     }
 
     @Override
+    public void showRate(int ratePoint) {
+        for (int i = 0; i < ratePoint; i++) {
+            mStoryInformationView.setRateStartLight(i);
+        }
+        for (int i = ratePoint; i < 5; i++) {
+            mStoryInformationView.setRateStartDark(i);
+        }
+    }
+
+    @Override
     public void getDataOffline() {
-        mStoryInformationView.setData(mStory);
+        mStoryInformationView.setData(mStoryDao);
+        mStoryInformationView.checkAge(checkAge());
     }
 
     @Override
     public boolean checkAge() {
-        int age;
-        if (isNetwork()) {
-            age = mTruyen.getGioihantuoi();
-        } else {
-            age = mStory.getAge();
-        }
-        return age < 18;
+        return mStoryDao.getAgeLimit() < 18;
     }
 
     @Override
     public void checkInteractive() {
-        Api.apiInterface().checkLikeStory(mStoryId, mAccountId).enqueue(new Callback<Truyen>() {
+        new Api().apiInterface().checkLikeStory(mStoryId, mAccountId).enqueue(new Callback<Story>() {
             @Override
-            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Truyen truyen = response.body();
-                    double progress = Double.parseDouble(truyen.getTylechuongdadoc());
-                    String like = String.format(Locale.getDefault(), "%d\nYêu thích", truyen.getLuotthich());
+                    Story story = response.body();
+                    String totalLikes = String.format(Locale.getDefault(), "%d\nYêu thích", story.getTotalLikes());
 
-                    if (progress > 4) {
-                        isRate = progress > 19;
-                        isComment = true;
-                    } else {
-                        isRate = false;
-                        isComment = false;
-                    }
-
-                    mStoryInformationView.checkInteractive(truyen.getStorySuccess(), like);
+                    mStoryInformationView.checkInteractive(story.getStorySuccess(), totalLikes);
                 }
+                Log.e(TAG, "api checkInteractive: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_checkLikeStory", t);
+            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
+                Log.e(TAG, "api checkInteractive: false");
             }
         });
     }
 
     public void likeStory() {
-        Api.apiInterface().likeStory(mStoryId, mAccountId).enqueue(new Callback<Truyen>() {
+        new Api().apiInterface().likeStory(mStoryId, mAccountId).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getStorySuccess() == 1) {
                     checkInteractive();
                 }
+                Log.e(TAG, "api likeStory: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_likeStory", t);
+            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
+                Log.e(TAG, "api likeStory: false");
             }
         });
     }
 
     @Override
     public void followStory() {
-        Api.apiInterface().followStory(mAccountId, mStoryId, mTruyen.getTentruyen(), mTruyen.getTacgia(),
-                mTruyen.getGioihantuoi(), mTruyen.getTrangthai(), mTruyen.getTongchuong(), mTruyen.getAnh(),
-                mTruyen.getThoigiancapnhat()).enqueue(new Callback<Truyen>() {
+        new Api().apiInterface().followStory(mAccountId, mStoryId, mStoryDao.getStoryName(), mStoryDao.getAuthor(),
+                mStoryDao.getAgeLimit(), mStoryDao.getStatus(), mStoryDao.getSumChapter(), mStoryDao.getImage(),
+                mStoryDao.getTimeUpdate()).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     int success = response.body().getStorySuccess();
-                    switch (success) {
-                        case 1:
-                            isFollow = true;
-                            break;
-                        case 2:
-                            isFollow = false;
-                            break;
-                    }
+                    mStory.setIsFollow(success == 1);
+                    mStory.myApply();
                     mStoryInformationView.followStory(success);
                 }
+                Log.e(TAG, "api followStory: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_add_delete_StoryFollow1", t);
+            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
+                Log.e(TAG, "api followStory: false");
             }
         });
     }
 
     @Override
     public void checkFollowStory() {
-        Api.apiInterface().checkStoryFollow(mAccountId, mStoryId).enqueue(new Callback<Truyen>() {
+        new Api().apiInterface().checkStoryFollow(mAccountId, mStoryId).enqueue(new Callback<>() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(@NonNull Call<Truyen> call, @NonNull Response<Truyen> response) {
+            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     int success = response.body().getStorySuccess();
-                    switch (success) {
-                        case 1:
-                            isFollow = true;
-                            break;
-                        case 2:
-                            isFollow = false;
-                            break;
-                    }
+                    mStory.setIsFollow(success == 1);
+                    mStory.myApply();
                     mStoryInformationView.followStory(success);
                 }
+                Log.e(TAG, "api checkFollowStory: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<Truyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_checkFollow", t);
+            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
+                Log.e(TAG, "api checkFollowStory: false");
             }
         });
     }
 
     @Override
     public void checkFollowStoryDownload() {
-        int follow = mStory.getIsFollow();
-        switch (follow) {
-            case 1:
-                isFollow = true;
-                break;
-            case 0:
-                isFollow = false;
-                break;
-        }
+        int follow = mStoryDao.getIsFollow();
         mStoryInformationView.followStory(follow == 0 ? 2 : 1);
     }
 
     @Override
     public void readStory() {
-        Api.apiInterface().getChapterRead(mStoryId, mAccountId, 1).enqueue(new Callback<ChuongTruyen>() {
+        new Api().apiInterface().getChapterReadId(mStoryId, mAccountId, 1).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
+            public void onResponse(@NonNull Call<Chapter> call, @NonNull Response<Chapter> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getMachuong() == 0) {
-                        Api.apiInterface().firstChapter(mStoryId).enqueue(new Callback<ChuongTruyen>() {
+                    if (response.body().getChapterId() == 0) {
+                        new Api().apiInterface().firstChapter(mStoryId).enqueue(new Callback<>() {
                             @Override
-                            public void onResponse(@NonNull Call<ChuongTruyen> call, @NonNull Response<ChuongTruyen> response) {
+                            public void onResponse(@NonNull Call<Chapter> call, @NonNull Response<Chapter> response) {
                                 if (response.isSuccessful() && response.body() != null) {
-                                    mChapterReadingId = response.body().getMachuong();
+                                    mStory.setChapterReading(response.body().getChapterId());
+                                    mStory.myApply();
                                 }
+                                Log.e(TAG, "api readStory firstChapter: success");
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
-                                Log.e("StoryInterface", "Err_readStory", t);
+                            public void onFailure(@NonNull Call<Chapter> call, @NonNull Throwable t) {
+                                Log.e(TAG, "api readStory firstChapter: false");
                             }
                         });
                     } else {
-                        mChapterReadingId = response.body().getMachuong();
+                        mStory.setChapterReading(response.body().getChapterId());
+                        mStory.myApply();
                     }
                 }
+                Log.e(TAG, "api readStory getChapterReadId: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<ChuongTruyen> call, @NonNull Throwable t) {
-                Log.e("StoryInterface", "Err_readStory", t);
+            public void onFailure(@NonNull Call<Chapter> call, @NonNull Throwable t) {
+                Log.e(TAG, "api readStory getChapterReadId: false");
             }
         });
     }
 
     @Override
     public void checkRateOfAccount() {
-        Api.apiInterface().checkRateOfAccount(mStoryId, mAccountId).enqueue(new Callback<DanhGia>() {
+        new Api().apiInterface().checkRateOfAccount(mStoryId, mAccountId).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<DanhGia> call, @NonNull Response<DanhGia> response) {
+            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    mStoryInformationView.getRate(response.body());
+                    setRate(response.body());
+                    mStoryInformationView.openDialogRate();
                 }
+                Log.e(TAG, "api checkRateOfAccount: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<DanhGia> call, @NonNull Throwable t) {
-                Log.e("Err_StoryInterface", "openDialogRate_checkRateOfAccount", t);
+            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
+                Log.e(TAG, "api checkRateOfAccount: false");
             }
         });
+    }
+
+    private void setRate(Rate rateData) {
+        mRateId = rateData.getRateId();
+        RateSharedPreferences rate = new RateSharedPreferences(getContext());
+        rate.setSharedPreferences("Rate", Context.MODE_PRIVATE);
+        rate.setRateId(mRateId);
+        rate.setRatePoint(rateData.getRatePoint());
+        rate.setRate(rateData.getRate());
+        rate.setSuccess(rateData.getSuccess());
+        rate.myApply();
     }
 
     @Override
     public void addRate(int ratePoint, String rate) {
-        Api.apiInterface().addRate(mStoryId, mAccountId, mName, ratePoint, rate).enqueue(new Callback<DanhGia>() {
+        new Api().apiInterface().addRate(mStoryId, mAccountId, mName, ratePoint, rate).enqueue(new Callback<Rate>() {
             @Override
-            public void onResponse(@NonNull Call<DanhGia> call, @NonNull Response<DanhGia> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getRatesuccess() == 1) {
-                    getData();
+            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
+                    getStory();
                     mStoryInformationView.reloadViewPaper("Bạn đã đánh giá truyện!");
                 }
+                Log.e(TAG, "api addRate: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<DanhGia> call, @NonNull Throwable t) {
-                Log.e("Err_StoryInterface", "openDialogRate_add", t);
+            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
+                Log.e(TAG, "api addRate: false");
             }
         });
     }
 
     @Override
-    public void updateRate(int rateId, int ratePoint, String rate) {
-        Api.apiInterface().updateRate(rateId, ratePoint, rate).enqueue(new Callback<DanhGia>() {
+    public void updateRate(int ratePoint, String rate) {
+        new Api().apiInterface().updateRate(mRateId, ratePoint, rate).enqueue(new Callback<Rate>() {
             @Override
-            public void onResponse(@NonNull Call<DanhGia> call, @NonNull Response<DanhGia> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getRatesuccess() == 1) {
-                    getData();
-                    mStoryInformationView.reloadViewPaper("Bạn đã đánh giá truyện!");
+            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
+                    getStory();
+                    mStoryInformationView.reloadViewPaper("Bạn đã thay đổi đánh giá truyện!");
                 }
+                Log.e(TAG, "api updateRate: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<DanhGia> call, @NonNull Throwable t) {
-                Log.e("Err_StoryInterface", "openDialogNotifyYesNo", t);
+            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
+                Log.e(TAG, "api updateRate: false");
             }
         });
     }
 
     @Override
-    public void deleteRate(int rateId) {
-        Api.apiInterface().deleteRate(rateId).enqueue(new Callback<DanhGia>() {
+    public void deleteRate() {
+        new Api().apiInterface().deleteRate(mRateId).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<DanhGia> call, @NonNull Response<DanhGia> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getRatesuccess() == 1) {
-                    getData();
+            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
+                    getStory();
                     mStoryInformationView.reloadViewPaper("Bạn đã xóa đánh giá!");
                 }
+                Log.e(TAG, "api deleteRate: success");
             }
 
             @Override
-            public void onFailure(@NonNull Call<DanhGia> call, @NonNull Throwable t) {
-                Log.e("Err_StoryInterface", "openDialogRate_delete", t);
+            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
+                Log.e(TAG, "api deleteRate: false");
             }
         });
-    }
-
-    @Override
-    public boolean getIsRate() {
-        return isRate;
     }
 
     @Override
     public void readStoryDownload() {
-        mChapterReadingId = mStory.getChapterReading();
+        mStory.setChapterReading(mStoryDao.getChapterReading());
     }
 
     @Override
-    public boolean enterComment() {
-        if (isComment) {
-            Intent intent = new Intent(mContext, CommentListActivity.class);
-            intent.putExtra("idAccount", mAccountId);
-            intent.putExtra("storyId", mStoryId);
-            mContext.startActivity(intent);
-        }
-        return isComment;
+    public void enterComment() {
+        Intent intent = new Intent(getContext(), CommentActivity.class);
+        getContext().startActivity(intent);
     }
 
     @Override
     public void enterDownload() {
-        Intent intent = new Intent(mContext, StoryDownloadActivity.class);
-        intent.putExtra("storyId", mStoryId);
-        intent.putExtra("isFollow", isFollow);
-        intent.putExtra("idChapterReading", mChapterReadingId);
-        mContext.startActivity(intent);
+        Intent intent = new Intent(getContext(), StoryDownloadActivity.class);
+        getContext().startActivity(intent);
     }
 
     @Override
     public void enterChapter() {
-        Intent intent = new Intent(mContext, ChapterListActivity.class);
-        intent.putExtra("storyId", mStoryId);
-        mContext.startActivity(intent);
+        Intent intent = new Intent(getContext(), ChapterListActivity.class);
+        getContext().startActivity(intent);
     }
 
     @Override
     public void enterReadStory() {
-        Intent intent = new Intent(mContext, ChapterReadActivity.class);
-        intent.putExtra("storyId", mStoryId);
-        intent.putExtra("idChapterReading", mChapterReadingId);
-        mContext.startActivity(intent);
+        Intent intent = new Intent(getContext(), ChapterInformationActivity.class);
+        getContext().startActivity(intent);
     }
 }

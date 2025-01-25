@@ -1,31 +1,26 @@
-package huce.fit.appreadstories.startapp;
+package huce.fit.appreadstories.startapp
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.account.BaseAccountImpl
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 
-import huce.fit.appreadstories.account.BaseAccountImpl;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
+class StartAppImpl(context: Context) : BaseAccountImpl(context), StartAppPresenter {
 
-public class StartAppImpl extends BaseAccountImpl implements StartAppPresenter {
-
-    private static final String TAG="StartAppImpl";
-    StartAppImpl(Context context) {
-        super(context);
+    companion object {
+        private const val TAG = "StartAppImpl"
     }
 
-    @Override
-    public boolean checkLogged() {
-        MySharedPreferences mMySharedPreferences = getSharedPreferences();
-        int idAccount = mMySharedPreferences.getIdAccount();
-        String birthday = mMySharedPreferences.getBirthday();
-        Log.e(TAG, "birthday= "+birthday);
-
-        if (idAccount != 0) {
-            mMySharedPreferences = setSharedPreferences();
-            mMySharedPreferences.setAge(age(birthday));
-            mMySharedPreferences.myApply();
-            return true;
+    override fun checkLogged(): Boolean {
+        var account: AccountSharedPreferences = getAccount()
+        val birthday = account.getBirthday().toString()
+        Log.e(TAG, "NHT birthday: $birthday")
+        if (account.getAccountId() != 0) {
+            account = setAccount()
+            account.setAge(age(birthday))
+            account.myApply()
+            return true
         }
-        return false;
+        return false
     }
 }

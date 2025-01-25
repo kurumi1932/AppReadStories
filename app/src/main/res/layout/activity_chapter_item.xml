@@ -1,57 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="41dp">
+    android:layout_height="@dimen/chapter_item_height_container"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/llChapterItem"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvNumberChapter"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:ellipsize="end"
-            android:gravity="start|center"
-            android:maxLines="1"
-            android:paddingStart="5dp"
-            android:paddingEnd="1dp"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvChapter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="80dp"
-            android:ellipsize="end"
-            android:gravity="start|center"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tvChapterNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingStart="5dp"
+                android:paddingEnd="1dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/chapter_item_text_size" />
+
+            <TextView
+                android:id="@+id/tvChapterName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/chapter_item_text_size" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvPostDay"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="-80dp"
-            android:gravity="center"
-            android:textSize="14sp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="8dp"
+            android:gravity="center|end"
+            android:maxLines="1"
+            android:textSize="@dimen/chapter_item_text_size"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/silver"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llChapterItem" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/silver" />
+</LinearLayout>

@@ -1,6 +1,6 @@
-package huce.fit.appreadstories.account.manager;
+package huce.fit.appreadstories.account.manager
 
-public interface AccountManagerView {
+interface AccountManagerView {
 
-    void setName(String name);
+    fun setName(name: String)
 }

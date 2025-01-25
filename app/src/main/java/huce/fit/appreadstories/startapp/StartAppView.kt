@@ -1,4 +1,4 @@
-package huce.fit.appreadstories.startapp;
+package huce.fit.appreadstories.startapp
 
-public interface StartAppView {
+interface StartAppView {
 }

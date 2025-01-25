@@ -1,32 +1,24 @@
-package huce.fit.appreadstories.adapters;
+package huce.fit.appreadstories.adapters
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import huce.fit.appreadstories.story.information.sub_fragment.introduce.StoryInterfaceIntroduceFragment
+import huce.fit.appreadstories.story.information.sub_fragment.rate.StoryInterfaceRateFragment
 
-import huce.fit.appreadstories.fragment.StoryInterfaceRateFagment;
-import huce.fit.appreadstories.fragment.StoryInterfaceIntroduceFagment;
+class ViewPagerStoryInterfaceAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
 
-public class ViewPagerStoryInterfaceAdapter extends FragmentStateAdapter {
-    private final int idStory;
-
-    public ViewPagerStoryInterfaceAdapter(@NonNull FragmentActivity fragmentActivity, int idStory) {
-        super(fragmentActivity);
-        this.idStory = idStory;
-    }
-
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        if (position == 0) {
-            return new StoryInterfaceIntroduceFagment(idStory);
+    override fun createFragment(position: Int): Fragment {
+        return if (position == 0) {
+            StoryInterfaceIntroduceFragment()
+        } else {
+            StoryInterfaceRateFragment()
         }
-        return new StoryInterfaceRateFagment(idStory);
     }
 
-    @Override
-    public int getItemCount() {
-        return 2;
+    override fun getItemCount(): Int {
+        return 2
     }
 }

@@ -1,99 +1,69 @@
-package huce.fit.appreadstories.adapters;
+package huce.fit.appreadstories.adapters
 
-import android.annotation.SuppressLint;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.model.Story
+import java.util.Locale
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class StoryDownloadAdapter: RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHolder>() {
 
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.sqlite.Story;
-
-
-public class StoryDownloadAdapter extends RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHolder> {
-    private final List<Story> mListStory = new ArrayList<>();
-    private final ClickListener clickListener;
-
-    public StoryDownloadAdapter(ClickListener clickListener) {
-        this.clickListener = clickListener;
+    class StoryDownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+         val tvStoryName: TextView = itemView.findViewById(R.id.tvStoryName)
+         val tvAuthor: TextView= itemView.findViewById(R.id.tvAuthor)
+         val tvAge: TextView= itemView.findViewById(R.id.tvAge)
+         val tvStatus: TextView= itemView.findViewById(R.id.tvStatus)
+         val tvChapter: TextView= itemView.findViewById(R.id.tvChapter)
+         val tvNewChapter: TextView= itemView.findViewById(R.id.tvNewChapter)
+         val ivStory: ImageView= itemView.findViewById(R.id.ivStory)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryDownloadHolder {
+        val view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.activity_story_item, parent, false)
+        return StoryDownloadHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: StoryDownloadHolder, position: Int) {
+        val story = mStoryList[position]
+        holder.itemView.setOnClickListener { view: View ->
+            mClickListener!!.onItemClick(story.storyId, view, false)
+        }
+        holder.itemView.setOnLongClickListener { view: View ->
+            mClickListener!!.onItemClick(story.storyId, view, true)
+            false
+        }
+        holder.tvStoryName.text = story.storyName
+        holder.tvAuthor.text = story.author
+        holder.tvAge.text = story.ageLimit.toString()
+        holder.tvStatus.text = story.status
+        holder.tvChapter.text = story.sumChapter.toString()
+        holder.tvNewChapter.text =
+            String.format(Locale.getDefault(), "Có %d chương mới chưa tải", story.newChapter)
+        holder.tvNewChapter.visibility = if (story.newChapter > 0) View.VISIBLE else View.GONE
+        Picasso.get().load(story.image).into(holder.ivStory)
+    }
+
+    override fun getItemCount(): Int {
+        return mStoryList.size
+    }
+
+    private var mStoryList: MutableList<Story> = mutableListOf()
+    private var mClickListener: ClickListener? = null
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setDataStory(List<Story> listStory) {
-        mListStory.clear();
-        mListStory.addAll(listStory);
-        notifyDataSetChanged();
+    fun setDataStory(storyList: MutableList<Story>) {
+        mStoryList = storyList
+        notifyDataSetChanged()
     }
 
-    @NonNull
-    @Override
-    public StoryDownloadHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_story_item, parent, false);
-        return new StoryDownloadHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull StoryDownloadHolder holder, int position) {
-        Story story = mListStory.get(position);
-        if (story != null) {
-            holder.itemView.setOnClickListener(view -> {
-                int idStory = mListStory.get(position).getIdStory();
-                clickListener.onItemClick(idStory, view, false);
-            });
-            holder.itemView.setOnLongClickListener(view -> {
-                int idStory = mListStory.get(position).getIdStory();
-                clickListener.onItemClick(idStory, view, true);
-                return false;
-            });
-
-            holder.tvStoryName.setText(story.getNameStory());
-            holder.tvAuthor.setText(story.getAuthor());
-            holder.tvAge.setText(String.valueOf(story.getAge()));
-            holder.tvStatus.setText(story.getStatus());
-            holder.tvChapter.setText(String.valueOf(story.getSumChapter()));
-            holder.tvNewChapter.setText(String.format(Locale.getDefault(), "Có %d chương mới chưa tải", story.getNewChapter()));
-            if (story.getNewChapter() > 0) {
-                holder.tvNewChapter.setVisibility(View.VISIBLE);
-            } else {
-                holder.tvNewChapter.setVisibility(View.GONE);
-            }
-            Picasso.get().load(story.getImage())
-                    .into(holder.ivStory);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mListStory != null && mListStory.size() > 0)
-            return mListStory.size();
-        else
-            return 0;
-    }
-
-
-    public static class StoryDownloadHolder extends RecyclerView.ViewHolder {
-        private final TextView tvStoryName, tvAuthor, tvAge, tvStatus, tvChapter, tvNewChapter;
-        private final ImageView ivStory;
-
-        public StoryDownloadHolder(@NonNull View itemView) {
-            super(itemView);
-            tvStoryName = itemView.findViewById(R.id.tvStoryName);
-            tvAuthor = itemView.findViewById(R.id.tvAuthor);
-            tvAge = itemView.findViewById(R.id.tvAge);
-            tvStatus = itemView.findViewById(R.id.tvStatus);
-            tvChapter = itemView.findViewById(R.id.tvChapter);
-            ivStory = itemView.findViewById(R.id.ivStory);
-            tvNewChapter = itemView.findViewById(R.id.tvNewChapter);
-        }
+    fun setClickListener(clickListener: ClickListener?) {
+        mClickListener = clickListener
     }
 }

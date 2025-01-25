@@ -1,77 +1,56 @@
-package huce.fit.appreadstories.adapters;
+package huce.fit.appreadstories.adapters
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.model.Comment
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class CommentAdapter : RecyclerView.Adapter<CommentAdapter.CommentHolder>() {
 
-import java.util.List;
-
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.model.BinhLuan;
-
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHoder> {
-    private final List<BinhLuan> listComment;
-    private final ClickListener clickListener;
-
-
-    public CommentAdapter(List<BinhLuan> listComment, ClickListener clickListener) {
-        this.listComment = listComment;
-        this.clickListener = clickListener;
+    class CommentHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName: TextView = itemView.findViewById(R.id.tvName)
+        val tvComment: TextView = itemView.findViewById(R.id.tvComment)
     }
 
-    @NonNull
-    @Override
-    public CommentHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_comment_item, parent, false);
-        return new CommentHoder(view);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentHolder {
+        val view: View = LayoutInflater.from(parent.context)
+            .inflate(R.layout.activity_comment_item, parent, false)
+        return CommentHolder(view)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull CommentHoder holder, int position) {
-        BinhLuan bl = listComment.get(position);
-        if (bl != null) {
-            holder.tvName.setText(bl.getTenhienthi());
-            holder.tvComment.setText(bl.getBinhluan());
-
-            holder.itemView.setOnClickListener(view -> {//rút ngắn 1 đoạn bình luận dài
-                if (holder.tvComment.getLineCount() > 4) {
-                    Log.e("LineCount1", String.valueOf(holder.tvComment.getLineCount()));
-                    holder.tvComment.setMaxLines(4);
-                    Log.e("LineCount2", String.valueOf(holder.tvComment.length()));
-                }
-                if (holder.tvComment.getLineCount() == 4) {
-                    holder.tvComment.setMaxLines(31);
-                }
-            });
-
-            holder.itemView.setOnLongClickListener(view -> {
-                int idComment = listComment.get(position).getMabinhluan();
-                clickListener.onItemClick(idComment, view, true);
-                return false;
-            });
+    override fun onBindViewHolder(holder: CommentHolder, position: Int) {
+        val comment = mCommentList[position]
+        holder.tvName.text = comment.displayName
+        holder.tvComment.text = comment.comment
+        holder.itemView.setOnClickListener {    //rút ngắn 1 đoạn bình luận dài
+            holder.tvComment.setMaxLines(if (holder.tvComment.lineCount > 4) 4 else 31)
+        }
+        holder.itemView.setOnLongClickListener { view: View ->
+            mClickListener!!.onItemClick(comment.commentId, view, true)
+            false
         }
     }
 
-    @Override
-    public int getItemCount() {
-        if (listComment != null && listComment.size() > 0)
-            return listComment.size();
-        else
-            return 0;
+    override fun getItemCount(): Int {
+        return mCommentList.size
     }
 
-    public class CommentHoder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvComment;
+    private var mCommentList: MutableList<Comment> = mutableListOf()
+    private var mClickListener: ClickListener? = null
 
-        public CommentHoder(@NonNull View itemView) {
-            super(itemView);
-            tvName = itemView.findViewById(R.id.tvName);
-            tvComment = itemView.findViewById(R.id.tvComment);
-        }
+    fun clickListener(clickListener: ClickListener) {
+        mClickListener = clickListener
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setCommentList(commentList: MutableList<Comment>) {
+        mCommentList = commentList
+        notifyDataSetChanged()
     }
 }

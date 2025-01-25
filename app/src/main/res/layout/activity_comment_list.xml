@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="7dp"
-                android:background="@drawable/bg_corner_no_color_10dp_boder_black"
+                android:background="@drawable/bg_corner_no_color_10dp_border_black"
                 android:gravity="top|start"
                 android:hint="@string/comment"
                 android:importantForAutofill="no"

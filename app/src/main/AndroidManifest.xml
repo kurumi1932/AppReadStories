@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="huce.fit.appreadstories">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -14,8 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppReadStories"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="o">
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".startapp.StartAppActivity"
             android:exported="true"
@@ -33,24 +32,24 @@
             android:name=".main.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".story.search.StorySearchActivity"
+            android:name=".story.list.search.StorySearchActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".story.information.StoryInformationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.StoryDownloadActivity"
+            android:name=".story.download.StoryDownloadActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.ChapterListActivity"
+            android:name=".chapter.list.ChapterListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ChapterReadActivity"
+            android:name=".chapter.information.ChapterInformationActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.CommentListActivity"
+            android:name=".comment.CommentActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -61,12 +60,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GuideActivity"
+            android:name=".guile.GuideActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name=".service.CheckStoryService" />
-        <service android:name=".service.DeleteStoryService" />
-        <service android:name=".service.DownloadStoryService" />
+        <service android:name=".story.information.CheckStoryService" />
+        <service android:name=".story.list.download.DeleteStoryService" />
+        <service android:name=".story.download.StoryDownloadService" />
 
     </application>
 

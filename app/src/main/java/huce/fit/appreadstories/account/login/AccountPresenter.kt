@@ -1,8 +1,8 @@
-package huce.fit.appreadstories.account.login;
+package huce.fit.appreadstories.account.login
 
-import huce.fit.appreadstories.account.BaseAccountPresenter;
+import huce.fit.appreadstories.account.BaseAccountPresenter
 
-public interface AccountPresenter extends BaseAccountPresenter {
+interface AccountPresenter : BaseAccountPresenter {
 
-    void login(String username, String password);
+    fun login(username: String, password: String)
 }

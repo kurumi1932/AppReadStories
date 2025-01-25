@@ -52,6 +52,7 @@
             android:layout_marginStart="2dp"
             android:layout_marginTop="5dp"
             android:adjustViewBounds="true"
+            android:src="@mipmap/ic_launcher_foreground"
             tools:ignore="contentDescription" />
 
         <TextView
@@ -127,7 +128,7 @@
             android:textSize="17sp" />
 
         <LinearLayout
-            android:id="@+id/llRate"
+            android:id="@+id/linearLayoutRate"
             android:layout_width="200dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
@@ -219,7 +220,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvChapter"
+            android:id="@+id/tvSumChapter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

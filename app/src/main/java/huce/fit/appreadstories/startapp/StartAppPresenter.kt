@@ -1,8 +1,8 @@
-package huce.fit.appreadstories.startapp;
+package huce.fit.appreadstories.startapp
 
-import huce.fit.appreadstories.account.BaseAccountPresenter;
+import huce.fit.appreadstories.account.BaseAccountPresenter
 
-public interface StartAppPresenter extends BaseAccountPresenter {
+interface StartAppPresenter : BaseAccountPresenter {
 
-    boolean checkLogged();
+    fun checkLogged(): Boolean
 }

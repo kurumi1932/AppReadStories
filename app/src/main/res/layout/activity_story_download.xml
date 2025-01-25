@@ -59,6 +59,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="5dp"
                 android:adjustViewBounds="true"
+                android:src="@mipmap/ic_launcher_foreground"
                 tools:ignore="contentDescription" />
 
             <TextView
@@ -123,7 +124,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvChapter"
+                android:id="@+id/tvSumChapter"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginStart="5dp"

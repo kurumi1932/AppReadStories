@@ -1,47 +1,41 @@
-package huce.fit.appreadstories.startapp;
+package huce.fit.appreadstories.startapp
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.account.login.AccountLoginActivity
+import huce.fit.appreadstories.main.MainActivity
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+class StartAppActivity: AppCompatActivity(), StartAppView {
 
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.account.login.AccountLoginActivity;
-import huce.fit.appreadstories.main.MainActivity;
-
-public class StartAppActivity extends AppCompatActivity implements StartAppView {
-
-    private StartAppPresenter mStartAppPresenter;
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_app);
-
-        init();
-        startApp();
+    private lateinit var mStartAppPresenter: StartAppPresenter
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_start_app)
+        init()
+        startApp()
     }
 
-    private void init(){
-        mStartAppPresenter = new StartAppImpl(this);
+    fun init() {
+        mStartAppPresenter = StartAppImpl(this)
     }
 
-    private void startApp() {
+    fun startApp() {
         //delay
-        Handler handler = new Handler();
         if (mStartAppPresenter.checkLogged()) {
-            handler.postDelayed(() -> {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }, 3000);
+             Handler().postDelayed({
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 3000)
         } else {
-            handler.postDelayed(() -> {
-                Intent intent = new Intent(this, AccountLoginActivity.class);
-                startActivity(intent);
-                finish();
-            }, 3000);
+            Handler().postDelayed({
+                val intent = Intent(this, AccountLoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 3000)
         }
     }
 }

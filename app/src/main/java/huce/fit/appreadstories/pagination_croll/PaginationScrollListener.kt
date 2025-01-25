@@ -1,35 +1,27 @@
-package huce.fit.appreadstories.pagination_croll;
+package huce.fit.appreadstories.pagination_croll
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
-    private final LinearLayoutManager linearLayoutManager;
+abstract class PaginationScrollListener(private val linearLayoutManager: LinearLayoutManager) :
+    RecyclerView.OnScrollListener() {
 
-    public PaginationScrollListener(LinearLayoutManager linearLayoutManager) {
-        this.linearLayoutManager = linearLayoutManager;
-    }
-
-    @Override
-    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
-
-        int visibleItemCount = linearLayoutManager.getChildCount();
-        int totalItemCount = linearLayoutManager.getItemCount();
-        int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        super.onScrolled(recyclerView, dx, dy)
+        val visibleItemCount = linearLayoutManager.childCount
+        val totalItemCount = linearLayoutManager.getItemCount()
+        val firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition()
         if (isLoading() || isLastPage()) {
-            return;
+            return
         }
-        if (firstVisibleItemPosition >= 0 && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
-            loadMoreItems();
+        if (firstVisibleItemPosition >= 0 && visibleItemCount + firstVisibleItemPosition >= totalItemCount) {
+            loadMoreItems()
         }
     }
 
-    public abstract void loadMoreItems();
+    abstract fun loadMoreItems()
 
-    public abstract boolean isLoading();
+    abstract fun isLoading(): Boolean
 
-    public abstract boolean isLastPage();
+    abstract fun isLastPage(): Boolean
 }

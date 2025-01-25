@@ -1,15 +1,19 @@
-package huce.fit.appreadstories.story.information;
+package huce.fit.appreadstories.story.information
 
-import huce.fit.appreadstories.model.DanhGia;
-import huce.fit.appreadstories.model.Truyen;
-import huce.fit.appreadstories.sqlite.Story;
+import huce.fit.appreadstories.model.Story
 
-public interface StoryInformationView {
-
-    void setData(Truyen truyen);
-    void setData(Story story);
-    void checkInteractive(int isLike, String likeNumber);
-    void followStory(int isFollow);
-    void getRate(DanhGia danhGia);
-    void reloadViewPaper(String text);
+interface StoryInformationView {
+    fun close()
+    fun setRateStartLight(index: Int)
+    fun setRateStartDark(index: Int)
+    fun setData(story: Story?)
+    fun checkAge(isCheckAge: kotlin.Boolean)
+    fun checkInteractive(isLike: Int, likeNumber: kotlin.String?)
+    fun followStory(isFollow: Int)
+    fun openDialogRate()
+    fun addRate(ratePoint: Int, rate: kotlin.String?)
+    fun updateRate(ratePoint: Int, rate: kotlin.String?)
+    fun deleteRate()
+    fun reloadViewPaper(text: kotlin.String?)
+    fun checkStory()
 }

@@ -1,88 +1,64 @@
-package huce.fit.appreadstories.adapters;
+package huce.fit.appreadstories.adapters
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.model.Rate
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class RateAdapter : RecyclerView.Adapter<RateAdapter.RateHolder>() {
 
-import java.util.ArrayList;
-import java.util.List;
-
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.model.DanhGia;
-
-public class RateAdapter extends RecyclerView.Adapter<RateAdapter.RateHoder> {
-    private List<DanhGia> listRate = new ArrayList<>();
-
-    public RateAdapter() {
+    class RateHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName: TextView = itemView.findViewById(R.id.tvName)
+        val tvRate: TextView = itemView.findViewById(R.id.tvRate)
+        val ivRate1: ImageView = itemView.findViewById(R.id.ivRate1)
+        val ivRate2: ImageView = itemView.findViewById(R.id.ivRate2)
+        val ivRate3: ImageView = itemView.findViewById(R.id.ivRate3)
+        val ivRate4: ImageView = itemView.findViewById(R.id.ivRate4)
+        val ivRate5: ImageView = itemView.findViewById(R.id.ivRate5)
     }
 
-    public void setDataRate(List<DanhGia> rates){
-        if(listRate!=null||listRate.size()>0){
-            listRate.clear();
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RateHolder {
+        val view: View =
+            LayoutInflater.from(parent.context).inflate(R.layout.activity_rate_item, parent, false)
+        return RateHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RateHolder, position: Int) {
+        val rate = mRateList[position]
+        holder.tvName.text = rate.displayName
+        val ratePoint = rate.ratePoint
+        if (ratePoint > 0) {
+            holder.ivRate1.setImageResource(R.drawable.ic_rate)
+            if (ratePoint > 1) {
+                holder.ivRate2.setImageResource(R.drawable.ic_rate)
+                if (ratePoint > 2) {
+                    holder.ivRate3.setImageResource(R.drawable.ic_rate)
+                    if (ratePoint > 3) {
+                        holder.ivRate4.setImageResource(R.drawable.ic_rate)
+                        if (ratePoint == 5) {
+                            holder.ivRate5.setImageResource(R.drawable.ic_rate)
+                        }
+                    }
+                }
+            }
         }
-        listRate.addAll(rates);
-        notifyDataSetChanged();
+        holder.tvRate.text = rate.rate
     }
 
-    @NonNull
-    @Override
-    public RateAdapter.RateHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_rate_item, parent, false);
-        return new RateAdapter.RateHoder(view);
+    override fun getItemCount(): Int {
+        return mRateList.size
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RateAdapter.RateHoder holder, int position) {
-        DanhGia dg = listRate.get(position);
-        if (dg != null) {
-            holder.tvName.setText(dg.getTenhienthi());
-            int pointRate = dg.getDiemdanhgia();
-            if (pointRate >= 1) {
-                holder.ivRate1.setImageResource(R.drawable.ic_rate);
-            }
-            if (pointRate >= 2) {
-                holder.ivRate2.setImageResource(R.drawable.ic_rate);
-            }
-            if (pointRate >= 3) {
-                holder.ivRate3.setImageResource(R.drawable.ic_rate);
-            }
-            if (pointRate >= 4) {
-                holder.ivRate4.setImageResource(R.drawable.ic_rate);
-            }
-            if (pointRate == 5) {
-                holder.ivRate5.setImageResource(R.drawable.ic_rate);
-            }
-            holder.tvRate.setText(dg.getDanhgia());
-        }
-    }
+    private var mRateList: MutableList<Rate> = mutableListOf()
 
-    @Override
-    public int getItemCount() {
-        if (listRate != null && listRate.size() > 0)
-            return listRate.size();
-        else
-            return 0;
-    }
-
-    public class RateHoder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvRate;
-        private ImageView ivRate1, ivRate2, ivRate3, ivRate4, ivRate5;
-
-        public RateHoder(@NonNull View itemView) {
-            super(itemView);
-            tvName = itemView.findViewById(R.id.tvName);
-            ivRate1 = itemView.findViewById(R.id.ivRate1);
-            ivRate2 = itemView.findViewById(R.id.ivRate2);
-            ivRate3 = itemView.findViewById(R.id.ivRate3);
-            ivRate4 = itemView.findViewById(R.id.ivRate4);
-            ivRate5 = itemView.findViewById(R.id.ivRate5);
-            tvRate = itemView.findViewById(R.id.tvRate);
-        }
-
+    @SuppressLint("NotifyDataSetChanged")
+    fun setDataRate(rateList: MutableList<Rate>) {
+        mRateList = rateList
+        notifyDataSetChanged()
     }
 }

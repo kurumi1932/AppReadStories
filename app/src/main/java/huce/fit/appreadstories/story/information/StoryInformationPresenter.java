@@ -1,12 +1,12 @@
 package huce.fit.appreadstories.story.information;
 
-import huce.fit.appreadstories.story.BaseListStoryPresenter;
+import huce.fit.appreadstories.story.list.BaseStoryListPresenter;
 
-public interface StoryInformationPresenter extends BaseListStoryPresenter {
+public interface StoryInformationPresenter extends BaseStoryListPresenter {
 
-    void checkStoryService();
+    void start();
     int getStoryId();
-    void getData();
+    void showRate(int ratePoint);
     void getDataOffline();
     boolean checkAge();
     void checkInteractive();
@@ -19,11 +19,9 @@ public interface StoryInformationPresenter extends BaseListStoryPresenter {
 
     void checkRateOfAccount();
     void addRate(int ratePoint, String rate);
-    void updateRate(int rateId, int ratePoint, String rate);
-    void deleteRate(int rateId);
-
-    boolean getIsRate();
-    boolean enterComment();
+    void updateRate(int ratePoint, String rate);
+    void deleteRate();
+    void enterComment();
     void enterDownload();
     void enterChapter();
     void enterReadStory();

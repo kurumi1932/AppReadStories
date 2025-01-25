@@ -1,83 +1,85 @@
-package huce.fit.appreadstories.account.register;
+package huce.fit.appreadstories.account.register
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.util.Log;
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Context
+import android.util.Log
+import android.widget.DatePicker
+import huce.fit.appreadstories.account.BaseAccountImpl
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.checknetwork.isConnecting
+import huce.fit.appreadstories.model.Account
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
-import androidx.annotation.NonNull;
+class AccountRegisterImpl(var accountRegisterView: AccountRegisterView) : BaseAccountImpl(accountRegisterView as Context), AccountRegisterPresenter {
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import huce.fit.appreadstories.account.BaseAccountImpl;
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.TaiKhoan;
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class AccountRegisterImpl extends BaseAccountImpl implements AccountRegisterPresenter {
-
-    private static final String TAG = "AccountRegisterImpl";
-    private AccountRegisterView mAccountRegisterView;
-    private final Calendar mCalendar = Calendar.getInstance();
-    private final DatePickerDialog.OnDateSetListener d = (view, year, monthOfYear, dayOfMonth) -> {
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, monthOfYear);
-        mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-        @SuppressLint("SimpleDateFormat") String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(mCalendar.getTime());
-        mAccountRegisterView.changeDatePicker(dateStr);
-    };
-
-    AccountRegisterImpl(AccountRegisterView accountRegisterView) {
-        super((Context) accountRegisterView);
-        mAccountRegisterView = accountRegisterView;
+    companion object{
+        const val TAG = "AccountRegisterImpl"
     }
 
-    @Override
-    public void register(String username, String password, String email, String name, String birthday) {
-        if (checkDate(birthday))
-            if (isNetwork())
-                Api.apiInterface().register(username, password, email, name, birthday).enqueue(new Callback<TaiKhoan>() {
-                    @Override
-                    public void onResponse(@NonNull Call<TaiKhoan> call, @NonNull Response<TaiKhoan> response) {
-                        if (response.isSuccessful() && response.body() != null)
-                            switch (response.body().getAccountsuccess()) {
-                                case 0:
-                                    mAccountRegisterView.register(0);
-                                    break;
-                                case 1:
-                                    setSharedPreferences(username);
-                                    mAccountRegisterView.register(1);
-                                    break;
+    val d = OnDateSetListener { _: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, monthOfYear)
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        @SuppressLint("SimpleDateFormat") val dateStr =
+            SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+        accountRegisterView.changeDatePicker(dateStr)
+    }
+
+    override fun register(
+        username: String,
+        password: String,
+        email: String,
+        name: String,
+        birthday: String
+    ) {
+        if (checkDate(birthday)) {
+            if (isConnecting(context)) {
+                Api().apiInterface().register(username, password, email, name, birthday)
+                    .enqueue(object : Callback<Account> {
+                        override fun onResponse(call: Call<Account>, response: Response<Account>) {
+                            if (response.isSuccessful && response.body() != null) {
+                                when (response.body()!!.success) {
+                                    0 -> accountRegisterView.register(0)
+                                    1 -> {
+                                        setAccount(username)
+                                        accountRegisterView.register(1)
+                                    }
+                                }
                             }
-                    }
+                            Log.e(TAG, "api register: success")
+                        }
 
-                    @Override
-                    public void onFailure(@NonNull Call<TaiKhoan> call, @NonNull Throwable t) {
-                        Log.e(TAG, "register_err", t);
-                    }
-                });
-            else
-                mAccountRegisterView.register(2);
-        else
-            mAccountRegisterView.register(3);
+                        override fun onFailure(call: Call<Account>, t: Throwable) {
+                            Log.e(TAG, "api register: fail")
+                        }
+                    })
+            } else {
+                accountRegisterView.register(2)
+            }
+        } else {
+            accountRegisterView.register(3)
+        }
     }
 
-    @Override
-    public void openDatePicker() {
-        new DatePickerDialog((Context) mAccountRegisterView, d,
-                mCalendar.get(Calendar.YEAR),
-                mCalendar.get(Calendar.MONTH),
-                mCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    override fun openDatePicker() {
+        DatePickerDialog(
+            context, d,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
-    public void setSharedPreferences(String username) {
-        MySharedPreferences mySharedPreferences = setSharedPreferences();
-        mySharedPreferences.setUsername(username);
-        mySharedPreferences.myApply();
+    fun setAccount(username: String) {
+        val account: AccountSharedPreferences = setAccount()
+        account.setUsername(username)
+        account.myApply()
     }
 }

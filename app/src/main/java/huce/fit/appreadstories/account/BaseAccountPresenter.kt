@@ -1,12 +1,10 @@
-package huce.fit.appreadstories.account;
+package huce.fit.appreadstories.account
 
-import huce.fit.appreadstories.shared_preferences.MySharedPreferences;
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 
-public interface BaseAccountPresenter {
+interface BaseAccountPresenter {
 
-    boolean isNetwork();
-    MySharedPreferences getSharedPreferences();
-    MySharedPreferences setSharedPreferences();
-
-    int age(String birthday);
+    fun getAccount(): AccountSharedPreferences
+    fun setAccount(): AccountSharedPreferences
+    fun age(birthday: String): Int
 }
