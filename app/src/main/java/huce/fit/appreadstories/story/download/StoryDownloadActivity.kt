@@ -21,7 +21,6 @@ import huce.fit.appreadstories.model.Story
 
 class StoryDownloadActivity : AppCompatActivity(), StoryDownloadView{
 
-    private lateinit var mStoryDownloadPresenter: StoryDownloadPresenter
     private lateinit var llStoryDownload: LinearLayout
     private lateinit var ivBack: ImageView
     private lateinit var ivStory:ImageView
@@ -56,11 +55,14 @@ class StoryDownloadActivity : AppCompatActivity(), StoryDownloadView{
         val itemDecoration: ItemDecoration =
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         start()
-        mStoryDownloadPresenter = StoryDownloadImpl(this)
+        val storyDownloadPresenter = StoryDownloadImpl(this)
         chapterDownloadAdapter = ChapterDownloadAdapter()
         rcViewChapter.setLayoutManager(LinearLayoutManager(this))
         rcViewChapter.setAdapter(chapterDownloadAdapter)
         rcViewChapter.addItemDecoration(itemDecoration)
+
+        storyDownloadPresenter.getStory()
+        storyDownloadPresenter.getChapterList()
     }
 
     fun start() {

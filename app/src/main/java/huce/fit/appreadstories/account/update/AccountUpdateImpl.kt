@@ -39,8 +39,8 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
     private fun setAccountInfo() {
         val account: AccountSharedPreferences = getAccount()
         accountUpdateView.getInfoAccount(
-            account.getName()!!,
-            account.getEmail()!!,
+            account.getName(),
+            account.getEmail(),
             account.getBirthday()!!
         )
     }
@@ -55,10 +55,11 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
             return
         }
         Api().apiInterface().updateAccount(accountId, email, name, birthday)
-            .enqueue(object : Callback<Account?> {
-                override fun onResponse(call: Call<Account?>, response: Response<Account?>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        if (response.body()!!.success == 1) {
+            .enqueue(object : Callback<Account> {
+                override fun onResponse(call: Call<Account>, response: Response<Account>) {
+                    val accountServer = response.body()
+                    if (response.isSuccessful && accountServer != null) {
+                        if (accountServer.accountSuccess == 1) {
                             setAccount(email, name, birthday, age(birthday))
                             accountUpdateView.update(1)
                         } else {
@@ -68,7 +69,7 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
                     Log.e(TAG, "api updateAccount: success")
                 }
 
-                override fun onFailure(call: Call<Account?>, t: Throwable) {
+                override fun onFailure(call: Call<Account>, t: Throwable) {
                     Log.e(TAG, "api updateAccount: fail")
                 }
             })
@@ -79,21 +80,22 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
             accountUpdateView.update(2)
             return
         }
-        Api().apiInterface().checkPassword(accountId, oldPass).enqueue(object : Callback<Account?> {
-            override fun onResponse(call: Call<Account?>, response: Response<Account?>) {
-                if (response.isSuccessful && response.body() != null) {
-                    if (response.body()!!.success == 1) {
+        Api().apiInterface().checkPassword(accountId, oldPass).enqueue(object : Callback<Account> {
+            override fun onResponse(call: Call<Account>, response: Response<Account>) {
+                val accountServer = response.body()
+                if (response.isSuccessful && accountServer != null) {
+                    if (accountServer.accountSuccess == 1) {
                         if (oldPass == newPass) {
                             accountUpdateView.update(4)
                         } else {
                             Api().apiInterface().updatePassword(accountId, newPass)
-                                .enqueue(object : Callback<Account?> {
+                                .enqueue(object : Callback<Account> {
                                     override fun onResponse(
-                                        call: Call<Account?>,
-                                        response: Response<Account?>
+                                        call: Call<Account>, response: Response<Account>
                                     ) {
-                                        if (response.isSuccessful && response.body() != null) {
-                                            if (response.body()!!.success == 1) {
+                                        val accountUpdateServer = response.body()
+                                        if (response.isSuccessful && accountUpdateServer != null) {
+                                            if (accountUpdateServer.accountSuccess == 1) {
                                                 accountUpdateView.update(1)
                                             } else {
                                                 accountUpdateView.update(5)
@@ -102,7 +104,7 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
                                         Log.e(TAG, "api changePassword update: success")
                                     }
 
-                                    override fun onFailure(call: Call<Account?>, t: Throwable) {
+                                    override fun onFailure(call: Call<Account>, t: Throwable) {
                                         Log.e(TAG, "api changePassword update: fail")
                                     }
                                 })
@@ -114,7 +116,7 @@ class AccountUpdateImpl(private var accountUpdateView: AccountUpdateView) : Base
                 Log.e(TAG, "api changePassword check: success")
             }
 
-            override fun onFailure(call: Call<Account?>, t: Throwable) {
+            override fun onFailure(call: Call<Account>, t: Throwable) {
                 Log.e(TAG, "api changePassword check: fail")
             }
         })

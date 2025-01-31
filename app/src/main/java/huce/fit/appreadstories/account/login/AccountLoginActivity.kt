@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import huce.fit.appreadstories.R
 import huce.fit.appreadstories.account.register.AccountRegisterActivity
 import huce.fit.appreadstories.main.MainActivity
+import huce.fit.appreadstories.util.AppUtil
 
 class AccountLoginActivity : AppCompatActivity(), AccountLoginView {
 
@@ -16,7 +16,7 @@ class AccountLoginActivity : AppCompatActivity(), AccountLoginView {
     private lateinit var etPassword: EditText
     private lateinit var btLogin: Button
     private lateinit var btCreate: Button
-    private var mAccountPresenter: AccountPresenter = AccountLoginImpl(this)
+    private lateinit var accountPresenter: AccountLoginImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,72 +25,49 @@ class AccountLoginActivity : AppCompatActivity(), AccountLoginView {
         processEvents()
     }
 
-    fun init() {
+    private fun init() {
         etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
         btLogin = findViewById(R.id.btLogin)
         btCreate = findViewById(R.id.btCreate)
+        accountPresenter = AccountLoginImpl(this)
     }
 
     override fun onResume() {
         super.onResume()
-        etUsername.setText(mAccountPresenter.getAccount().getUsername())
+        etUsername.setText(accountPresenter.getAccount().getUsername())
     }
 
-    fun processEvents() {
+    private fun processEvents() {
         btLogin.setOnClickListener {
             val username = etUsername.getText().toString().trim { it <= ' ' }
             val password: String = etPassword.getText().toString().trim { it <= ' ' }
             if (username.isEmpty()) {
-                Toast.makeText(
-                    this@AccountLoginActivity,
-                    "Bạn chưa nhập tên tài khoản!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(this, "Bạn chưa nhập tên tài khoản!")
             } else if (password.isEmpty()) {
-                Toast.makeText(
-                    this@AccountLoginActivity,
-                    "Bạn chưa nhập mật khẩu!",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                AppUtil.setToast(this, "Bạn chưa nhập mật khẩu!")
             } else {
-                mAccountPresenter.login(username, password)
+                accountPresenter.login(username, password)
             }
         }
         btCreate.setOnClickListener {
-            val intent = Intent(
-                this@AccountLoginActivity,
-                AccountRegisterActivity::class.java
-            )
+            val intent = Intent(this, AccountRegisterActivity::class.java)
             startActivity(intent)
         }
     }
 
     override fun login(status: Int) {
         when (status) {
-            0 -> Toast.makeText(
-                this@AccountLoginActivity,
-                "Tài khoản hoặc mật khẩu không chính xác!",
-                Toast.LENGTH_SHORT
-            ).show()
+            0 -> AppUtil.setToast(this, "Tài khoản hoặc mật khẩu không chính xác!")
 
             1 -> {
-                Toast.makeText(
-                    this@AccountLoginActivity,
-                    "Đăng nhập thành công!!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                val intent = Intent(this@AccountLoginActivity, MainActivity::class.java)
+                AppUtil.setToast(this, "Đăng nhập thành công!!")
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
 
-            2 -> Toast.makeText(
-                this@AccountLoginActivity,
-                "Vui lòng kết nối mạng!",
-                Toast.LENGTH_SHORT
-            ).show()
+            2 -> AppUtil.setToast(this, "Vui lòng kết nối mạng!")
         }
     }
 }

@@ -1,35 +1,36 @@
-package huce.fit.appreadstories.dialog.confirm;
+package huce.fit.appreadstories.dialog.confirm
 
-import android.content.Context;
-import android.view.Gravity;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.content.Context
+import android.view.Gravity
+import android.view.WindowManager
+import android.widget.TextView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.dialog.BaseDialog
 
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.dialog.BaseDialog;
+open class BaseConfirmDialog(context: Context) : BaseDialog(context), BaseConfirmDialogView {
+    private lateinit var tvTitle: TextView
+    private lateinit var tvContent: TextView
+    lateinit var tvYes: TextView
+    lateinit var tvNo: TextView
 
-public class BaseConfirmDialog extends BaseDialog implements BaseConfirmDialogView {
-
-    public TextView tvTitle, tvContent, tvYes, tvNo;
-
-    BaseConfirmDialog(Context context) {
-        super(context);
-        setDialog( R.layout.dialog_confirm);
-        setWindow(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, Gravity.CENTER, 0);
-        init();
+    init {
+        setDialog(R.layout.dialog_confirm)
+        setWindow(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT, Gravity.CENTER, 0
+        )
+        init()
     }
 
-    private void init() {
-        tvTitle = mDialog.findViewById(R.id.tvTitle);
-        tvContent = mDialog.findViewById(R.id.tvContent);
-        tvYes = mDialog.findViewById(R.id.tvYes);
-        tvNo = mDialog.findViewById(R.id.tvNo);
+    private fun init() {
+        tvTitle = dialog.findViewById(R.id.tvTitle)
+        tvContent = dialog.findViewById(R.id.tvContent)
+        tvYes = dialog.findViewById(R.id.tvYes)
+        tvNo = dialog.findViewById(R.id.tvNo)
     }
 
-    @Override
-    public void setContent(String title, String content) {
-        tvTitle.setText(title);
-        tvContent.setText(content);
+    override fun setContent(title: String, content: String) {
+        tvTitle.text = title
+        tvContent.text = content
     }
 }

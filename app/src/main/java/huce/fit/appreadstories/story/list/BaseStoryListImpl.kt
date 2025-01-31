@@ -5,12 +5,8 @@ import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
 
 open class BaseStoryListImpl(val context: Context) : BaseStoryListPresenter {
-
-    companion object{
-        private const val TAG = "BaseStoryListImpl"
-    }
-
-    private var mStory: StorySharedPreferences = StorySharedPreferences(context)
+    
+    private var story = StorySharedPreferences(context)
 
     override fun getAccount(): AccountSharedPreferences {
         val account = AccountSharedPreferences(context)
@@ -18,22 +14,14 @@ open class BaseStoryListImpl(val context: Context) : BaseStoryListPresenter {
         return account
     }
 
-    private fun setStory() {
-        mStory.setSharedPreferences("Story", Context.MODE_PRIVATE)
-    }
-
-    private fun getStory() {
-        mStory.getSharedPreferences("Story", Context.MODE_PRIVATE)
-    }
-
     override fun getStoryId(): Int {
-        getStory()
-        return mStory.getStoryId()
+        story.getSharedPreferences("Story", Context.MODE_PRIVATE)
+        return story.getStoryId()
     }
 
     override fun setStoryId(storyId: Int) {
-        setStory()
-        mStory.setStoryId(storyId)
-        mStory.myApply()
+        story.setSharedPreferences("Story", Context.MODE_PRIVATE)
+        story.setStoryId(storyId)
+        story.myApply()
     }
 }

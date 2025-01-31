@@ -14,6 +14,9 @@ import java.util.Locale
 
 class StoryDownloadAdapter: RecyclerView.Adapter<StoryDownloadAdapter.StoryDownloadHolder>() {
 
+    private var storyList: MutableList<Story> = mutableListOf()
+    private lateinit var clickListener: ClickListener
+    
     class StoryDownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
          val tvStoryName: TextView = itemView.findViewById(R.id.tvStoryName)
          val tvAuthor: TextView= itemView.findViewById(R.id.tvAuthor)
@@ -31,12 +34,12 @@ class StoryDownloadAdapter: RecyclerView.Adapter<StoryDownloadAdapter.StoryDownl
     }
 
     override fun onBindViewHolder(holder: StoryDownloadHolder, position: Int) {
-        val story = mStoryList[position]
+        val story = storyList[position]
         holder.itemView.setOnClickListener { view: View ->
-            mClickListener!!.onItemClick(story.storyId, view, false)
+            clickListener.onItemClick(story.storyId, view, false)
         }
         holder.itemView.setOnLongClickListener { view: View ->
-            mClickListener!!.onItemClick(story.storyId, view, true)
+            clickListener.onItemClick(story.storyId, view, true)
             false
         }
         holder.tvStoryName.text = story.storyName
@@ -51,19 +54,17 @@ class StoryDownloadAdapter: RecyclerView.Adapter<StoryDownloadAdapter.StoryDownl
     }
 
     override fun getItemCount(): Int {
-        return mStoryList.size
+        return storyList.size
     }
 
-    private var mStoryList: MutableList<Story> = mutableListOf()
-    private var mClickListener: ClickListener? = null
-
     @SuppressLint("NotifyDataSetChanged")
-    fun setDataStory(storyList: MutableList<Story>) {
-        mStoryList = storyList
+    fun setDataStory(storyList: List<Story>) {
+        this.storyList.clear()
+        this.storyList.addAll(storyList)
         notifyDataSetChanged()
     }
 
-    fun setClickListener(clickListener: ClickListener?) {
-        mClickListener = clickListener
+    fun setClickListener(clickListener: ClickListener) {
+        this.clickListener = clickListener
     }
 }

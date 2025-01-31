@@ -20,16 +20,16 @@ class SettingSharedPreferences(context: Context) : BaseSharedPreferences(context
         edit.putInt("lineStretch", lineStretch)
     }
 
-    fun getTextColor(): String? {
-        return sharedPreferences.getString("textColor", "#000000")
+    fun getTextColor(): String {
+        return sharedPreferences.getString("textColor", "#000000").toString()
     }
 
     fun setTextColor(textColor: String) {
         edit.putString("textColor", textColor)
     }
 
-    fun getBackgroundColor(): String? {
-        return sharedPreferences.getString("backgroundColor", "#FFFFFF")
+    fun getBackgroundColor(): String {
+        return sharedPreferences.getString("backgroundColor", "#FFFFFF").toString()
     }
 
     fun setBackgroundColor(backgroundColor: String) {

@@ -1,31 +1,30 @@
-package huce.fit.appreadstories.dialog.confirm;
+package huce.fit.appreadstories.dialog.confirm
 
-import android.content.Context;
+import android.content.Context
+import huce.fit.appreadstories.story.information.StoryInformationView
 
-import huce.fit.appreadstories.story.information.StoryInformationView;
+class ConfirmCheckAgeDialog(storyInformationView: StoryInformationView) :
+    BaseConfirmDialog(storyInformationView as Context) {
 
-public class ConfirmCheckAgeDialog extends BaseConfirmDialog {
-
-    public ConfirmCheckAgeDialog(StoryInformationView storyInformationView, Context context) {
-        super(context);
-
-        init();
-        processEvents(storyInformationView);
+    init {
+        init()
+        processEvents(storyInformationView)
     }
 
-    private void init(){
+    private fun init() {
         // true click bên ngoài dialog có thể tắt dialog
-        mDialog.setCancelable(false);
-        String title = "Cảnh báo nội dung";
-        String content = "Truyện bạn muốn xem có chứa nội dung nhạy cảm, phù hợp với lứa tuổi 18 trở lên. Hãy cân nhắc trước khi tiếp tục.";
-        setContent(title, content);
+        dialog.setCancelable(false)
+        val title = "Cảnh báo nội dung"
+        val content =
+            "Truyện bạn muốn xem có chứa nội dung nhạy cảm, phù hợp với lứa tuổi 18 trở lên. Hãy cân nhắc trước khi tiếp tục."
+        setContent(title, content)
     }
 
-    private void processEvents(StoryInformationView storyInformationView) {
-        tvYes.setOnClickListener(view -> mDialog.dismiss());
-        tvNo.setOnClickListener(view -> {
-            mDialog.dismiss();
-            storyInformationView.close();
-        });
+    private fun processEvents(storyInformationView: StoryInformationView) {
+        tvYes.setOnClickListener { dialog.dismiss() }
+        tvNo.setOnClickListener {
+            dialog.dismiss()
+            storyInformationView.close()
+        }
     }
 }

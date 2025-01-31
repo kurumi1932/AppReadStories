@@ -1,10 +1,9 @@
-package huce.fit.appreadstories.dialog.setting;
+package huce.fit.appreadstories.dialog.setting
 
-public interface TextAndLineStretchDialogPresenter{
-
-    void upTextSize();
-    void downTextSize();
-    void upLineStretch();
-    void downLineStretch();
-    void setColor(int backgroundColor, int textColor);
+interface TextAndLineStretchDialogPresenter {
+    fun upTextSize()
+    fun downTextSize()
+    fun upLineStretch()
+    fun downLineStretch()
+    fun setColor(backgroundColor: Int, textColor: Int)
 }

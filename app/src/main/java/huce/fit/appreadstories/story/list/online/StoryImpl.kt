@@ -1,118 +1,99 @@
-package huce.fit.appreadstories.story.list.online;
+package huce.fit.appreadstories.story.list.online
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.model.Story
+import huce.fit.appreadstories.story.list.BaseStoryListImpl
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.model.Story;
-import huce.fit.appreadstories.story.list.BaseStoryListImpl;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class StoryImpl extends BaseStoryListImpl implements StoryPresenter {
-
-    private static final String TAG = "StoryImpl";
-
-    private final StoryView mStoryView;
-    private final List<Story> mStoryList = new ArrayList<>();
-    private boolean isLoading;
-    private boolean isLastPage;
-    private static final int ITEMS_PAGE = 8;// số item có trong trang
-    private static final int START_PAGE = 1;
-    private final int mAge;
-    private int mCurrentPage;// page hiện tại
-    private int mTotalPage; // tổng số trang
-
-    StoryImpl(StoryView storyView, Context context) {
-        super(context);
-        mStoryView = storyView;
-        mAge = getAccount().getAge();
-        mCurrentPage = START_PAGE;
-        totalPage();
+class StoryImpl(val storyView: StoryView, context: Context): BaseStoryListImpl(context) , StoryPresenter {
+    
+    companion object{
+        private const val TAG = "StoryImpl"
+        private const val ITEMS_PAGE = 8 // số item có trong trang
+        private const val START_PAGE = 1
     }
 
-    @Override
-    public boolean isLoading() {
-        return isLoading;
+    private val storyList: MutableList<Story> = ArrayList()
+    private var isLoading = false
+    private var isLastPage = false
+    private var age = 0
+    private var currentPage = 0 // page hiện tại
+    private var totalPage = 0 // tổng số trang
+
+    init{
+        age = getAccount().getAge()
+        currentPage = START_PAGE
+        totalPage()
     }
 
-    @Override
-    public boolean isLastPage() {
-        return isLastPage;
-    }
+    override fun isLoading() = isLoading
 
-    @Override
-    public void totalPage() {
-        new Api().apiInterface().getListStories(mAge).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Story>> call, @NonNull Response<List<Story>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.e("NHT number_item:", String.valueOf(response.body().size()));
-                    mTotalPage = (response.body().size() / ITEMS_PAGE);
-                    if ((mTotalPage * ITEMS_PAGE) < response.body().size()) {
-                        ++mTotalPage;
+    override fun isLastPage() = isLastPage
+
+    override fun totalPage() {
+        Api().apiInterface().getListStories(age).enqueue(object : Callback<List<Story>> {
+            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
+                val listStoryServer = response.body()
+                if (response.isSuccessful && listStoryServer != null) {
+                    Log.e("NHT number_item:", listStoryServer.size.toString())
+                    totalPage = (listStoryServer.size / ITEMS_PAGE)
+                    if ((totalPage * ITEMS_PAGE) < listStoryServer.size) {
+                        ++totalPage
                     }
-                    Log.e("NHT number_page:", String.valueOf(mTotalPage));
+                    Log.e("NHT number_page:", totalPage.toString())
                 }
-                Log.e(TAG, "api totalPage: success");
+                Log.e(TAG, "api totalPage: success")
             }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Story>> call, @NonNull Throwable t) {
-                Log.e(TAG, "api totalPage: fail");
+            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
+                Log.e(TAG, "api totalPage: fail")
             }
-        });
+        })
     }
 
-    @Override
-    public void getStory(int page) {
-        new Api().apiInterface().getListStories(mAge).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Story>> call, @NonNull Response<List<Story>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (page * ITEMS_PAGE > response.body().size()) {
-                        for (int i = (page - 1) * ITEMS_PAGE; i < response.body().size(); i++) {
-                            mStoryList.add(response.body().get(i));
+    override fun getStory(page: Int) {
+        Api().apiInterface().getListStories(age).enqueue(object : Callback<List<Story>> {
+            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
+                val listStoryServer = response.body()
+                if (response.isSuccessful && listStoryServer != null) {
+                    if (page * ITEMS_PAGE > listStoryServer.size) {
+                        for (i in (page - 1) * ITEMS_PAGE until listStoryServer.size) {
+                            storyList.add(listStoryServer[i])
                         }
                     } else {
-                        for (int i = (page - 1) * ITEMS_PAGE; i < (page * ITEMS_PAGE); i++) {
-                            mStoryList.add(response.body().get(i));
+                        for (i in (page - 1) * ITEMS_PAGE until (page * ITEMS_PAGE)) {
+                            storyList.add(listStoryServer[i])
                         }
                     }
-                    mStoryView.setData(mStoryList);
+                    storyView.setData(storyList)
                 }
-                Log.e(TAG, "api getStory: success");
+                Log.e(TAG, "api getStory: success")
             }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Story>> call, @NonNull Throwable t) {
-                Log.e(TAG, "api getStory: fail");
+            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
+                Log.e(TAG, "api getStory: fail")
             }
-        });
+        })
     }
 
-    @Override
-    public void loadNextPage() {
-        isLoading = true;
-        mStoryView.getData(++mCurrentPage);
-        isLoading = false;
+    override fun loadNextPage() {
+        isLoading = true
+        storyView.getData(++currentPage)
+        isLoading = false
 
-        if (mCurrentPage == mTotalPage) {
-            isLastPage = true;
+        if (currentPage == totalPage) {
+            isLastPage = true
         }
     }
 
-    @Override
-    public void swipeData() {
-        mStoryList.clear();
-        isLastPage = false;
-        mCurrentPage = START_PAGE;
-        mStoryView.getData(START_PAGE);
+    override fun swipeData() {
+        storyList.clear()
+        isLastPage = false
+        currentPage = START_PAGE
+        storyView.getData(START_PAGE)
     }
 }

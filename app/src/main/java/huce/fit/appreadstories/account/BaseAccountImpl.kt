@@ -16,7 +16,7 @@ open class BaseAccountImpl(val context: Context) : BaseAccountPresenter {
         private const val TAG = "BaseAccountImpl"
     }
 
-    private var account: AccountSharedPreferences = AccountSharedPreferences(context)
+    private var account = AccountSharedPreferences(context)
     val calendar: Calendar = Calendar.getInstance()
 
     @SuppressLint("SimpleDateFormat")
@@ -35,8 +35,8 @@ open class BaseAccountImpl(val context: Context) : BaseAccountPresenter {
     override fun age(birthday: String): Int {
         val endDate = simpleDateFormat.format(Date())
         Log.e(TAG, "NHT birthday: $birthday")
-        val date1: Date?= simpleDateFormat.parse(birthday)
-        val date2: Date?= simpleDateFormat.parse(endDate)
+        val date1 = simpleDateFormat.parse(birthday)
+        val date2= simpleDateFormat.parse(endDate)
         val getDiff: Long
         return if (date1 != null && date2 != null) {
             getDiff = date2.time - date1.time

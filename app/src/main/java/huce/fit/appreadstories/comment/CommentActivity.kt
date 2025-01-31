@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import huce.fit.appreadstories.R
 import huce.fit.appreadstories.adapters.CommentAdapter
 import huce.fit.appreadstories.model.Comment
+import huce.fit.appreadstories.util.AppUtil
 import java.util.Locale
 
 class CommentActivity : AppCompatActivity(), CommentView{
@@ -24,8 +24,8 @@ class CommentActivity : AppCompatActivity(), CommentView{
     private lateinit var ivSent:ImageView
     private lateinit var etComment: EditText
     private lateinit var tvCommentLength: TextView
-    private lateinit var mCommentPresenter: CommentPresenter
-    private lateinit var mCommentAdapter: CommentAdapter
+    private lateinit var commentPresenter: CommentPresenter
+    private lateinit var commentAdapter: CommentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,31 +43,30 @@ class CommentActivity : AppCompatActivity(), CommentView{
         val itemDecoration: ItemDecoration =
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
 
-        mCommentPresenter = CommentImpl(this)
-        mCommentAdapter = CommentAdapter()
+        commentPresenter = CommentImpl(this)
+        commentAdapter = CommentAdapter()
         rcViewComment.setLayoutManager(LinearLayoutManager(this))
-        rcViewComment.setAdapter(mCommentAdapter)
+        rcViewComment.setAdapter(commentAdapter)
         rcViewComment.addItemDecoration(itemDecoration)
     }
 
     override fun setData(commentList: MutableList<Comment>) {
-        mCommentAdapter.setCommentList(commentList)
+        commentAdapter.setCommentList(commentList)
     }
 
     fun processEvents() {
         ivBack.setOnClickListener { finish() }
-        mCommentAdapter.clickListener { position: Int, _: View?, isLongClick: Boolean ->
+        commentAdapter.clickListener { position: Int, _: View?, isLongClick: Boolean ->
             if (isLongClick) {
-                mCommentPresenter.checkCommentOfAccount(position)
+                commentPresenter.checkCommentOfAccount(position)
             }
         }
         ivSent.setOnClickListener {
             val comment = etComment.getText().toString()
             if (comment.isEmpty()) {
-                Toast.makeText(this@CommentActivity, "Vui lòng nhập bình luận!", Toast.LENGTH_SHORT)
-                    .show()
+                AppUtil.setToast(this, "Vui lòng nhập bình luận!")
             } else {
-                mCommentPresenter.enterSent(comment)
+                commentPresenter.enterSent(comment)
                 etComment.setText("")
             }
         }
@@ -76,11 +75,7 @@ class CommentActivity : AppCompatActivity(), CommentView{
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
                 if (etComment.lineCount > 31) {
-                    Toast.makeText(
-                        this@CommentActivity,
-                        "Vượt quá sô dòng giới hạn đánh giá!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AppUtil.setToast(this@CommentActivity, "Vượt quá sô dòng giới hạn đánh giá!")
                     etComment.getText()
                         .delete(etComment.getText().length - 1, etComment.getText().length)
                 }
@@ -90,11 +85,8 @@ class CommentActivity : AppCompatActivity(), CommentView{
         })
     }
 
-    override fun deleteComment() {
-        mCommentPresenter.deleteComment()
-    }
+    override fun deleteComment() = commentPresenter.deleteComment()
 
-    override fun setDataUpdate() {
-        etComment.setText(mCommentPresenter.getComment())
-    }
+
+    override fun setDataUpdate() = etComment.setText(commentPresenter.getComment())
 }

@@ -10,7 +10,8 @@ import huce.fit.appreadstories.main.MainActivity
 
 class StartAppActivity: AppCompatActivity(), StartAppView {
 
-    private lateinit var mStartAppPresenter: StartAppPresenter
+    private lateinit var startAppPresenter: StartAppPresenter
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_app)
@@ -19,12 +20,12 @@ class StartAppActivity: AppCompatActivity(), StartAppView {
     }
 
     fun init() {
-        mStartAppPresenter = StartAppImpl(this)
+        startAppPresenter = StartAppImpl(this)
     }
 
-    fun startApp() {
+    private fun startApp() {
         //delay
-        if (mStartAppPresenter.checkLogged()) {
+        if (startAppPresenter.checkLogged()) {
              Handler().postDelayed({
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

@@ -13,7 +13,6 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,14 +21,14 @@ import huce.fit.appreadstories.comment.CommentActivity
 import huce.fit.appreadstories.dialog.chapter_list.ChapterListDialog
 import huce.fit.appreadstories.dialog.setting.TextAndLineStretchDialog
 import huce.fit.appreadstories.model.Chapter
+import huce.fit.appreadstories.util.AppUtil
 
 class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
 
-    companion object{
+    companion object {
         private const val TAG = "ChapterInformationActivity"
     }
-
-    private lateinit var mChapterInformationPresenter: ChapterInformationPresenter
+    
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var btNavigationView: BottomNavigationView
     private lateinit var pbReLoad: ProgressBar
@@ -39,6 +38,7 @@ class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
     private lateinit var rlNextAndPrevious: RelativeLayout
     private lateinit var ivPrevious: ImageView
     private lateinit var ivNext: ImageView
+    private lateinit var chapterInformationPresenter: ChapterInformationPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +59,7 @@ class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
         tvContent = findViewById(R.id.tvContent)
         btNavigationView.visibility = View.GONE
         rlNextAndPrevious.visibility = View.GONE
-        mChapterInformationPresenter = ChapterInformationImpl(this, intent)
+        chapterInformationPresenter = ChapterInformationImpl(this, intent)
         reloadChapter(2)
     }
 
@@ -87,16 +87,14 @@ class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
         btNavigationView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.btMenuBack -> finish()
-                R.id.btMenuChapterList -> ChapterListDialog(this, this)
+                R.id.btMenuChapterList -> ChapterListDialog(this)
                 R.id.btMenuComment -> {
-                    val intent =
-                        Intent(this@ChapterInformationActivity, CommentActivity::class.java)
+                    val intent = Intent(this, CommentActivity::class.java)
                     startActivity(intent)
                 }
 
                 R.id.btMenuSetting -> {
-                    val textAndLineStretchDialog =
-                        TextAndLineStretchDialog(this, this)
+                    val textAndLineStretchDialog = TextAndLineStretchDialog(this)
                     textAndLineStretchDialog.show()
                 }
             }
@@ -124,14 +122,14 @@ class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
     override fun reloadChapter(changeChapter: Int) {
         pbReLoad.visibility = View.VISIBLE
         Handler().postDelayed({
-            mChapterInformationPresenter.changeChapter(changeChapter)
+            chapterInformationPresenter.changeChapter(changeChapter)
         }, 500)
     }
 
     override fun moveChapter(chapterId: Int) {
         pbReLoad.visibility = View.VISIBLE
         Handler().postDelayed({
-            mChapterInformationPresenter.getChapter(chapterId)
+            chapterInformationPresenter.getChapter(chapterId)
         }, 500)
     }
 
@@ -147,11 +145,11 @@ class ChapterInformationActivity : AppCompatActivity(), ChapterInformationView {
                 "Người đăng: %s\nNgày đăng: %s\n\n\n%s", chapter.poster, chapter.postDay,
                 chapter.content
             )
-            mChapterInformationPresenter.insertChapterRead(chapter.chapterId)
+            chapterInformationPresenter.insertChapterRead(chapter.chapterId)
             pbReLoad.visibility = View.GONE
         } else {
             pbReLoad.visibility = View.GONE
-            Toast.makeText(this@ChapterInformationActivity, text, Toast.LENGTH_SHORT).show()
+            AppUtil.setToast(this, text)
         }
     }
 }

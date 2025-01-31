@@ -1,393 +1,322 @@
-package huce.fit.appreadstories.story.information;
+package huce.fit.appreadstories.story.information
 
-import static huce.fit.appreadstories.checknetwork.NetworkKt.isConnecting;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.chapter.information.ChapterInformationActivity
+import huce.fit.appreadstories.chapter.list.ChapterListActivity
+import huce.fit.appreadstories.checknetwork.isConnecting
+import huce.fit.appreadstories.comment.CommentActivity
+import huce.fit.appreadstories.model.Chapter
+import huce.fit.appreadstories.model.Rate
+import huce.fit.appreadstories.model.Story
+import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
+import huce.fit.appreadstories.sqlite.AppDatabase
+import huce.fit.appreadstories.story.download.StoryDownloadActivity
+import huce.fit.appreadstories.story.list.BaseStoryListImpl
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+class StoryInformationImpl(val storyInformationView: StoryInformationView) :
+    BaseStoryListImpl(storyInformationView as Context), StoryInformationPresenter {
 
-import androidx.annotation.NonNull;
-
-import java.util.Locale;
-
-import huce.fit.appreadstories.api.Api;
-import huce.fit.appreadstories.chapter.information.ChapterInformationActivity;
-import huce.fit.appreadstories.chapter.list.ChapterListActivity;
-import huce.fit.appreadstories.comment.CommentActivity;
-import huce.fit.appreadstories.model.Chapter;
-import huce.fit.appreadstories.model.Rate;
-import huce.fit.appreadstories.model.Story;
-import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences;
-import huce.fit.appreadstories.shared_preferences.RateSharedPreferences;
-import huce.fit.appreadstories.shared_preferences.StorySharedPreferences;
-import huce.fit.appreadstories.sqlite.AppDao;
-import huce.fit.appreadstories.sqlite.AppDatabase;
-import huce.fit.appreadstories.story.download.StoryDownloadActivity;
-import huce.fit.appreadstories.story.list.BaseStoryListImpl;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class StoryInformationImpl extends BaseStoryListImpl implements StoryInformationPresenter {
-
-    private static final String TAG = "StoryInformationImpl";
-    private final StoryInformationView mStoryInformationView;
-    private StorySharedPreferences mStory;
-    private Story mStoryDao;
-    private AppDao mAppDao;
-    private boolean isFirst = true;
-    private int mStoryId, mAccountId, mRateId;
-    private String mName;
-
-    StoryInformationImpl(StoryInformationView storyInformationView) {
-        super((Context) storyInformationView);
-        mStoryInformationView = storyInformationView;
-
-        init();
+    companion object {
+        private const val TAG = "StoryInformationImpl"
     }
 
-    private void init(){
-        mAppDao = AppDatabase.getInstance(getContext()).appDao();
-        getAccountSharedPreferences();
-        getStorySharedPreferences();
+    private var appDao = AppDatabase.getInstance(context).appDao()
+    private var storySharedPreferences = StorySharedPreferences(context)
+    private lateinit var story: Story
+    private var storyId = 0
+    private var accountId: Int = 0
+    private var rateId: Int = 0
+    private var name: String = ""
+
+    init {
+        getAccountSharedPreferences()
+        getStorySharedPreferences()
     }
 
-    private void getAccountSharedPreferences() {
-        AccountSharedPreferences account = getAccount();
-        mAccountId = account.getAccountId();
-        mName = account.getName();
+
+    private fun getAccountSharedPreferences() {
+        val account = getAccount()
+        accountId = account.getAccountId()
+        name = account.getName()
     }
 
-    private void getStorySharedPreferences() {
-        mStory = new StorySharedPreferences(getContext());
-        mStory.getSharedPreferences("Story", Context.MODE_PRIVATE);
-        mStoryId = mStory.getStoryId();
-        mStory.setSharedPreferences("Story", Context.MODE_PRIVATE);
+    private fun getStorySharedPreferences() {
+        storySharedPreferences.getSharedPreferences("Story", Context.MODE_PRIVATE)
+        storyId = storySharedPreferences.getStoryId()
+        storySharedPreferences.setSharedPreferences("Story", Context.MODE_PRIVATE)
     }
 
-    @Override
-    public void start() {
-        mStoryDao = mAppDao.getStory(mStoryId);
-        if (isConnecting(getContext())) {
-            getStory();
-            readStory();
-            checkFollowStory();
-            checkInteractive();
-            if (mStoryDao != null) {
-                mStoryInformationView.checkStory();
+    override fun start() {
+        val storyDao = appDao.getStory(storyId)
+        if (isConnecting(context)) {
+            getStory()
+            readStory()
+            checkFollowStory()
+            checkInteractive()
+            if (storyDao != null) {
+                storyInformationView.checkStory()
             }
         } else {
-            if (mStoryDao != null) {
-                getDataOffline();
-                readStoryDownload();
-                checkFollowStoryDownload();
+            if (storyDao != null) {
+                getDataOffline(storyDao)
+                readStoryDownload()
+                checkFollowStoryDownload()
             }
         }
     }
 
-    @Override
-    public int getStoryId() {
-        return mStoryId;
+    override fun getStoryId(): Int {
+        return storyId
     }
 
-    private void getStory() {
-        new Api().apiInterface().getStory(mStoryId).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    mStoryDao = response.body();
-                    mStoryInformationView.setData(mStoryDao);
-                    if (isFirst) {
-                        mStory.setStoryName(mStoryDao.getStoryName());
-                        mStory.setAuthor(mStoryDao.getAuthor());
-                        mStory.setStatus(mStoryDao.getStatus());
-                        mStory.setSpecies(mStoryDao.getSpecies());
-                        mStory.setSumChapter(mStoryDao.getSumChapter());
-                        mStory.setTotalLikes(mStoryDao.getTotalLikes());
-                        mStory.setTotalViews(mStoryDao.getTotalViews());
-                        mStory.setTotalComments(mStoryDao.getTotalComments());
-                        mStory.setRatePoint(mStoryDao.getRatePoint());
-                        mStory.setIntroduce(mStoryDao.getIntroduce());
-                        mStory.setImage(mStoryDao.getImage());
-                        mStory.setAgeLimit(mStoryDao.getAgeLimit());
-                        mStory.setTimeUpdate(mStoryDao.getTimeUpdate());
-                        mStory.myApply();
+    private fun getStory() {
+        Api().apiInterface().getStory(storyId).enqueue(object : Callback<Story> {
+            override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                val storyServer = response.body()
+                if (response.isSuccessful && storyServer != null) {
+                    story = storyServer
+                    storyInformationView.setData(storyServer)
+                }
+                Log.e(TAG, "api getStory: success")
+            }
 
-                        mStoryInformationView.checkAge(checkAge());
-                        isFirst = false;
+            override fun onFailure(call: Call<Story>, t: Throwable) {
+                Log.e(TAG, "api getStory: false")
+            }
+        })
+    }
+
+    override fun showRate(ratePoint: Int) {
+        for (i in 0 until ratePoint) {
+            storyInformationView.setRateStartLight(i)
+        }
+        for (i in ratePoint..4) {
+            storyInformationView.setRateStartDark(i)
+        }
+    }
+
+    override fun getDataOffline(storyDao: Story) {
+        storyInformationView.setData(storyDao)
+    }
+
+    override fun checkAge() = story.ageLimit < 18
+
+    override fun checkInteractive() {
+        Api().apiInterface().checkLikeStory(storyId, accountId)
+            .enqueue(object : Callback<Story> {
+                override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                    val story = response.body()
+                    if (response.isSuccessful && story != null) {
+                        val totalLikes = "${story.totalLikes}\nYêu thích"
+                        storyInformationView.checkInteractive(story.storySuccess, totalLikes)
                     }
+                    Log.e(TAG, "api checkInteractive: success")
                 }
-                Log.e(TAG, "api getStory: success");
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
-                Log.e(TAG, "api getStory: false");
-            }
-        });
-    }
-
-    @Override
-    public void showRate(int ratePoint) {
-        for (int i = 0; i < ratePoint; i++) {
-            mStoryInformationView.setRateStartLight(i);
-        }
-        for (int i = ratePoint; i < 5; i++) {
-            mStoryInformationView.setRateStartDark(i);
-        }
-    }
-
-    @Override
-    public void getDataOffline() {
-        mStoryInformationView.setData(mStoryDao);
-        mStoryInformationView.checkAge(checkAge());
-    }
-
-    @Override
-    public boolean checkAge() {
-        return mStoryDao.getAgeLimit() < 18;
-    }
-
-    @Override
-    public void checkInteractive() {
-        new Api().apiInterface().checkLikeStory(mStoryId, mAccountId).enqueue(new Callback<Story>() {
-            @Override
-            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Story story = response.body();
-                    String totalLikes = String.format(Locale.getDefault(), "%d\nYêu thích", story.getTotalLikes());
-
-                    mStoryInformationView.checkInteractive(story.getStorySuccess(), totalLikes);
+                override fun onFailure(call: Call<Story>, t: Throwable) {
+                    Log.e(TAG, "api checkInteractive: false")
                 }
-                Log.e(TAG, "api checkInteractive: success");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
-                Log.e(TAG, "api checkInteractive: false");
-            }
-        });
+            })
     }
 
-    public void likeStory() {
-        new Api().apiInterface().likeStory(mStoryId, mAccountId).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getStorySuccess() == 1) {
-                    checkInteractive();
+    override fun likeStory() {
+        Api().apiInterface().likeStory(storyId, accountId).enqueue(object : Callback<Story> {
+            override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                val story = response.body()
+                if (response.isSuccessful && story != null && story.storySuccess == 1) {
+                    checkInteractive()
                 }
-                Log.e(TAG, "api likeStory: success");
+                Log.e(TAG, "api likeStory: success")
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
-                Log.e(TAG, "api likeStory: false");
+            override fun onFailure(call: Call<Story>, t: Throwable) {
+                Log.e(TAG, "api likeStory: false")
             }
-        });
+        })
     }
 
-    @Override
-    public void followStory() {
-        new Api().apiInterface().followStory(mAccountId, mStoryId, mStoryDao.getStoryName(), mStoryDao.getAuthor(),
-                mStoryDao.getAgeLimit(), mStoryDao.getStatus(), mStoryDao.getSumChapter(), mStoryDao.getImage(),
-                mStoryDao.getTimeUpdate()).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    int success = response.body().getStorySuccess();
-                    mStory.setIsFollow(success == 1);
-                    mStory.myApply();
-                    mStoryInformationView.followStory(success);
+    override fun followStory() {
+        Api().apiInterface().followStory(
+            accountId, storyId, story.storyName, story.author, story.ageLimit, story.status,
+            story.sumChapter, story.image.toString(), story.timeUpdate
+        ).enqueue(object : Callback<Story> {
+            override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                val storyFollow = response.body()
+                if (response.isSuccessful && storyFollow != null) {
+                    storyInformationView.followStory(storyFollow.storySuccess)
                 }
-                Log.e(TAG, "api followStory: success");
+                Log.e(TAG, "api followStory: success")
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
-                Log.e(TAG, "api followStory: false");
+            override fun onFailure(call: Call<Story>, t: Throwable) {
+                Log.e(TAG, "api followStory: false")
             }
-        });
+        })
     }
 
-    @Override
-    public void checkFollowStory() {
-        new Api().apiInterface().checkStoryFollow(mAccountId, mStoryId).enqueue(new Callback<>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onResponse(@NonNull Call<Story> call, @NonNull Response<Story> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    int success = response.body().getStorySuccess();
-                    mStory.setIsFollow(success == 1);
-                    mStory.myApply();
-                    mStoryInformationView.followStory(success);
-                }
-                Log.e(TAG, "api checkFollowStory: success");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Story> call, @NonNull Throwable t) {
-                Log.e(TAG, "api checkFollowStory: false");
-            }
-        });
-    }
-
-    @Override
-    public void checkFollowStoryDownload() {
-        int follow = mStoryDao.getIsFollow();
-        mStoryInformationView.followStory(follow == 0 ? 2 : 1);
-    }
-
-    @Override
-    public void readStory() {
-        new Api().apiInterface().getChapterReadId(mStoryId, mAccountId, 1).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Chapter> call, @NonNull Response<Chapter> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getChapterId() == 0) {
-                        new Api().apiInterface().firstChapter(mStoryId).enqueue(new Callback<>() {
-                            @Override
-                            public void onResponse(@NonNull Call<Chapter> call, @NonNull Response<Chapter> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    mStory.setChapterReading(response.body().getChapterId());
-                                    mStory.myApply();
-                                }
-                                Log.e(TAG, "api readStory firstChapter: success");
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<Chapter> call, @NonNull Throwable t) {
-                                Log.e(TAG, "api readStory firstChapter: false");
-                            }
-                        });
-                    } else {
-                        mStory.setChapterReading(response.body().getChapterId());
-                        mStory.myApply();
+    override fun checkFollowStory() {
+        Api().apiInterface().checkStoryFollow(accountId, storyId)
+            .enqueue(object : Callback<Story> {
+                @SuppressLint("SetTextI18n")
+                override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                    val story = response.body()
+                    if (response.isSuccessful && story != null) {
+                        storyInformationView.followStory(story.storySuccess)
                     }
+                    Log.e(TAG, "api checkFollowStory: success")
                 }
-                Log.e(TAG, "api readStory getChapterReadId: success");
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Chapter> call, @NonNull Throwable t) {
-                Log.e(TAG, "api readStory getChapterReadId: false");
-            }
-        });
-    }
-
-    @Override
-    public void checkRateOfAccount() {
-        new Api().apiInterface().checkRateOfAccount(mStoryId, mAccountId).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    setRate(response.body());
-                    mStoryInformationView.openDialogRate();
+                override fun onFailure(call: Call<Story>, t: Throwable) {
+                    Log.e(TAG, "api checkFollowStory: false")
                 }
-                Log.e(TAG, "api checkRateOfAccount: success");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
-                Log.e(TAG, "api checkRateOfAccount: false");
-            }
-        });
+            })
     }
 
-    private void setRate(Rate rateData) {
-        mRateId = rateData.getRateId();
-        RateSharedPreferences rate = new RateSharedPreferences(getContext());
-        rate.setSharedPreferences("Rate", Context.MODE_PRIVATE);
-        rate.setRateId(mRateId);
-        rate.setRatePoint(rateData.getRatePoint());
-        rate.setRate(rateData.getRate());
-        rate.setSuccess(rateData.getSuccess());
-        rate.myApply();
+    override fun checkFollowStoryDownload() {
+        storyInformationView.followStory(if (story.isFollow == 0) 2 else 1)
     }
 
-    @Override
-    public void addRate(int ratePoint, String rate) {
-        new Api().apiInterface().addRate(mStoryId, mAccountId, mName, ratePoint, rate).enqueue(new Callback<Rate>() {
-            @Override
-            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
-                    getStory();
-                    mStoryInformationView.reloadViewPaper("Bạn đã đánh giá truyện!");
+    override fun readStory() {
+        Api().apiInterface().getChapterReadId(storyId, accountId, 1)
+            .enqueue(object : Callback<Chapter> {
+                override fun onResponse(call: Call<Chapter>, response: Response<Chapter>) {
+                    val chapter = response.body()
+                    if (response.isSuccessful && chapter != null) {
+                        if (chapter.chapterId == 0) {
+                            Api().apiInterface().firstChapter(storyId)
+                                .enqueue(object : Callback<Chapter> {
+                                    override fun onResponse(
+                                        call: Call<Chapter>, response: Response<Chapter>
+                                    ) {
+                                        val firstChapter = response.body()
+                                        if (response.isSuccessful && firstChapter != null) {
+                                            storySharedPreferences.setChapterReading(firstChapter.chapterId)
+                                            storySharedPreferences.myApply()
+                                        }
+                                        Log.e(TAG, "api readStory firstChapter: success")
+                                    }
+
+                                    override fun onFailure(call: Call<Chapter>, t: Throwable) {
+                                        Log.e(TAG, "api readStory firstChapter: false")
+                                    }
+                                })
+                        } else {
+                            storySharedPreferences.setChapterReading(chapter.chapterId)
+                            storySharedPreferences.myApply()
+                        }
+                    }
+                    Log.e(TAG, "api readStory getChapterReadId: success")
                 }
-                Log.e(TAG, "api addRate: success");
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
-                Log.e(TAG, "api addRate: false");
-            }
-        });
-    }
-
-    @Override
-    public void updateRate(int ratePoint, String rate) {
-        new Api().apiInterface().updateRate(mRateId, ratePoint, rate).enqueue(new Callback<Rate>() {
-            @Override
-            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
-                    getStory();
-                    mStoryInformationView.reloadViewPaper("Bạn đã thay đổi đánh giá truyện!");
+                override fun onFailure(call: Call<Chapter>, t: Throwable) {
+                    Log.e(TAG, "api readStory getChapterReadId: false")
                 }
-                Log.e(TAG, "api updateRate: success");
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
-                Log.e(TAG, "api updateRate: false");
-            }
-        });
+            })
     }
 
-    @Override
-    public void deleteRate() {
-        new Api().apiInterface().deleteRate(mRateId).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Rate> call, @NonNull Response<Rate> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getSuccess() == 1) {
-                    getStory();
-                    mStoryInformationView.reloadViewPaper("Bạn đã xóa đánh giá!");
+    override fun checkRateOfAccount() {
+        Api().apiInterface().checkRateOfAccount(storyId, accountId)
+            .enqueue(object : Callback<Rate> {
+                override fun onResponse(call: Call<Rate>, response: Response<Rate>) {
+                    val rateServer = response.body()
+                    if (response.isSuccessful && rateServer != null) {
+                        storyInformationView.openDialogRate()
+                    }
+                    Log.e(TAG, "api checkRateOfAccount: success")
                 }
-                Log.e(TAG, "api deleteRate: success");
+
+                override fun onFailure(call: Call<Rate>, t: Throwable) {
+                    Log.e(TAG, "api checkRateOfAccount: false")
+                }
+            })
+    }
+
+    override fun setRateId(rateId: Int) {
+        this.rateId = rateId
+    }
+
+    override fun addRate(ratePoint: Int, rate: String) {
+        Api().apiInterface().addRate(
+            storyId, accountId, name, ratePoint, rate
+        ).enqueue(object : Callback<Rate> {
+            override fun onResponse(call: Call<Rate>, response: Response<Rate>) {
+                val rateServer = response.body()
+                if (response.isSuccessful && rateServer != null && rateServer.rateSuccess == 1) {
+                    getStory()
+                    storyInformationView.reloadViewPaper("Bạn đã đánh giá truyện!")
+                }
+                Log.e(TAG, "api addRate: success")
             }
 
-            @Override
-            public void onFailure(@NonNull Call<Rate> call, @NonNull Throwable t) {
-                Log.e(TAG, "api deleteRate: false");
+            override fun onFailure(call: Call<Rate>, t: Throwable) {
+                Log.e(TAG, "api addRate: false")
             }
-        });
+        })
     }
 
-    @Override
-    public void readStoryDownload() {
-        mStory.setChapterReading(mStoryDao.getChapterReading());
+    override fun updateRate(ratePoint: Int, rate: String) {
+        Api().apiInterface().updateRate(rateId, ratePoint, rate)
+            .enqueue(object : Callback<Rate> {
+                override fun onResponse(call: Call<Rate>, response: Response<Rate>) {
+                    val rateServer = response.body()
+                    if (response.isSuccessful && rateServer != null && rateServer.rateSuccess == 1) {
+                        getStory()
+                        storyInformationView.reloadViewPaper("Bạn đã thay đổi đánh giá truyện!")
+                    }
+                    Log.e(TAG, "api updateRate: success")
+                }
+
+                override fun onFailure(call: Call<Rate>, t: Throwable) {
+                    Log.e(TAG, "api updateRate: false")
+                }
+            })
     }
 
-    @Override
-    public void enterComment() {
-        Intent intent = new Intent(getContext(), CommentActivity.class);
-        getContext().startActivity(intent);
+    override fun deleteRate() {
+        Api().apiInterface().deleteRate(rateId).enqueue(object : Callback<Rate> {
+            override fun onResponse(call: Call<Rate>, response: Response<Rate>) {
+                val rateServer = response.body()
+                if (response.isSuccessful && rateServer != null && rateServer.rateSuccess == 1) {
+                    getStory()
+                    storyInformationView.reloadViewPaper("Bạn đã xóa đánh giá!")
+                }
+                Log.e(TAG, "api deleteRate: success")
+            }
+
+            override fun onFailure(call: Call<Rate>, t: Throwable) {
+                Log.e(TAG, "api deleteRate: false")
+            }
+        })
     }
 
-    @Override
-    public void enterDownload() {
-        Intent intent = new Intent(getContext(), StoryDownloadActivity.class);
-        getContext().startActivity(intent);
+    override fun readStoryDownload() {
+        storySharedPreferences.setChapterReading(story.chapterReading)
     }
 
-    @Override
-    public void enterChapter() {
-        Intent intent = new Intent(getContext(), ChapterListActivity.class);
-        getContext().startActivity(intent);
+    override fun enterComment() {
+        val intent = Intent(context, CommentActivity::class.java)
+        context.startActivity(intent)
     }
 
-    @Override
-    public void enterReadStory() {
-        Intent intent = new Intent(getContext(), ChapterInformationActivity.class);
-        getContext().startActivity(intent);
+    override fun enterDownload() {
+        val intent = Intent(context, StoryDownloadActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    override fun enterChapter() {
+        val intent = Intent(context, ChapterListActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    override fun enterReadStory() {
+        val intent = Intent(context, ChapterInformationActivity::class.java)
+        context.startActivity(intent)
     }
 }

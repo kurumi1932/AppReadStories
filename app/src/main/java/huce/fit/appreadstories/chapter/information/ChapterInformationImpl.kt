@@ -10,89 +10,87 @@ import huce.fit.appreadstories.model.ChapterRead
 import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 import huce.fit.appreadstories.shared_preferences.SettingSharedPreferences
 import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
-import huce.fit.appreadstories.sqlite.AppDao
 import huce.fit.appreadstories.sqlite.AppDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ChapterInformationImpl(
-    val chapterInformationView: ChapterInformationView,
-    intent: Intent
+    val chapterInformationView: ChapterInformationView, intent: Intent
 ) : ChapterInformationPresenter {
 
     companion object {
         const val TAG = "ChapterInformationImpl"
     }
 
-    private var mContext: Context = chapterInformationView as Context
-    private var mAppDao: AppDao = AppDatabase.getInstance(mContext).appDao()
-    private var mStory = StorySharedPreferences(mContext)
-    private var mSetting = SettingSharedPreferences(mContext)
+    private var context = chapterInformationView as Context
+    private var appDao = AppDatabase.getInstance(context).appDao()
+    private var storySharedPreferences = StorySharedPreferences(context)
+    private var settingSharedPreferences = SettingSharedPreferences(context)
 
-    private var mStoryId = 0
-    private var mChapterId = 0
-    private var mAccountId = 0
+    private var storyId = 0
+    private var chapterId = 0
+    private var accountId = 0
     private var chapterFirstId = 0
     private var chapterFinalId: Int = 0
 
     init {
-        mAccountId = getAccount().getAccountId()
+        accountId = getAccount().getAccountId()
         getStory()
-        mStoryId = mStory.getStoryId()
-        chapterFirstId = mAppDao.getChapterFirst(mStoryId)
-        chapterFinalId = mAppDao.getChapterFinal(mStoryId)
-        mChapterId = intent.getIntExtra("chapterId", 0)
-        if (mChapterId == 0) {
-            mChapterId = mStory.getChapterReading()
+        storyId = storySharedPreferences.getStoryId()
+        chapterFirstId = appDao.getChapterFirst(storyId)
+        chapterFinalId = appDao.getChapterFinal(storyId)
+        chapterId = intent.getIntExtra("chapterId", 0)
+        if (chapterId == 0) {
+            chapterId = storySharedPreferences.getChapterReading()
         }
-        Log.e(TAG, "NHT chapterId: $mChapterId")
+        Log.e(TAG, "NHT chapterId: $chapterId")
         getSetting()
-        val mTextSize = mSetting.getTextSize()
+        val textSize = settingSharedPreferences.getTextSize()
         //lineSpacingMultiplier = lineheight/textsize = mult
         //lineSpacingExtra = lineheight - textsize = add
         //setLineSpacing = lineheight * mul + add
-        val mLineStretch = mSetting.getLineStretch().toString().toFloat() / 100
-        val mTextColor = mSetting.getTextColor()
-        val mBackgroundColor = mSetting.getBackgroundColor()
-        chapterInformationView.setTextSize(mTextSize)
-        chapterInformationView.setLineStretch(mLineStretch)
-        chapterInformationView.setTextColor(mTextColor!!)
-        chapterInformationView.setBackgroundColor(mBackgroundColor!!)
+        val lineStretch = settingSharedPreferences.getLineStretch().toString().toFloat() / 100
+        val textColor = settingSharedPreferences.getTextColor()
+        val backgroundColor = settingSharedPreferences.getBackgroundColor()
+        chapterInformationView.setTextSize(textSize)
+        chapterInformationView.setLineStretch(lineStretch)
+        chapterInformationView.setTextColor(textColor)
+        chapterInformationView.setBackgroundColor(backgroundColor)
     }
 
     private fun getAccount(): AccountSharedPreferences {
-        val accountSharedPreferences = AccountSharedPreferences(mContext)
+        val accountSharedPreferences = AccountSharedPreferences(context)
         accountSharedPreferences.getSharedPreferences("Account", Context.MODE_PRIVATE)
         return accountSharedPreferences
     }
 
     private fun getStory() {
-        mStory.getSharedPreferences("Story", Context.MODE_PRIVATE)
+        storySharedPreferences.getSharedPreferences("Story", Context.MODE_PRIVATE)
     }
 
     override fun getSetting(): SettingSharedPreferences {
-        mSetting.getSharedPreferences("Setting", Context.MODE_PRIVATE)
-        return mSetting
+        settingSharedPreferences.getSharedPreferences("Setting", Context.MODE_PRIVATE)
+        return settingSharedPreferences
     }
 
     override fun changeChapter(changeChapter: Int) {
         when (changeChapter) {
             1 -> getChapter(1, "Đây là chương đầu!")
-            2 -> getChapter(mChapterId)
+            2 -> getChapter(chapterId)
             3 -> getChapter(3, "Đây là chương mới nhất!")
         }
     }
 
     override fun getChapter(chapterId: Int) {
-        mChapterId = chapterId
-        if (isConnecting(mContext)) {
-            Api().apiInterface().getChapter(mStoryId, chapterId, 2, mAccountId)
+        this.chapterId = chapterId
+        if (isConnecting(context)) {
+            Api().apiInterface().getChapter(storyId, chapterId, 2, accountId)
                 .enqueue(object : Callback<Chapter> {
                     override fun onResponse(call: Call<Chapter>, response: Response<Chapter>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val chapter = response.body()
-                            chapterInformationView.setData(chapter!!, "")
+                        val chapter = response.body()
+                        if (response.isSuccessful && chapter != null) {
+                            chapterInformationView.setData(chapter, "")
                         }
                         Log.e(TAG, "api getChapter(1): success")
                     }
@@ -102,18 +100,18 @@ class ChapterInformationImpl(
                     }
                 })
         } else {
-            chapterInformationView.setData(mAppDao.getChapter(mStoryId, chapterId), "")
+            chapterInformationView.setData(appDao.getChapter(storyId, chapterId), "")
         }
     }
 
     private fun getChapter(chapterChange: Int, text: String) {
-        if (isConnecting(mContext)) {
-            Api().apiInterface().getChapter(mStoryId, mChapterId, chapterChange, mAccountId)
+        if (isConnecting(context)) {
+            Api().apiInterface().getChapter(storyId, chapterId, chapterChange, accountId)
                 .enqueue(object : Callback<Chapter> {
                     override fun onResponse(call: Call<Chapter>, response: Response<Chapter>) {
-                        if (response.isSuccessful && response.body() != null) {
-                            val chapter = response.body()
-                            mChapterId = chapter!!.chapterId
+                        val chapter = response.body()
+                        if (response.isSuccessful && chapter != null) {
+                            chapterId = chapter.chapterId
                             chapterInformationView.setData(chapter, text)
                         }
                         Log.e(TAG, "api getChapter(2): success")
@@ -125,24 +123,21 @@ class ChapterInformationImpl(
                 })
         } else {
             when (chapterChange) {
-                1 -> mAppDao.getNextChapter(mStoryId, mChapterId, chapterFirstId)
-                3 -> mAppDao.getPreviousChapter(mStoryId, mChapterId, chapterFinalId)
+                1 -> appDao.getNextChapter(storyId, chapterId, chapterFirstId)
+                3 -> appDao.getPreviousChapter(storyId, chapterId, chapterFinalId)
             }
         }
     }
 
     override fun insertChapterRead(chapterId: Int) {
-        var chapterRead =
-            AppDatabase.getInstance(mContext).appDao().checkChapterRead(mStoryId, chapterId)
+        val chapterRead =
+            AppDatabase.getInstance(context).appDao().checkChapterRead(storyId, chapterId)
         if (chapterRead == null) {
             //update chapterReadId
-            AppDatabase.getInstance(mContext).appDao().updateChapterReadId(mStoryId, chapterId)
+            AppDatabase.getInstance(context).appDao().updateChapterReadId(storyId, chapterId)
 
             //insert chapterRead
-            chapterRead = ChapterRead()
-            chapterRead.storyId = mStoryId
-            chapterRead.chapterId = chapterId
-            AppDatabase.getInstance(mContext).appDao().insertChapterRead(chapterRead)
+            AppDatabase.getInstance(context).appDao().insertChapterRead(ChapterRead(storyId, chapterId))
         }
     }
 

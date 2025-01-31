@@ -12,6 +12,8 @@ import huce.fit.appreadstories.model.Rate
 
 class RateAdapter : RecyclerView.Adapter<RateAdapter.RateHolder>() {
 
+    private var rateList: MutableList<Rate> = mutableListOf()
+
     class RateHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName: TextView = itemView.findViewById(R.id.tvName)
         val tvRate: TextView = itemView.findViewById(R.id.tvRate)
@@ -29,7 +31,7 @@ class RateAdapter : RecyclerView.Adapter<RateAdapter.RateHolder>() {
     }
 
     override fun onBindViewHolder(holder: RateHolder, position: Int) {
-        val rate = mRateList[position]
+        val rate = rateList[position]
         holder.tvName.text = rate.displayName
         val ratePoint = rate.ratePoint
         if (ratePoint > 0) {
@@ -47,18 +49,15 @@ class RateAdapter : RecyclerView.Adapter<RateAdapter.RateHolder>() {
                 }
             }
         }
-        holder.tvRate.text = rate.rate
+        holder.tvRate.text = rate.rateContent
     }
 
-    override fun getItemCount(): Int {
-        return mRateList.size
-    }
-
-    private var mRateList: MutableList<Rate> = mutableListOf()
+    override fun getItemCount() = rateList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setDataRate(rateList: MutableList<Rate>) {
-        mRateList = rateList
+    fun setDataRate(rateList: List<Rate>) {
+        this.rateList.clear()
+        this.rateList.addAll(rateList)
         notifyDataSetChanged()
     }
 }

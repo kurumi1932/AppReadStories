@@ -7,25 +7,30 @@ public class Comment extends Account {
     @SerializedName("mabinhluan")
     private int commentId;
 
-    @SerializedName("matruyen")
-    private int storyId;
-
     @SerializedName("binhluan")
-    private String comment;
+    private String commentContent;
 
     @SerializedName("commentsuccess")
-    private int success;
+    private int commentSuccess;
+
+    public Comment() {
+    }
+
+    public Comment(Comment comment) {
+        commentId = comment.commentId;
+        commentContent = comment.commentContent;
+        commentSuccess = comment.commentSuccess;
+    }
 
     public int getCommentId() {
         return commentId;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    @Override
-    public int getSuccess() {
-        return success;
+    public int getCommentSuccess() {
+        return commentSuccess;
     }
 }

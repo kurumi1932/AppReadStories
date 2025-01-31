@@ -1,8 +1,7 @@
-package huce.fit.appreadstories.dialog;
+package huce.fit.appreadstories.dialog
 
-public interface BaseDialogView {
-
-    void setWindow(int width, int height, int gravity, int animation);
-    void show();
-    void dismiss();
+interface BaseDialogView {
+    fun setWindow(width: Int, height: Int, gravity: Int, animation: Int)
+    fun show()
+    fun dismiss()
 }

@@ -17,8 +17,7 @@ import huce.fit.appreadstories.model.Chapter
 import huce.fit.appreadstories.model.ChapterRead
 
 class ChapterListActivity : AppCompatActivity(), ChapterListView {
-
-    private lateinit var mChapterListPresenter: ChapterListPresenter
+    
     private lateinit var chapterAdapter: ChapterAdapter
     private lateinit var rcViewChapter: RecyclerView
     private lateinit var ivBack: ImageView
@@ -26,6 +25,7 @@ class ChapterListActivity : AppCompatActivity(), ChapterListView {
     private lateinit var svChapter: SearchView
     private lateinit var pbReload: ProgressBar
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var chapterListPresenter: ChapterListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +43,7 @@ class ChapterListActivity : AppCompatActivity(), ChapterListView {
         ivReverse = findViewById(R.id.ivReverse)
         svChapter.setMaxWidth(Int.MAX_VALUE)
 
-        mChapterListPresenter = ChapterListImpl(this)
+        chapterListPresenter = ChapterListImpl(this)
         rcViewChapter.setLayoutManager(LinearLayoutManager(this))
         chapterAdapter = ChapterAdapter(this)
         linearLayoutManager = LinearLayoutManager(this)
@@ -53,7 +53,7 @@ class ChapterListActivity : AppCompatActivity(), ChapterListView {
 
     fun getData() {
         pbReload.visibility = View.VISIBLE
-        mChapterListPresenter.getData()
+        chapterListPresenter.getData()
     }
 
     override fun setData(chapterListRead: List<ChapterRead>, chapterReadingId: Int) {

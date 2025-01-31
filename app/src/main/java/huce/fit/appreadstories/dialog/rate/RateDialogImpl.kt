@@ -1,51 +1,76 @@
-package huce.fit.appreadstories.dialog.rate;
+package huce.fit.appreadstories.dialog.rate
 
-import android.content.Context;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.api.Api
+import huce.fit.appreadstories.model.Rate
+import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
+import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
+import huce.fit.appreadstories.story.information.StoryInformationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-import huce.fit.appreadstories.model.Rate;
-import huce.fit.appreadstories.shared_preferences.RateSharedPreferences;
-import huce.fit.appreadstories.story.information.StoryInformationView;
+class RateDialogImpl(
+    private val storyInformationView: StoryInformationView,
+    private val rateDialogView: RateDialogView
+) : RateDialogPresenter {
 
-public class RateDialogImpl implements RateDialogPresenter {
-
-    private final StoryInformationView mStoryInformationView;
-    private final RateDialogView mRateDialogView;
-    private final Context mContext;
-    private Rate mRate;
-    private int mRatePoint;
-
-    RateDialogImpl(StoryInformationView storyInformationView, RateDialogView rateDialogView) {
-        mStoryInformationView =  storyInformationView;
-        mRateDialogView = rateDialogView;
-        mContext = (Context) storyInformationView;
+    companion object {
+        private var TAG = "RateDialogImpl"
     }
 
-    @Override
-    public Rate getRate() {
-        RateSharedPreferences rate = new RateSharedPreferences(mContext);
-        rate.getSharedPreferences("Rate", Context.MODE_PRIVATE);
-        mRate = new Rate(rate.getRateId(), rate.getRatePoint(), rate.getRate(), rate.getSuccess());
-        return mRate;
+    private var mContext = storyInformationView as Context
+    private lateinit var mRate: Rate
+    private var mRatePoint = 0
+
+    init {
+        setRate()
     }
 
-    @Override
-    public void setRatePoint(int ratePoint) {
-        mRatePoint = ratePoint;
+    private fun setRate() {
+        val accountSharedPreferences = AccountSharedPreferences(mContext)
+        accountSharedPreferences.getSharedPreferences("Account", Context.MODE_PRIVATE)
+
+        val storySharedPreferences = StorySharedPreferences(mContext)
+        storySharedPreferences.getSharedPreferences("Story", Context.MODE_PRIVATE)
+
+        val accountId = accountSharedPreferences.getAccountId()
+        val storyId = storySharedPreferences.getStoryId()
+
+        Api().apiInterface().checkRateOfAccount(storyId, accountId)
+            .enqueue(object : Callback<Rate> {
+                override fun onResponse(call: Call<Rate>, response: Response<Rate>) {
+                    val rateServer = response.body()
+                    if (response.isSuccessful && rateServer != null) {
+                        mRate = rateServer
+                        rateDialogView.setData(rateServer)
+                        storyInformationView.setRateId(rateServer.rateId)
+                    }
+                    Log.e(TAG, "api checkRateOfAccount: success")
+                }
+
+                override fun onFailure(call: Call<Rate>, t: Throwable) {
+                    Log.e(TAG, "api checkRateOfAccount: false")
+                }
+            })
     }
 
-    @Override
-    public void rate(String rate) {
-        if (mRate.getRatePoint() > 0) {//update rate
-            mRateDialogView.openConfirmDiaLog(mRatePoint,rate);
-        } else {//add rate
+
+    override fun setRatePoint(ratePoint: Int) {
+        mRatePoint = ratePoint
+    }
+
+    override fun rate(rateContent: String) {
+        if (mRate.rateSuccess == 1) { //update rate
+            storyInformationView.updateRate(mRatePoint, rateContent)
+        } else { //add rate
             if (mRatePoint > 0) {
-                mStoryInformationView.addRate(mRatePoint, rate);
-                mRateDialogView.dismiss();
+                storyInformationView.addRate(mRatePoint, rateContent)
+                rateDialogView.dismiss()
             } else {
-                mRateDialogView.noRatePoint();
+                rateDialogView.noRatePoint()
             }
         }
     }
-
-
 }

@@ -11,9 +11,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AccountLoginImpl(val accountLoginView: AccountLoginView) : BaseAccountImpl(accountLoginView as Context), AccountPresenter {
+class AccountLoginImpl(val accountLoginView: AccountLoginView) :
+    BaseAccountImpl(accountLoginView as Context), AccountPresenter {
 
-    companion object{
+    companion object {
         const val TAG = "AccountImpl"
     }
 
@@ -22,17 +23,12 @@ class AccountLoginImpl(val accountLoginView: AccountLoginView) : BaseAccountImpl
             Log.e(TAG, "api login: username: $username password: $password")
             Api().apiInterface().login(username, password).enqueue(object : Callback<Account> {
                 override fun onResponse(call: Call<Account>, response: Response<Account>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val account = response.body()
-                        if (account!!.success == 1) {
-                            setSharedPreferences(
-                                account.accountId,
-                                account.displayName,
-                                account.email,
-                                account.birthday,
-                                age(
-                                    account.birthday
-                                )
+                    val account = response.body()
+                    if (response.isSuccessful && account != null) {
+                        if (account.accountSuccess == 1) {
+                            setAccountSharedPreferences(
+                                account.accountId, account.displayName, account.email,
+                                account.birthday, age(account.birthday)
                             )
                             accountLoginView.login(1)
                         } else {
@@ -51,14 +47,10 @@ class AccountLoginImpl(val accountLoginView: AccountLoginView) : BaseAccountImpl
         }
     }
 
-    fun setSharedPreferences(
-        accountId: Int,
-        name: String,
-        email: String,
-        birthday: String,
-        age: Int
+    private fun setAccountSharedPreferences(
+        accountId: Int, name: String, email: String, birthday: String, age: Int
     ) {
-        val account: AccountSharedPreferences = setAccount()
+        val account = setAccount()
         account.setAccountId(accountId)
         account.setName(name)
         account.setEmail(email)

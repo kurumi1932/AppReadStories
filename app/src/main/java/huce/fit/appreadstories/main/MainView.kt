@@ -1,6 +1,5 @@
-package huce.fit.appreadstories.main;
+package huce.fit.appreadstories.main
 
-public interface MainView {
-
-    void closeMain();
+interface MainView {
+    fun closeMain()
 }

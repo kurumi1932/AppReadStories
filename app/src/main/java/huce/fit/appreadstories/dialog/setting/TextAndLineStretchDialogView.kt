@@ -1,8 +1,7 @@
-package huce.fit.appreadstories.dialog.setting;
+package huce.fit.appreadstories.dialog.setting
 
-public interface TextAndLineStretchDialogView {
-
-    void getData(String fontSize, String lineStretch);
-    void setTextSize(String textSize);
-    void setLineStretch(String lineStretch);
+interface TextAndLineStretchDialogView {
+    fun getData(fontSize: String, lineStretch: String)
+    fun setTextSize(textSize: String)
+    fun setLineStretch(lineStretch: String)
 }

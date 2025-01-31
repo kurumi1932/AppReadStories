@@ -1,4 +1,3 @@
-package huce.fit.appreadstories.dialog.story_download;
+package huce.fit.appreadstories.dialog.story_download
 
-public interface StoryDownloadDialogView {
-}
+interface StoryDownloadDialogView 

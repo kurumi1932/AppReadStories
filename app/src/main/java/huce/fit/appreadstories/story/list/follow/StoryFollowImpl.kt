@@ -9,22 +9,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class StoryFollowImpl(
-    val storyFollowView: StoryFollowView, context: Context
-) : BaseStoryListImpl(context), StoryFollowPresenter {
+class StoryFollowImpl(val storyFollowView: StoryFollowView, context: Context) :
+    BaseStoryListImpl(context), StoryFollowPresenter {
 
     companion object {
         private const val TAG = "StoryFollowImpl"
     }
 
-    private var mAccountId = 0
-
-    init {
-        mAccountId = getAccount().getAccountId()
-    }
-
     override fun getData() {
-        Api().apiInterface().getListStoriesFollow(mAccountId)
+        Api().apiInterface().getListStoriesFollow(getAccount().getAccountId())
             .enqueue(object : Callback<List<Story>> {
                 override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                     if (response.isSuccessful) {

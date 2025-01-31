@@ -12,14 +12,19 @@ import androidx.recyclerview.widget.RecyclerView
 import huce.fit.appreadstories.R
 import huce.fit.appreadstories.model.Chapter
 import huce.fit.appreadstories.model.ChapterRead
-import java.util.Collections
 import java.util.Locale
 
-class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<ChapterAdapter.ChapterHolder>() , Filterable {
+class ChapterAdapter(private var context: Context) : RecyclerView.Adapter<ChapterAdapter.ChapterHolder>() , Filterable {
 
     companion object{
         private const val TAG = "ChapterAdapter"
     }
+
+    private var chapterList: MutableList<Chapter> = mutableListOf()
+    private var chapterListOld: MutableList<Chapter> = mutableListOf()
+    private val chapterReadMap = HashMap<Int, ChapterRead?>()
+    private lateinit var clickListener: ClickListener
+    private var chapterReadingId = 0
 
     class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvChapterNumber: TextView = itemView.findViewById(R.id.tvChapterNumber)
@@ -34,7 +39,7 @@ class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<Chapt
     }
 
     override fun onBindViewHolder(holder: ChapterHolder, position: Int) {
-        val chapter = mChapterList[position]
+        val chapter = chapterList[position]
         val chapterId = chapter.chapterId
         holder.tvChapterNumber.text = String.format(
             Locale.getDefault(), "%s.", chapter.chapterNumber
@@ -42,27 +47,27 @@ class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<Chapt
         holder.tvChapterName.text = chapter.chapterName
         holder.tvPostDay.text = chapter.postDay
         holder.itemView.setOnClickListener { view: View ->
-            mClickListener.onItemClick(chapterId, view, false)
+            clickListener.onItemClick(chapterId, view, false)
         }
-        if (mChapterReadMap.containsKey(chapterId)) {
-            if (mChapterReadingId != chapterId) {
-                holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.dim_gray))
-                holder.tvChapterName.setTextColor(mContext.getColor(R.color.dim_gray))
-                holder.tvPostDay.setTextColor(mContext.getColor(R.color.dim_gray))
+        if (chapterReadMap.containsKey(chapterId)) {
+            if (chapterReadingId != chapterId) {
+                holder.tvChapterNumber.setTextColor(context.getColor(R.color.dim_gray))
+                holder.tvChapterName.setTextColor(context.getColor(R.color.dim_gray))
+                holder.tvPostDay.setTextColor(context.getColor(R.color.dim_gray))
             } else {
-                holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.orange))
-                holder.tvChapterName.setTextColor(mContext.getColor(R.color.orange))
-                holder.tvPostDay.setTextColor(mContext.getColor(R.color.orange))
+                holder.tvChapterNumber.setTextColor(context.getColor(R.color.orange))
+                holder.tvChapterName.setTextColor(context.getColor(R.color.orange))
+                holder.tvPostDay.setTextColor(context.getColor(R.color.orange))
             }
         } else {
-            holder.tvChapterNumber.setTextColor(mContext.getColor(R.color.black))
-            holder.tvChapterName.setTextColor(mContext.getColor(R.color.black))
-            holder.tvPostDay.setTextColor(mContext.getColor(R.color.black))
+            holder.tvChapterNumber.setTextColor(context.getColor(R.color.black))
+            holder.tvChapterName.setTextColor(context.getColor(R.color.black))
+            holder.tvPostDay.setTextColor(context.getColor(R.color.black))
         }
     }
 
     override fun getItemCount(): Int {
-        return mChapterList.size
+        return chapterList.size
     }
 
 
@@ -70,11 +75,11 @@ class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<Chapt
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val searchStr = charSequence.toString()
-                mChapterList = if (searchStr.isEmpty()) {
-                    mChapterListOld
+                chapterList = if (searchStr.isEmpty()) {
+                    chapterListOld
                 } else {
                     val list: MutableList<Chapter> = mutableListOf()
-                    for (chapter in mChapterListOld) {
+                    for (chapter in chapterListOld) {
                         if (chapter.chapterNumber.contains(searchStr)) {
                             list.add(chapter)
                         }
@@ -82,46 +87,39 @@ class ChapterAdapter(private var mContext: Context) : RecyclerView.Adapter<Chapt
                     list
                 }
                 val filterResults = FilterResults()
-                filterResults.values = mChapterList
+                filterResults.values = chapterList
                 return filterResults
             }
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                mChapterList = filterResults.values as MutableList<Chapter>
+                chapterList = filterResults.values as MutableList<Chapter>
                 notifyDataSetChanged()
             }
         }
     }
 
-
-    var mChapterList: MutableList<Chapter> = mutableListOf()
-    var mChapterListOld: MutableList<Chapter> = mutableListOf()
-    private val mChapterReadMap = HashMap<Int, ChapterRead?>()
-    private lateinit var mClickListener: ClickListener
-    private var mChapterReadingId = 0
-
     fun clickListener(clickListener: ClickListener) {
-        mClickListener = clickListener
+        this.clickListener = clickListener
     }
 
     fun reverseData() {
-        mChapterList.reverse()
+        chapterList.reverse()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setChapterList(chapterList: MutableList<Chapter>) {
-        mChapterList = chapterList
-        mChapterListOld = chapterList
+        this.chapterList = chapterList
+        chapterListOld = chapterList
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun setChapterReadList(chapterReadList: List<ChapterRead>, chapterReadingId: Int) {
         for (chapterRead in chapterReadList) {
-            mChapterReadMap[chapterRead.chapterId] = null
+            chapterReadMap[chapterRead.chapterId] = null
         }
-        mChapterReadingId = chapterReadingId
+        this.chapterReadingId = chapterReadingId
         notifyDataSetChanged()
     }
 }

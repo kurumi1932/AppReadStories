@@ -1,111 +1,105 @@
-package huce.fit.appreadstories.dialog.setting;
+package huce.fit.appreadstories.dialog.setting
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.chapter.information.ChapterInformationView
+import huce.fit.appreadstories.shared_preferences.SettingSharedPreferences
+import java.util.Locale
 
-import java.util.Locale;
+class TextAndLineStretchDialogImpl(
+    private val chapterInformationView: ChapterInformationView,
+    private val textAndLineStretchDialogView: TextAndLineStretchDialogView
+) : TextAndLineStretchDialogPresenter {
+    private var textSize = 0
+    private var lineStretch = 0
+    private var backgroundColor = "#FFFFFF"
+    private var textColor = "#000000"
+    private var settingSharedPreferences = SettingSharedPreferences(chapterInformationView as Context)
 
-import huce.fit.appreadstories.chapter.information.ChapterInformationView;
-import huce.fit.appreadstories.shared_preferences.SettingSharedPreferences;
-
-public class TextAndLineStretchDialogImpl implements TextAndLineStretchDialogPresenter {
-
-    private final ChapterInformationView mChapterInformationView;
-    private final TextAndLineStretchDialogView mTextAndLineStretchDialogView;
-    private final SettingSharedPreferences mSettingSharedPreferences;
-    private int mTextSize, mLineStretch;
-    private String mBackgroundColor, mTextColor;
-
-    public TextAndLineStretchDialogImpl(ChapterInformationView chapterInformationView, TextAndLineStretchDialogView textAndLineStretchDialogView) {
-        mChapterInformationView = chapterInformationView;
-        mTextAndLineStretchDialogView = textAndLineStretchDialogView;
-        mSettingSharedPreferences = new SettingSharedPreferences((Context) chapterInformationView);
-        getData();
+    init {
+        getData()
     }
 
-    private void getSetting() {
-        mSettingSharedPreferences.getSharedPreferences("Setting", Context.MODE_PRIVATE);
+    private fun getSetting() {
+        settingSharedPreferences.getSharedPreferences("Setting", Context.MODE_PRIVATE)
     }
 
-    private void setSetting() {
-        mSettingSharedPreferences.setSharedPreferences("Setting", Context.MODE_PRIVATE);
+    private fun setSetting() {
+        settingSharedPreferences.setSharedPreferences("Setting", Context.MODE_PRIVATE)
     }
 
-    private void getData() {
-        getSetting();
-        mTextSize = mSettingSharedPreferences.getTextSize();
-        mLineStretch = mSettingSharedPreferences.getLineStretch();
-        mTextAndLineStretchDialogView.getData(String.valueOf(mTextSize), String.format(Locale.getDefault(), "%d%%", mLineStretch));
+    private fun getData() {
+        getSetting()
+        textSize = settingSharedPreferences.getTextSize()
+        lineStretch = settingSharedPreferences.getLineStretch()
+        textAndLineStretchDialogView.getData(
+            textSize.toString(), String.format(Locale.getDefault(), "%d%%", lineStretch)
+        )
     }
 
-    @Override
-    public void upTextSize() {
-        if (mTextSize > 14 && mTextSize < 40) {
-            ++mTextSize;
-            Log.e("NHT textSize up: ", String.valueOf(mTextSize));
-            setTextSize();
+    override fun upTextSize() {
+        if (textSize in 15..39) {
+            ++textSize
+            Log.e("NHT textSize up: ", textSize.toString())
+            setTextSize()
         }
     }
 
-    @Override
-    public void downTextSize() {
-        if (mTextSize > 15 && mTextSize < 41) {
-            --mTextSize;
-            Log.e("NHT textSize down: ", String.valueOf(mTextSize));
-            setTextSize();
+    override fun downTextSize() {
+        if (textSize in 16..40) {
+            --textSize
+            Log.e("NHT textSize down: ", textSize.toString())
+            setTextSize()
         }
     }
 
-    private void setTextSize() {
-        mChapterInformationView.setTextSize(mTextSize);
-        mTextAndLineStretchDialogView.setTextSize(String.valueOf(mTextSize));
+    private fun setTextSize() {
+        chapterInformationView.setTextSize(textSize)
+        textAndLineStretchDialogView.setTextSize(textSize.toString())
 
-        setSetting();
-        mSettingSharedPreferences.setTextSize(mTextSize);
-        mSettingSharedPreferences.myApply();
+        setSetting()
+        settingSharedPreferences.setTextSize(textSize)
+        settingSharedPreferences.myApply()
     }
 
-    @Override
-    public void upLineStretch() {
-        if (mLineStretch > 65 && mLineStretch < 300) {
-            mLineStretch += 5;
-            setLineStretch(mLineStretch);
+    override fun upLineStretch() {
+        if (lineStretch in 66..299) {
+            lineStretch += 5
+            setLineStretch(lineStretch)
         }
     }
 
-    @Override
-    public void downLineStretch() {
-        if (mLineStretch > 70 && mLineStretch < 305) {
-            mLineStretch -= 5;
-            setLineStretch(mLineStretch);
+    override fun downLineStretch() {
+        if (lineStretch in 71..304) {
+            lineStretch -= 5
+            setLineStretch(lineStretch)
         }
     }
 
-    private void setLineStretch(int lineStretch) {
-        String lineStretchStr = String.format(Locale.getDefault(), "%d%%", mLineStretch);
-        mTextAndLineStretchDialogView.setLineStretch(lineStretchStr);
+    private fun setLineStretch(lineStretch: Int) {
+        val lineStretchStr = String.format(Locale.getDefault(), "%d%%", lineStretch)
+        textAndLineStretchDialogView.setLineStretch(lineStretchStr)
 
-        float lineStretchFloat = Float.parseFloat(String.valueOf(lineStretch)) / 100;
-        mChapterInformationView.setLineStretch(lineStretchFloat);
-        setSetting();
-        mSettingSharedPreferences.setLineStretch(mLineStretch);
-        mSettingSharedPreferences.myApply();
+        val lineStretchFloat = lineStretch.toString().toFloat() / 100
+        chapterInformationView.setLineStretch(lineStretchFloat)
+        setSetting()
+        settingSharedPreferences.setLineStretch(lineStretch)
+        settingSharedPreferences.myApply()
     }
 
-    @Override
-    public void setColor(int backgroundColor, int textColor) {
-        if (backgroundColor != 0) {
-            mBackgroundColor = "#" + Integer.toHexString(backgroundColor);
+    override fun setColor(bgColor: Int, tColor: Int) {
+        if (bgColor != 0) {
+            backgroundColor = "#" + Integer.toHexString(bgColor)
         }
-        if (textColor != 0) {
-            mTextColor = "#" + Integer.toHexString(textColor);
+        if (tColor != 0) {
+            textColor = "#" + Integer.toHexString(tColor)
         }
 
-        mChapterInformationView.setTextColor(mTextColor);
-        mChapterInformationView.setBackgroundColor(mBackgroundColor);
-        setSetting();
-        mSettingSharedPreferences.setBackgroundColor(mBackgroundColor);
-        mSettingSharedPreferences.setTextColor(mTextColor);
-        mSettingSharedPreferences.myApply();
+        chapterInformationView.setTextColor(textColor)
+        chapterInformationView.setBackgroundColor(backgroundColor)
+        setSetting()
+        settingSharedPreferences.setBackgroundColor(backgroundColor)
+        settingSharedPreferences.setTextColor(textColor)
+        settingSharedPreferences.myApply()
     }
 }

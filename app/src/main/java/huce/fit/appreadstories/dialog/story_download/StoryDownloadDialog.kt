@@ -1,46 +1,46 @@
-package huce.fit.appreadstories.dialog.story_download;
+package huce.fit.appreadstories.dialog.story_download
 
-import android.content.Context;
-import android.view.Gravity;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.content.Context
+import android.view.Gravity
+import android.view.WindowManager
+import android.widget.TextView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.dialog.BaseDialog
+import huce.fit.appreadstories.story.list.download.StoryDownloadView
 
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.dialog.BaseDialog;
-import huce.fit.appreadstories.story.list.download.StoryDownloadView;
+class StoryDownloadDialog(storyDownloadView: StoryDownloadView) :
+    BaseDialog(storyDownloadView as Context) {
 
-public class StoryDownloadDialog extends BaseDialog {
+    private lateinit var tvReadStory: TextView
+    private lateinit var tvDelete: TextView
 
-    private TextView tvReadStory;
-    private TextView tvDelete;
-
-    public StoryDownloadDialog(StoryDownloadView storyDownloadView, Context context) {
-        super(context);
-
-        setDialog(R.layout.dialog_story_download);
-        setWindow(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM, 0);
-        init();
-        processEvents(storyDownloadView);
+    init {
+        setDialog(R.layout.dialog_story_download)
+        setWindow(
+            WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM, 0
+        )
+        init()
+        processEvents(storyDownloadView)
     }
 
-    private void init() {
-        TextView tvStoryName = mDialog.findViewById(R.id.tvStoryName);
-        tvReadStory = mDialog.findViewById(R.id.tvReadStory);
-        tvDelete = mDialog.findViewById(R.id.tvDelete);
+    private fun init() {
+        val tvStoryName = dialog.findViewById<TextView>(R.id.tvStoryName)
+        tvReadStory = dialog.findViewById(R.id.tvReadStory)
+        tvDelete = dialog.findViewById(R.id.tvDelete)
 
-        StoryDownloadDialogPresenter mStoryDownloadDialogPresenter = new StoryDownloadDialogImpl(mContext);
-        tvStoryName.setText(mStoryDownloadDialogPresenter.getStoryName());
+        val mStoryDownloadDialogPresenter = StoryDownloadDialogImpl(context)
+        tvStoryName.text = mStoryDownloadDialogPresenter.getStoryName()
     }
 
-    private void processEvents(StoryDownloadView storyDownloadView) {
-        tvReadStory.setOnClickListener(view -> {
-            storyDownloadView.openStoryDownload();
-            mDialog.dismiss();
-        });
-        tvDelete.setOnClickListener(view -> {
-            storyDownloadView.deleteStoryDownload();
-            mDialog.dismiss();
-        });
+    private fun processEvents(storyDownloadView: StoryDownloadView) {
+        tvReadStory.setOnClickListener {
+            storyDownloadView.openStoryDownload()
+            dialog.dismiss()
+        }
+        tvDelete.setOnClickListener {
+            storyDownloadView.deleteStoryDownload()
+            dialog.dismiss()
+        }
     }
 }

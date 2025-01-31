@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import huce.fit.appreadstories.R
 import huce.fit.appreadstories.model.Story
-import java.util.logging.Logger
 
 class StoryAdapter : RecyclerView.Adapter<StoryAdapter.StoryHolder>() {
 
+    private var storyList: List<Story> = mutableListOf()
+    private lateinit var clickListener: ClickListener
+    
     class StoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvStoryName: TextView = itemView.findViewById(R.id.tvStoryName)
         val tvAuthor: TextView = itemView.findViewById(R.id.tvAuthor)
@@ -30,7 +32,7 @@ class StoryAdapter : RecyclerView.Adapter<StoryAdapter.StoryHolder>() {
     }
 
     override fun onBindViewHolder(holder: StoryHolder, position: Int) {
-        val story = mStoryList[position]
+        val story = storyList[position]
         holder.tvStoryName.text = story.storyName
         holder.tvAuthor.text = story.author
         holder.tvAge.text = story.ageLimit.toString()
@@ -38,24 +40,21 @@ class StoryAdapter : RecyclerView.Adapter<StoryAdapter.StoryHolder>() {
         holder.tvChapter.text = story.sumChapter.toString()
         Picasso.get().load(story.image).into(holder.ivStory)
         holder.itemView.setOnClickListener { view: View ->
-            mClickListener.onItemClick(story.storyId, view, false)
+            clickListener.onItemClick(story.storyId, view, false)
         }
     }
 
     override fun getItemCount(): Int {
-        return mStoryList.size
+        return storyList.size
     }
-
-    private var mStoryList: List<Story> = mutableListOf()
-    private lateinit var mClickListener: ClickListener
 
     @SuppressLint("NotifyDataSetChanged")
     fun setDataStory(listStory: List<Story>) {
-        mStoryList = listStory
+        storyList = listStory
         notifyDataSetChanged()
     }
 
     fun setClickListener(clickListener: ClickListener) {
-        mClickListener = clickListener
+        this.clickListener = clickListener
     }
 }

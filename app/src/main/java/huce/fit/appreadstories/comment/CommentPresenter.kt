@@ -1,7 +1,6 @@
 package huce.fit.appreadstories.comment
 
 interface CommentPresenter {
-
     fun getCommentList()
     fun enterSent(comment: String)
     fun deleteComment()

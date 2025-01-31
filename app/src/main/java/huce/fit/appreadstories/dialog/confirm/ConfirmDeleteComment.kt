@@ -1,33 +1,28 @@
-package huce.fit.appreadstories.dialog.confirm;
+package huce.fit.appreadstories.dialog.confirm
 
-import android.content.Context;
+import android.content.Context
+import huce.fit.appreadstories.comment.CommentView
 
-import huce.fit.appreadstories.comment.CommentView;
+class ConfirmDeleteComment internal constructor(private val commentView: CommentView) :
+    BaseConfirmDialog(commentView as Context) {
 
-public class ConfirmDeleteComment extends BaseConfirmDialog{
-    private final CommentView mCommentView;
-    ConfirmDeleteComment(CommentView commentView, Context context) {
-        super(context);
-        mCommentView = commentView;
-
-        init();
-        processEvents();
+    init {
+        init()
+        processEvents()
     }
 
-    private void init(){
-        mDialog.setCancelable(false);
-        String title = "Xóa bình luận";
-        String content = "\"Bạn có muốn xóa bình luận không?";
-        setContent(title, content);
+    private fun init() {
+        dialog.setCancelable(false)
+        val title = "Xóa bình luận"
+        val content = "\"Bạn có muốn xóa bình luận không?"
+        setContent(title, content)
     }
 
-    private void processEvents() {
-        tvYes.setOnClickListener(view -> {
-            mCommentView.deleteComment();
-            dismiss();
-        });
-        tvNo.setOnClickListener(view -> {
-            dismiss();
-        });
+    private fun processEvents() {
+        tvYes.setOnClickListener {
+            commentView.deleteComment()
+            dismiss()
+        }
+        tvNo.setOnClickListener { dismiss() }
     }
 }

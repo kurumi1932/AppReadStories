@@ -1,11 +1,9 @@
-package huce.fit.appreadstories.dialog.rate;
+package huce.fit.appreadstories.dialog.rate
 
-import huce.fit.appreadstories.dialog.BaseDialogView;
-import huce.fit.appreadstories.model.Rate;
+import huce.fit.appreadstories.dialog.BaseDialogView
+import huce.fit.appreadstories.model.Rate
 
-public interface RateDialogView extends BaseDialogView {
-
-    void setData(Rate rate);
-    void openConfirmDiaLog(int ratePoint, String rate);
-    void noRatePoint();
+interface RateDialogView : BaseDialogView {
+    fun setData(rate: Rate)
+    fun noRatePoint()
 }

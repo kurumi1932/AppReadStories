@@ -17,9 +17,10 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-class AccountRegisterImpl(var accountRegisterView: AccountRegisterView) : BaseAccountImpl(accountRegisterView as Context), AccountRegisterPresenter {
+class AccountRegisterImpl(val accountRegisterView: AccountRegisterView) :
+    BaseAccountImpl(accountRegisterView as Context), AccountRegisterPresenter {
 
-    companion object{
+    companion object {
         const val TAG = "AccountRegisterImpl"
     }
 
@@ -33,19 +34,16 @@ class AccountRegisterImpl(var accountRegisterView: AccountRegisterView) : BaseAc
     }
 
     override fun register(
-        username: String,
-        password: String,
-        email: String,
-        name: String,
-        birthday: String
+        username: String, password: String, email: String, name: String, birthday: String
     ) {
         if (checkDate(birthday)) {
             if (isConnecting(context)) {
                 Api().apiInterface().register(username, password, email, name, birthday)
                     .enqueue(object : Callback<Account> {
                         override fun onResponse(call: Call<Account>, response: Response<Account>) {
-                            if (response.isSuccessful && response.body() != null) {
-                                when (response.body()!!.success) {
+                            val accountServer = response.body()
+                            if (response.isSuccessful && accountServer != null) {
+                                when (accountServer.accountSuccess) {
                                     0 -> accountRegisterView.register(0)
                                     1 -> {
                                         setAccount(username)
@@ -77,8 +75,8 @@ class AccountRegisterImpl(var accountRegisterView: AccountRegisterView) : BaseAc
         ).show()
     }
 
-    fun setAccount(username: String) {
-        val account: AccountSharedPreferences = setAccount()
+    private fun setAccount(username: String) {
+        val account = setAccount()
         account.setUsername(username)
         account.myApply()
     }

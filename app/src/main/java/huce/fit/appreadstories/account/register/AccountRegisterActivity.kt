@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import huce.fit.appreadstories.R
+import huce.fit.appreadstories.util.AppUtil
 
 class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
 
@@ -20,7 +20,7 @@ class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
     private lateinit var ivDate: ImageView
     private lateinit var btExit: Button
     private lateinit var btRegister: Button
-    private var mAccountRegisterPresenter: AccountRegisterPresenter = AccountRegisterImpl(this)
+    private var accountRegisterPresenter = AccountRegisterImpl(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
         processEvents()
     }
 
-    fun init() {
+    private fun init() {
         etName = findViewById(R.id.etName)
         etEmail = findViewById(R.id.etEmail)
         etUsername = findViewById(R.id.etUsername)
@@ -41,9 +41,9 @@ class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
         btRegister = findViewById(R.id.btRegister)
     }
 
-    fun processEvents() {
+    private fun processEvents() {
         btExit.setOnClickListener { finish() }
-        ivDate.setOnClickListener { mAccountRegisterPresenter.openDatePicker() }
+        ivDate.setOnClickListener { accountRegisterPresenter.openDatePicker() }
         btRegister.setOnClickListener {
             val username: String = etUsername.getText().toString().trim { it <= ' ' }
             val password1: String = etPassword1.getText().toString().trim { it <= ' ' }
@@ -53,20 +53,12 @@ class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
             val birthday: String = etBirthday.getText().toString().trim { it <= ' ' }
             if (password1 == password2) {
                 if (username.isEmpty() || password1.isEmpty() || email.isEmpty() || name.isEmpty() || birthday.isEmpty()) {
-                    Toast.makeText(
-                        this@AccountRegisterActivity,
-                        "Vui lòng điền đầy đủ thông tin!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AppUtil.setToast(this, "Vui lòng điền đầy đủ thông tin!")
                 } else {
-                    mAccountRegisterPresenter.register(username, password1, email, name, birthday)
+                    accountRegisterPresenter.register(username, password1, email, name, birthday)
                 }
             } else {
-                Toast.makeText(
-                    this@AccountRegisterActivity,
-                    "Mật khẩu nhập lại không khớp!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(this, "Mật khẩu nhập lại không khớp!")
             }
         }
     }
@@ -77,32 +69,16 @@ class AccountRegisterActivity : AppCompatActivity(), AccountRegisterView {
 
     override fun register(status: Int) {
         when (status) {
-            0 -> Toast.makeText(
-                this@AccountRegisterActivity,
-                "Tài khoản đã tồn tại",
-                Toast.LENGTH_SHORT
-            ).show()
+            0 -> AppUtil.setToast(this, "Tài khoản đã tồn tại")
 
             1 -> {
-                Toast.makeText(
-                    this@AccountRegisterActivity,
-                    "Đăng ký thành công",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(this, "Đăng ký thành công")
                 finish()
             }
 
-            2 -> Toast.makeText(
-                this@AccountRegisterActivity,
-                "Vui lòng kết nối mạng",
-                Toast.LENGTH_SHORT
-            ).show()
+            2 -> AppUtil.setToast(this, "Vui lòng kết nối mạng")
 
-            3 -> Toast.makeText(
-                this@AccountRegisterActivity,
-                "Định dạng ngày sinh không đúng",
-                Toast.LENGTH_SHORT
-            ).show()
+            3 -> AppUtil.setToast(this, "Định dạng ngày sinh không đúng")
         }
     }
 }

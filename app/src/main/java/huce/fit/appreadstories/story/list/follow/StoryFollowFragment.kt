@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +16,7 @@ import huce.fit.appreadstories.adapters.StoryAdapter
 import huce.fit.appreadstories.checknetwork.isConnecting
 import huce.fit.appreadstories.model.Story
 import huce.fit.appreadstories.story.information.StoryInformationActivity
+import huce.fit.appreadstories.util.AppUtil
 
 class StoryFollowFragment : Fragment() , StoryFollowView{
     
@@ -61,9 +61,7 @@ class StoryFollowFragment : Fragment() , StoryFollowView{
                 linearLayout.visibility = View.VISIBLE
                 btCheckNetwork.visibility = View.GONE
             } else {
-                Toast.makeText(
-                    activity, "Không có kết nối mạng!\n\tVui lòng thử lại.", Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(requireContext(), "Không có kết nối mạng!\n\tVui lòng thử lại.")
             }
         }
     }

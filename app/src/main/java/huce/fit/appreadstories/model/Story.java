@@ -45,6 +45,27 @@ public class Story {
     public Story() {
     }
 
+    public Story(Story story) {
+        storyId = story.storyId;
+        storyName = story.storyName;
+        sumChapter = story.sumChapter;
+        author = story.author;
+        ageLimit = story.ageLimit;
+        status = story.status;
+        species = story.species;
+        timeUpdate = story.timeUpdate;
+        image = story.image;
+        introduce = story.introduce;
+        ratePoint = story.ratePoint;
+        totalViews = story.totalViews;
+        totalLikes = story.totalLikes;
+        totalComments = story.totalComments;
+        storySuccess = story.storySuccess;
+        isFollow = story.isFollow;
+        chapterReading = story.chapterReading;
+        newChapter = story.newChapter;
+    }
+
     public int getStoryId() {
         return storyId;
     }

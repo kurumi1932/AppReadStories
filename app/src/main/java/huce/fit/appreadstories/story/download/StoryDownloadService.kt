@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import huce.fit.appreadstories.R
 import huce.fit.appreadstories.api.Api
@@ -15,9 +14,8 @@ import huce.fit.appreadstories.model.ChapterRead
 import huce.fit.appreadstories.model.Story
 import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
-import huce.fit.appreadstories.sqlite.AppDao
 import huce.fit.appreadstories.sqlite.AppDatabase
-import kotlinx.coroutines.delay
+import huce.fit.appreadstories.util.AppUtil
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,28 +29,26 @@ class StoryDownloadService : Service() {
         private const val CHANNEL_ID = "download_story_service"
     }
 
-    private lateinit var mAppDao: AppDao
-    private lateinit var mStory: StorySharedPreferences
-    private var mAccountId = 0
-    private var mStoryId = 0
-    private var mSumChapter = 0
-    private var mStoryName: String? = null
+    private var appDao = AppDatabase.getInstance(this).appDao()
+    private var story = StorySharedPreferences(this)
+    private var accountId = 0
+    private var storyId = 0
+    private var sumChapter = 0
+    private var storyName = ""
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Toast.makeText(this, "Bắt đầu tải về", Toast.LENGTH_LONG).show()
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        AppUtil.setToast(this, "Bắt đầu tải về")
         Log.e(TAG, "NHT StoryDownloadService: Start")
-        mAppDao = AppDatabase.getInstance(this).appDao()
         getAccount()
         getStory()
-        downloadStory()
-        downloadChapterRead()
         runBlocking {
+            downloadStory()
             downloadChapter()
-            delay(1000)
+            downloadChapterRead()
         }
         return START_NOT_STICKY
     }
@@ -60,54 +56,47 @@ class StoryDownloadService : Service() {
     private fun getAccount() {
         val account = AccountSharedPreferences(this)
         account.getSharedPreferences("Account", MODE_PRIVATE)
-        mAccountId = account.getAccountId()
+        accountId = account.getAccountId()
     }
 
     private fun getStory() {
-        mStory = StorySharedPreferences(this)
-        mStory.getSharedPreferences("Story", MODE_PRIVATE)
-        mStoryId = mStory.getStoryId()
-        mStoryName = mStory.getStoryName()
+        story.getSharedPreferences("Story", MODE_PRIVATE)
+        storyId = story.getStoryId()
     }
 
     private fun downloadStory() {
-        var story = mAppDao.getStory(mStoryId)
-        if (story == null) {
-            story = Story()
-            story.storyId = mStoryId
-            story.storyName = mStoryName
-            story.author = mStory.getAuthor()
-            story.status = mStory.getStatus()
-            story.species = mStory.getSpecies()
-            story.introduce = mStory.getIntroduce()
-            story.image = mStory.getImage()
-            story.ageLimit = mStory.getAgeLimit()
-            story.sumChapter = mStory.getSumChapter()
-            story.totalLikes = mStory.getTotalLikes()
-            story.totalViews = mStory.getTotalViews()
-            story.totalComments = mStory.getTotalComments()
-            story.ratePoint = mStory.getRatePoint()
-            story.timeUpdate = mStory.getTimeUpdate()
-            story.isFollow = if (mStory.getIsFollow()) 1 else 0
-            story.chapterReading = mStory.getChapterReading()
-            story.newChapter = 0
-            mAppDao.insertStory(story)
+        if (appDao.getStory(storyId) == null) {
+            Api().apiInterface().getStory(storyId).enqueue(object : Callback<Story> {
+                override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                    val story = response.body()
+                    if (response.isSuccessful && story != null) {
+                        val storyDao = Story(story)
+                        storyDao.newChapter = 0
+                        storyName = story.storyName
+                        appDao.insertStory(storyDao)
+                    }
+                    Log.e(TAG, "api getStory: success")
+                }
+
+                override fun onFailure(call: Call<Story>, t: Throwable) {
+                    Log.e(TAG, "api getStory: false")
+                }
+            })
         }
     }
 
     private fun downloadChapterRead() {
-        if (mAppDao.getSumChapterRead(mStoryId) > 0) {
+        if (appDao.getSumChapterRead(storyId) > 0) {
             return
         }
-        Api().apiInterface().getChapterListRead(mStoryId, mAccountId, 0)
+        Api().apiInterface().getChapterListRead(storyId, accountId, 0)
             .enqueue(object : Callback<List<ChapterRead>> {
                 override fun onResponse(
-                    call: Call<List<ChapterRead>>,
-                    response: Response<List<ChapterRead>>
+                    call: Call<List<ChapterRead>>, response: Response<List<ChapterRead>>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
                         for (chapterRead in response.body()!!) {
-                            mAppDao.insertChapterRead(chapterRead)
+                            appDao.insertChapterRead(chapterRead)
                         }
                     }
                     Log.e(TAG, "NHT downloadChapterRead: success")
@@ -120,25 +109,14 @@ class StoryDownloadService : Service() {
     }
 
     private fun downloadChapter() {
-        Api().apiInterface().getChapterList(mStoryId).enqueue(object : Callback<List<Chapter>> {
-            override fun onResponse(
-                call: Call<List<Chapter>>,
-                response: Response<List<Chapter>>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    val chapterList = response.body()
+        Api().apiInterface().getChapterList(storyId).enqueue(object : Callback<List<Chapter>> {
+            override fun onResponse(call: Call<List<Chapter>>, response: Response<List<Chapter>>) {
+                val chapterListServer = response.body()
+                if (response.isSuccessful && chapterListServer!= null) {
                     var count = 0
-                    for (i in 0 until chapterList!!.size) {
-                        val chapter = chapterList[i]
-                        if (checkChapter(chapter.chapterId)) {
-                            chapter.chapterId = chapter.chapterId
-                            chapter.storyId = chapter.storyId
-                            chapter.chapterNumber = chapter.chapterNumber
-                            chapter.chapterName = chapter.chapterName
-                            chapter.content = chapter.content
-                            chapter.poster = chapter.poster
-                            chapter.postDay = chapter.postDay
-                            mAppDao.insertChapter(chapter)
+                    for (chapterServer in chapterListServer) {
+                        if (checkChapter(chapterServer.chapterId)) {
+                            appDao.insertChapter(chapterServer)
                             sendNotification(++count)
                         }
                     }
@@ -154,17 +132,17 @@ class StoryDownloadService : Service() {
     }
 
     private fun checkChapter(chapterId: Int): Boolean {
-        return mAppDao.getChapter(mStoryId, chapterId) == null
+        return appDao.getChapter(storyId, chapterId) == null
     }
 
     private fun sendNotification(count: Int) {
-        val icon = if (count < mSumChapter) {
+        val icon = if (count < sumChapter) {
             R.drawable.ic_download
         } else {
             R.drawable.ic_check
         }
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-        builder.setContentTitle(mStoryName)
+        builder.setContentTitle(storyName)
             .setContentText(String.format(Locale.getDefault(), "Chương tải về: %d", count))
             .setSmallIcon(icon)
             .setOngoing(true) // thông báo không thể loại bỏ khi vẫn còn hoạt động
@@ -181,6 +159,6 @@ class StoryDownloadService : Service() {
             applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(1)
         Log.e(TAG, "NHT StoryDownloadService: Stop")
-        Toast.makeText(this, "Tải thành công", Toast.LENGTH_LONG).show()
+        AppUtil.setToast(this, "Tải thành công")
     }
 }

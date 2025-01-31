@@ -1,25 +1,19 @@
-package huce.fit.appreadstories.story.list.download;
+package huce.fit.appreadstories.story.list.download
 
-import android.content.Context;
+import android.content.Context
+import huce.fit.appreadstories.sqlite.AppDatabase
+import huce.fit.appreadstories.story.list.BaseStoryListImpl
 
-import huce.fit.appreadstories.sqlite.AppDao;
-import huce.fit.appreadstories.sqlite.AppDatabase;
-import huce.fit.appreadstories.story.list.BaseStoryListImpl;
+class StoryDownloadImpl(private val storyDownloadView: StoryDownloadView, context: Context) :
+    BaseStoryListImpl(context), StoryDownloadPresenter {
 
-public class StoryDownloadImpl extends BaseStoryListImpl implements StoryDownloadPresenter {
-
-    private static final String TAG = "StoryDownloadImpl";
-    private final StoryDownloadView mStoryDownloadView;
-    private final AppDao mAppDao;
-
-    StoryDownloadImpl(StoryDownloadView storyDownloadView, Context context) {
-        super(context);
-        mStoryDownloadView = storyDownloadView;
-        mAppDao = AppDatabase.getInstance(context).appDao();
+    companion object {
+        private const val TAG = "StoryDownloadImpl"
     }
 
-    @Override
-    public void getData() {
-        mStoryDownloadView.setData(mAppDao.getAllStory());
+    private var mAppDao = AppDatabase.getInstance(context).appDao()
+
+    override fun getData() {
+        storyDownloadView.setData(mAppDao.allStory)
     }
 }

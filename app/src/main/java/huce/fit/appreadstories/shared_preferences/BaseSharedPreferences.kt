@@ -8,7 +8,6 @@ open class BaseSharedPreferences(val context: Context) {
     lateinit var sharedPreferences: SharedPreferences
     lateinit var edit: SharedPreferences.Editor
 
-
     fun getSharedPreferences(file: String, modePrivate: Int) {
         sharedPreferences = context.getSharedPreferences(file, modePrivate)
     }

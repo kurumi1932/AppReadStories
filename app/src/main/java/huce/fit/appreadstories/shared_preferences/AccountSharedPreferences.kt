@@ -20,16 +20,16 @@ class AccountSharedPreferences(context: Context) : BaseSharedPreferences(context
         edit.putString("username", username)
     }
 
-    fun getEmail(): String? {
-        return sharedPreferences.getString("email", "")
+    fun getEmail(): String {
+        return sharedPreferences.getString("email", "").toString()
     }
 
     fun setEmail(email: String) {
         edit.putString("email", email)
     }
 
-    fun getName(): String? {
-        return sharedPreferences.getString("name", "")
+    fun getName(): String {
+        return sharedPreferences.getString("name", "").toString()
     }
 
     fun setName(name: String) {

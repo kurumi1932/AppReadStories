@@ -1,79 +1,69 @@
-package huce.fit.appreadstories.dialog.setting.color;
+package huce.fit.appreadstories.dialog.setting.color
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import huce.fit.appreadstories.chapter.information.ChapterInformationView
+import huce.fit.appreadstories.shared_preferences.SettingSharedPreferences
 
-import huce.fit.appreadstories.chapter.information.ChapterInformationView;
-import huce.fit.appreadstories.shared_preferences.SettingSharedPreferences;
+class ColorDialogImpl(
+    private val chapterInformationView: ChapterInformationView,
+    private val colorDialogView: ColorDialogView
+) : ColorDialogPresenter {
+    private var settingSharedPreferences = SettingSharedPreferences(chapterInformationView as Context)
+    private var textColor = "#000000"
+    private var backgroundColor = "#FFFFFF"
 
-public class ColorDialogImpl implements ColorDialogPresenter {
+    init {
+        getSetting()
+        textColor = settingSharedPreferences.getTextColor()
+        backgroundColor = settingSharedPreferences.getBackgroundColor()
+        setSetting()
 
-    private final ChapterInformationView mChapterInformationView;
-    private final ColorDialogView mColorDialogView;
-    private final SettingSharedPreferences mSettingSharedPreferences;
-    private String mTextColor, mBackgroundColor;
-
-    public ColorDialogImpl(ChapterInformationView chapterInformationView, ColorDialogView colorDialogView) {
-        mChapterInformationView =chapterInformationView;
-        mColorDialogView = colorDialogView;
-        mSettingSharedPreferences = new SettingSharedPreferences((Context) chapterInformationView);
-
-        getSetting();
-        mTextColor = mSettingSharedPreferences.getTextColor();
-        mBackgroundColor = mSettingSharedPreferences.getBackgroundColor();
-        setSetting();
-
-        mColorDialogView.setTextColor(mTextColor);
-        mColorDialogView.setBackgroundColor(mBackgroundColor);
+        colorDialogView.setTextColor(textColor)
+        colorDialogView.setBackgroundColor(backgroundColor)
     }
 
-    private void getSetting() {
-        mSettingSharedPreferences.getSharedPreferences("Setting", Context.MODE_PRIVATE);
+    private fun getSetting() {
+        settingSharedPreferences.getSharedPreferences("Setting", Context.MODE_PRIVATE)
     }
 
-    private void setSetting() {
-        mSettingSharedPreferences.setSharedPreferences("Setting", Context.MODE_PRIVATE);
+    private fun setSetting() {
+        settingSharedPreferences.setSharedPreferences("Setting", Context.MODE_PRIVATE)
     }
 
-    @Override
-    public void setTextColorPickerDialog() {
-        mColorDialogView.setColorPickerDialog(mBackgroundColor);
+    override fun setTextColorPickerDialog() {
+        colorDialogView.setColorPickerDialog(backgroundColor)
     }
 
-    @Override
-    public void setBackgroundColorPickerDialog() {
-        mColorDialogView.setColorPickerDialog(mBackgroundColor);
+    override fun setBackgroundColorPickerDialog() {
+        colorDialogView.setColorPickerDialog(backgroundColor)
     }
 
-    @Override
-    public void viewTextColor(String hexVal) {
-        mTextColor = "#" + hexVal.substring(3);
-        Log.e("NHT hexVal: ", hexVal);
-        Log.e("NHT hexColor: ", mTextColor);
-        mColorDialogView.setTextColor(mTextColor);
+    override fun viewTextColor(hexVal: String) {
+        textColor = "#" + hexVal.substring(3)
+        Log.e("NHT hexVal: ", hexVal)
+        Log.e("NHT hexColor: ", textColor)
+        colorDialogView.setTextColor(textColor)
 
-        mSettingSharedPreferences.setTextColor(mTextColor);
-        mSettingSharedPreferences.myApply();
+        settingSharedPreferences.setTextColor(textColor)
+        settingSharedPreferences.myApply()
     }
 
-    @Override
-    public void viewBackgroundColor(String hexVal) {
-        mBackgroundColor = "#" + hexVal.substring(3);
-        Log.e("NHT hexVal: ", hexVal);
-        Log.e("NHT hexColor: ", mBackgroundColor);
-        mColorDialogView.setBackgroundColor(mBackgroundColor);
+    override fun viewBackgroundColor(hexVal: String) {
+        backgroundColor = "#" + hexVal.substring(3)
+        Log.e("NHT hexVal: ", hexVal)
+        Log.e("NHT hexColor: ", backgroundColor)
+        colorDialogView.setBackgroundColor(backgroundColor)
 
-        mSettingSharedPreferences.setBackgroundColor(mBackgroundColor);
-        mSettingSharedPreferences.myApply();
+        settingSharedPreferences.setBackgroundColor(backgroundColor)
+        settingSharedPreferences.myApply()
     }
 
-    @Override
-    public void setTextColor() {
-        mChapterInformationView.setTextColor(mTextColor);
+    override fun setTextColor() {
+        chapterInformationView.setTextColor(textColor)
     }
 
-    @Override
-    public void setBackgroundColor() {
-        mChapterInformationView.setBackgroundColor(mBackgroundColor);
+    override fun setBackgroundColor() {
+        chapterInformationView.setBackgroundColor(backgroundColor)
     }
 }

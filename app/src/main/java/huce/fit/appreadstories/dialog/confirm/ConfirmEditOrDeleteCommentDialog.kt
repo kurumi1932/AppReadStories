@@ -1,44 +1,45 @@
-package huce.fit.appreadstories.dialog.confirm;
+package huce.fit.appreadstories.dialog.confirm
 
-import android.content.Context;
-import android.view.Gravity;
-import android.view.WindowManager;
-import android.widget.TextView;
+import android.content.Context
+import android.view.Gravity
+import android.view.WindowManager
+import android.widget.TextView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.comment.CommentView
+import huce.fit.appreadstories.dialog.BaseDialog
 
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.comment.CommentView;
-import huce.fit.appreadstories.dialog.BaseDialog;
+class ConfirmEditOrDeleteCommentDialog(private val commentView: CommentView) :
+    BaseDialog(commentView as Context) {
+        
+    private lateinit var tvUpdate: TextView
+    private lateinit var tvDelete: TextView
 
-public class ConfirmEditOrDeleteCommentDialog extends BaseDialog {
-
-    private final CommentView mCommentView;
-    private TextView tvUpdate,tvDelete;
-    public ConfirmEditOrDeleteCommentDialog(CommentView commentView, Context context) {
-        super(context);
-        mCommentView =commentView;
-        setDialog( R.layout.dialog_comment_update_delete);
-        setWindow(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM, 0);
-        init();
-        processEvents();
+    init {
+        setDialog(R.layout.dialog_comment_update_delete)
+        setWindow(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM, 0
+        )
+        init()
+        processEvents()
     }
 
-    private void init() {
-        mDialog.setCancelable(false);
+    private fun init() {
+        dialog.setCancelable(false)
 
-        tvUpdate = mDialog.findViewById(R.id.tvUpdate);
-        tvDelete = mDialog.findViewById(R.id.tvDelete);
+        tvUpdate = dialog.findViewById(R.id.tvUpdate)
+        tvDelete = dialog.findViewById(R.id.tvDelete)
     }
 
-    private void processEvents() {
-        tvUpdate.setOnClickListener(view -> {
-            mCommentView.setDataUpdate();
-            dismiss();
-        });
-        tvDelete.setOnClickListener(view -> {
-            ConfirmDeleteComment confirmDeleteComment = new ConfirmDeleteComment(mCommentView,mContext);
-            confirmDeleteComment.show();
-            dismiss();
-        });
+    private fun processEvents() {
+        tvUpdate.setOnClickListener {
+            commentView.setDataUpdate()
+            dismiss()
+        }
+        tvDelete.setOnClickListener {
+            val confirmDeleteComment = ConfirmDeleteComment(commentView)
+            confirmDeleteComment.show()
+            dismiss()
+        }
     }
 }

@@ -12,6 +12,8 @@ import java.util.Locale
 
 class ChapterDownloadAdapter : RecyclerView.Adapter<ChapterDownloadAdapter.ChapterBasicHolder>() {
 
+    private var chapterList: List<Chapter> = mutableListOf()
+
     class ChapterBasicHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
          val tvChapterNumber: TextView= itemView.findViewById(R.id.tvChapterNumber)
          val tvChapterName: TextView= itemView.findViewById(R.id.tvChapterName)
@@ -25,7 +27,7 @@ class ChapterDownloadAdapter : RecyclerView.Adapter<ChapterDownloadAdapter.Chapt
     }
 
     override fun onBindViewHolder(holder: ChapterBasicHolder, position: Int) {
-        val chapter = mChapterList[position]
+        val chapter = chapterList[position]
         holder.tvChapterNumber.text =
             String.format(Locale.getDefault(), "%s.", chapter.chapterNumber)
         holder.tvChapterName.text = chapter.chapterName
@@ -33,14 +35,12 @@ class ChapterDownloadAdapter : RecyclerView.Adapter<ChapterDownloadAdapter.Chapt
     }
 
     override fun getItemCount(): Int {
-        return mChapterList.size
+        return chapterList.size
     }
-
-    private var mChapterList: List<Chapter> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
     fun setChapterList(chapterList: List<Chapter>) {
-        mChapterList = chapterList
+        this.chapterList = chapterList
         notifyDataSetChanged()
     }
 }

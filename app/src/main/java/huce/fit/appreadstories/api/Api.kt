@@ -8,7 +8,7 @@ class Api {
 
     private lateinit var retrofit: Retrofit
     companion object {
-        private const val BASE_URL = "http://192.168.1.104/appstory/"
+        private const val BASE_URL = "http://192.168.1.3/appstory/"
 
         const val URL_LOGIN: String = "login.php"
         const val URL_REGISTER = "register.php"

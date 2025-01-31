@@ -6,7 +6,6 @@ import huce.fit.appreadstories.api.Api
 import huce.fit.appreadstories.model.Chapter
 import huce.fit.appreadstories.model.Story
 import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
-import huce.fit.appreadstories.sqlite.AppDao
 import huce.fit.appreadstories.sqlite.AppDatabase
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,57 +17,49 @@ class StoryDownloadImpl(val storyDownloadView: StoryDownloadView) : StoryDownloa
         private const val TAG = "StoryDownloadImpl"
     }
 
-    private var mContext: Context = storyDownloadView as Context
-    private var mAppDao: AppDao = AppDatabase.getInstance(mContext).appDao()
-    private val mChapterList: MutableList<Chapter> = ArrayList()
-    private val mStory = Story()
-    private var mStoryId = 0
+    private var context = storyDownloadView as Context
+    private var appDao = AppDatabase.getInstance(context).appDao()
+    private val chapterList: MutableList<Chapter> = ArrayList()
+    private var storyId = 0
 
-    init {
-        getStory()
-        getChapterList()
-    }
-
-    fun getStory() {
-        val story = StorySharedPreferences(mContext)
+    override fun getStory() {
+        val story = StorySharedPreferences(context)
         story.getSharedPreferences("Story", Context.MODE_PRIVATE)
-        mStoryId = story.getStoryId()
-        mStory.storyId = mStoryId
-        Log.e(TAG, "NHT mStoryId: $mStoryId")
-        mStory.storyName = story.getStoryName()
-        mStory.author = story.getAuthor()
-        mStory.status = story.getStatus()
-        mStory.species = story.getSpecies()
-        mStory.introduce = story.getIntroduce()
-        mStory.image = story.getImage()
-        mStory.ageLimit = story.getAgeLimit()
-        mStory.sumChapter = story.getSumChapter()
-        mStory.totalLikes = story.getTotalLikes()
-        mStory.totalViews = story.getTotalViews()
-        mStory.totalComments = story.getTotalComments()
-        mStory.ratePoint = story.getRatePoint()
-        mStory.timeUpdate = story.getTimeUpdate()
-        mStory.isFollow = if (story.getIsFollow()) 1 else 0
-        mStory.chapterReading = story.getChapterReading()
-        mStory.newChapter = 0
-        storyDownloadView.setDataStory(mStory)
+        storyId = story.getStoryId()
+        Log.e(TAG, "NHT storyId: $storyId")
+        Api().apiInterface().getStory(storyId).enqueue(object : Callback<Story> {
+            override fun onResponse(call: Call<Story>, response: Response<Story>) {
+                val storyServer = response.body()
+                if (response.isSuccessful && storyServer != null) {
+                    val storyDao = Story(storyServer)
+                    storyDao.newChapter = 0
+                    storyDownloadView.setDataStory(storyDao)
+                }
+
+                Log.e(TAG, "api getStory: success")
+            }
+
+            override fun onFailure(call: Call<Story>, t: Throwable) {
+                Log.e(TAG, "api getStory: false")
+            }
+        })
     }
 
-    fun getChapterList() {
+    override fun getChapterList() {
         val chapterId = HashMap<Int, Chapter?>()
-        for (chapter in mAppDao.getChapterList(mStoryId)) {
+        for (chapter in appDao.getChapterList(storyId)) {
             chapterId[chapter.chapterId] = null
         }
-        Api().apiInterface().getChapterList(mStoryId).enqueue(object : Callback<List<Chapter>> {
+        Api().apiInterface().getChapterList(storyId).enqueue(object : Callback<List<Chapter>> {
             override fun onResponse(call: Call<List<Chapter>>, response: Response<List<Chapter>>) {
                 if (response.isSuccessful && response.body() != null) {
-                    mChapterList.clear()
+                    chapterList.clear()
                     for (chapter in response.body()!!) {
                         if (!chapterId.containsKey(chapter.chapterId)) {
-                            mChapterList.add(chapter)
+                            chapterList.add(chapter)
                         }
                     }
-                    storyDownloadView.setChapterList(mChapterList)
+                    storyDownloadView.setChapterList(chapterList)
                 }
                 Log.e(TAG, "api getChapterList: success")
             }

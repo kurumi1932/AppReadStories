@@ -1,16 +1,10 @@
-package huce.fit.appreadstories.dialog.setting.color;
+package huce.fit.appreadstories.dialog.setting.color
 
-public interface ColorDialogPresenter {
-
-    void setTextColorPickerDialog();
-
-    void setBackgroundColorPickerDialog();
-
-    void viewTextColor(String hexVal);
-
-    void viewBackgroundColor(String hexVal);
-
-    void setTextColor();
-
-    void setBackgroundColor();
+interface ColorDialogPresenter {
+    fun setTextColorPickerDialog()
+    fun setBackgroundColorPickerDialog()
+    fun viewTextColor(hexVal: String)
+    fun viewBackgroundColor(hexVal: String)
+    fun setTextColor()
+    fun setBackgroundColor()
 }

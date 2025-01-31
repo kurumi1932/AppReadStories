@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import huce.fit.appreadstories.R
+import huce.fit.appreadstories.util.AppUtil
 
 class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
 
@@ -19,7 +19,7 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
     private lateinit var etBirthday: EditText
     private lateinit var ivDate: ImageView
     private lateinit var btSave: Button
-    private var mAccountUpdatePresenter: AccountUpdatePresenter= AccountUpdateImpl(this)
+    private lateinit var accountUpdatePresenter: AccountUpdateImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +28,7 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
         processEvents()
     }
 
-    fun init() {
+    private fun init() {
         etName = findViewById(R.id.etName)
         etEmail = findViewById(R.id.etEmail)
         etOldPassword = findViewById(R.id.etPassword1)
@@ -37,6 +37,7 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
         ivBack = findViewById(R.id.ivBack)
         ivDate = findViewById(R.id.ivDate)
         btSave = findViewById(R.id.btSave)
+        accountUpdatePresenter = AccountUpdateImpl(this)
     }
 
     override fun getInfoAccount(name: String, email: String, birthday: String) {
@@ -45,9 +46,9 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
         etBirthday.setText(birthday)
     }
 
-    fun processEvents() {
+    private fun processEvents() {
         ivBack.setOnClickListener { finish() }
-        ivDate.setOnClickListener { mAccountUpdatePresenter.openDatePicker() }
+        ivDate.setOnClickListener { accountUpdatePresenter.openDatePicker() }
         btSave.setOnClickListener {
             val name = etName.getText().toString().trim { it <= ' ' }
             val email: String = etEmail.getText().toString().trim { it <= ' ' }
@@ -55,36 +56,20 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
             val newPassword: String = etNewPassword.getText().toString().trim { it <= ' ' }
             val birthday: String = etBirthday.getText().toString().trim { it <= ' ' }
             if (name.isEmpty() || email.isEmpty() || birthday.isEmpty()) {
-                Toast.makeText(
-                    this@AccountUpdateActivity,
-                    "Vui lòng nhập đầy đủ tên hiển thị!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(this, "Vui lòng nhập đầy đủ tên hiển thị!")
             } else {
-                val accountId = mAccountUpdatePresenter.getAccount().getAccountId()
+                val accountId = accountUpdatePresenter.getAccount().getAccountId()
                 if (oldPassword.isEmpty()) {
                     if (newPassword.isEmpty()) {
-                        mAccountUpdatePresenter.updateAccount(accountId, email, name, birthday)
+                        accountUpdatePresenter.updateAccount(accountId, email, name, birthday)
                     } else {
-                        Toast.makeText(
-                            this@AccountUpdateActivity,
-                            "Vui lòng nhập mật khẩu hiện tại",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AppUtil.setToast(this, "Vui lòng nhập mật khẩu hiện tại")
                     }
                 } else {
                     if (newPassword.isEmpty()) {
-                        Toast.makeText(
-                            this@AccountUpdateActivity,
-                            "Vui lòng nhập mật khẩu mới",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AppUtil.setToast(this, "Vui lòng nhập mật khẩu mới")
                     } else {
-                        mAccountUpdatePresenter.changePassword(
-                            accountId,
-                            oldPassword,
-                            newPassword
-                        )
+                        accountUpdatePresenter.changePassword(accountId, oldPassword, newPassword)
                     }
                 }
             }
@@ -97,50 +82,26 @@ class AccountUpdateActivity : AppCompatActivity(), AccountUpdateView {
 
     override fun update(status: Int) {
         when (status) {
-            0 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Cập nhật tài khoản thất bại",
-                Toast.LENGTH_SHORT
-            ).show()
+            0 -> setToast("Cập nhật tài khoản thất bại")
 
             1 -> {
-                Toast.makeText(
-                    this@AccountUpdateActivity,
-                    "Cập nhật tài khoản thành công",
-                    Toast.LENGTH_SHORT
-                ).show()
+                setToast("Cập nhật tài khoản thành công")
                 finish()
             }
 
-            2 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Vui lòng kết nối mạng",
-                Toast.LENGTH_SHORT
-            ).show()
+            2 -> setToast("Vui lòng kết nối mạng")
 
-            3 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Định dạng ngày sinh không đúng",
-                Toast.LENGTH_SHORT
-            ).show()
+            3 -> setToast("Định dạng ngày sinh không đúng")
 
-            4 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Mật khẩu mới trùng với mật khẩu cũ",
-                Toast.LENGTH_SHORT
-            ).show()
+            4 -> setToast("Mật khẩu mới trùng với mật khẩu cũ")
 
-            5 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Cập nhật mật khẩu thất bại",
-                Toast.LENGTH_SHORT
-            ).show()
+            5 -> setToast("Cập nhật mật khẩu thất bại")
 
-            6 -> Toast.makeText(
-                this@AccountUpdateActivity,
-                "Mật khẩu hiện tại không chính xác",
-                Toast.LENGTH_SHORT
-            ).show()
+            6 -> setToast("Mật khẩu hiện tại không chính xác")
         }
+    }
+
+    private fun setToast(content: String) {
+        AppUtil.setToast(this, content)
     }
 }

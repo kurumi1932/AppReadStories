@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +18,7 @@ import huce.fit.appreadstories.adapters.StoryAdapter
 import huce.fit.appreadstories.checknetwork.isConnecting
 import huce.fit.appreadstories.model.Story
 import huce.fit.appreadstories.story.information.StoryInformationActivity
+import huce.fit.appreadstories.util.AppUtil
 
 class StoryFilterFragment: Fragment(), StoryFilterView {
 
@@ -34,9 +34,10 @@ class StoryFilterFragment: Fragment(), StoryFilterView {
     private lateinit var tvStatus1:TextView
     private lateinit var tvStatus2:TextView
     private lateinit var btCheckNetwork: Button
-    private lateinit var mStoryFilterPresenter: StoryFilterPresenter
-    private lateinit var mStoryAdapter: StoryAdapter
+    private lateinit var storyFilterPresenter: StoryFilterPresenter
+    private lateinit var storyAdapter: StoryAdapter
     private lateinit var rcViewStory: RecyclerView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -62,17 +63,15 @@ class StoryFilterFragment: Fragment(), StoryFilterView {
         btCheckNetwork = view.findViewById(R.id.btCheckNetwork)
         rcViewStory = view.findViewById(R.id.rcViewStory)
 
-        mStoryFilterPresenter = StoryFilterImpl(this, requireActivity())
-        mStoryAdapter = StoryAdapter()
+        storyFilterPresenter = StoryFilterImpl(this, requireContext())
+        storyAdapter = StoryAdapter()
         rcViewStory.setLayoutManager(LinearLayoutManager(activity))
-        rcViewStory.setAdapter(mStoryAdapter)
+        rcViewStory.setAdapter(storyAdapter)
 
         tvSpecies0.setBackgroundResource(R.drawable.border_filter_click)
         tvStatus0.setBackgroundResource(R.drawable.border_filter_click)
-        mStoryFilterPresenter.setSpeciesId(R.id.tvSpecies0)
-        mStoryFilterPresenter.setSpecies(tvSpecies0.getText().toString().trim { it <= ' ' })
-        mStoryFilterPresenter.setStatusId(R.id.tvStatus0)
-        mStoryFilterPresenter.setStatus(tvStatus0.getText().toString().trim { it <= ' ' })
+        storyFilterPresenter.setSpecies(tvSpecies0.getText().toString().trim { it <= ' ' })
+        storyFilterPresenter.setStatus(tvStatus0.getText().toString().trim { it <= ' ' })
         getData()
     }
 
@@ -85,38 +84,51 @@ class StoryFilterFragment: Fragment(), StoryFilterView {
     private fun getData() {
         if (isConnecting(requireActivity())) {
             progressBar.visibility = View.VISIBLE
-            mStoryFilterPresenter.getData()
+            storyFilterPresenter.getData()
         } else {
             hide()
         }
     }
 
     override fun setData(storyList: List<Story>) {
-        mStoryAdapter.setDataStory(storyList)
+        storyAdapter.setDataStory(storyList)
         progressBar.visibility = View.GONE
     }
 
     private fun selectSpeciesFilter(view: View, speciesId: Int) {
-        view.findViewById<View>(mStoryFilterPresenter.getSpeciesId()).setBackgroundColor(Color.WHITE)
+        removeSelectSpecial()
         val tvSpecies: TextView = view.findViewById(speciesId)
         tvSpecies.setBackgroundResource(R.drawable.border_filter_click)
-        mStoryFilterPresenter.setSpeciesId(speciesId)
-        mStoryFilterPresenter.setSpecies(tvSpecies.text.toString())
+        storyFilterPresenter.setSpecies(tvSpecies.text.toString())
         getData()
+    }
+
+    private fun removeSelectSpecial(){
+        tvSpecies0.setBackgroundColor(Color.WHITE)
+        tvSpecies1.setBackgroundColor(Color.WHITE)
+        tvSpecies2.setBackgroundColor(Color.WHITE)
+        tvSpecies3.setBackgroundColor(Color.WHITE)
+        tvSpecies4.setBackgroundColor(Color.WHITE)
+        tvSpecies5.setBackgroundColor(Color.WHITE)
     }
 
     private fun selectStatusFilter(view: View, statusId: Int) {
-        view.findViewById<View>(mStoryFilterPresenter.getStatusId()).setBackgroundColor(Color.WHITE)
+        removeSelectStatus()
         val tvStatus: TextView = view.findViewById(statusId)
         tvStatus.setBackgroundResource(R.drawable.border_filter_click)
-        mStoryFilterPresenter.setStatusId(statusId)
-        mStoryFilterPresenter.setStatus(tvStatus.text.toString())
+        storyFilterPresenter.setStatus(tvStatus.text.toString())
         getData()
     }
 
+    private fun removeSelectStatus(){
+        tvStatus0.setBackgroundColor(Color.WHITE)
+        tvStatus1.setBackgroundColor(Color.WHITE)
+        tvStatus2.setBackgroundColor(Color.WHITE)
+    }
+
     private fun processEvents() {
-        mStoryAdapter.setClickListener { position: Int, _: View, _: Boolean ->
-            mStoryFilterPresenter.setStoryId(position)
+        storyAdapter.setClickListener { position: Int, _: View, _: Boolean ->
+            storyFilterPresenter.setStoryId(position)
             val intent = Intent(activity, StoryInformationActivity::class.java)
             startActivity(intent)
         }
@@ -127,9 +139,7 @@ class StoryFilterFragment: Fragment(), StoryFilterView {
                 linearLayout.visibility = View.VISIBLE
                 btCheckNetwork.visibility = View.GONE
             } else {
-                Toast.makeText(
-                    activity, "Không có kết nối mạng!\n\tVui lòng thử lại.", Toast.LENGTH_SHORT
-                ).show()
+                AppUtil.setToast(requireContext(), "Không có kết nối mạng!\n\tVui lòng thử lại.")
             }
         }
 

@@ -15,6 +15,10 @@ import java.util.Locale
 class ChapterDialogAdapter : RecyclerView.Adapter<ChapterDialogAdapter.ChapterDownloadHolder>(),
     Filterable {
 
+    private var chapterList: MutableList<Chapter> = mutableListOf()
+    private var chapterListOld: MutableList<Chapter> = mutableListOf()
+    private var clickListener: ClickListener? = null
+
     class ChapterDownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvChapterNumber: TextView = itemView.findViewById(R.id.tvChapterNumber)
         val tvChapter: TextView = itemView.findViewById(R.id.tvChapter)
@@ -27,29 +31,29 @@ class ChapterDialogAdapter : RecyclerView.Adapter<ChapterDialogAdapter.ChapterDo
     }
 
     override fun onBindViewHolder(holder: ChapterDownloadHolder, position: Int) {
-        val chapter = mChapterList[position]
+        val chapter = chapterList[position]
         holder.tvChapterNumber.text = String.format(
             Locale.getDefault(), "%s.", chapter.chapterNumber
         )
         holder.tvChapter.text = chapter.chapterName
         holder.itemView.setOnClickListener { view: View ->
-            mClickListener!!.onItemClick(chapter.chapterId, view, false)
+            clickListener!!.onItemClick(chapter.chapterId, view, false)
         }
     }
 
     override fun getItemCount(): Int {
-        return mChapterList.size
+        return chapterList.size
     }
 
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
                 val searchStr = charSequence.toString()
-                mChapterList = if (searchStr.isEmpty()) {
-                    mChapterListOld
+                chapterList = if (searchStr.isEmpty()) {
+                    chapterListOld
                 } else {
                     val list: MutableList<Chapter> = mutableListOf()
-                    for (chapter in mChapterListOld) {
+                    for (chapter in chapterListOld) {
                         if (chapter.chapterNumber.contains(searchStr)) {
                             list.add(chapter)
                         }
@@ -57,34 +61,32 @@ class ChapterDialogAdapter : RecyclerView.Adapter<ChapterDialogAdapter.ChapterDo
                     list
                 }
                 val filterResults = FilterResults()
-                filterResults.values = mChapterList
+                filterResults.values = chapterList
                 return filterResults
             }
 
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                mChapterList = filterResults.values as MutableList<Chapter>
+                chapterList = filterResults.values as MutableList<Chapter>
                 notifyDataSetChanged()
             }
         }
     }
 
-    private var mChapterList: MutableList<Chapter> = mutableListOf()
-    private var mChapterListOld: MutableList<Chapter> = mutableListOf()
-    private var mClickListener: ClickListener? = null
-
     fun clickListener(clickListener: ClickListener?) {
-        mClickListener = clickListener
+        this.clickListener = clickListener
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setChapterList(chapterList: MutableList<Chapter>) {
-        mChapterList = chapterList
-        mChapterListOld = chapterList
+    fun setChapterList(chapterList: List<Chapter>) {
+        this.chapterList.clear()
+        chapterListOld.clear()
+        this.chapterList.addAll(chapterList)
+        chapterListOld.addAll(chapterList)
         notifyDataSetChanged()
     }
 
     fun reverseData() {
-        mChapterList.reverse()
+        chapterList.reverse()
     }
 }

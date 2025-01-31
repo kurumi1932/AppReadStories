@@ -16,6 +16,13 @@ public class ChapterRead {
     @SerializedName("machuong")
     int chapterId;
 
+    public ChapterRead(){}
+
+    public ChapterRead(int storyId, int chapterId){
+        this.storyId = storyId;
+        this.chapterId = chapterId;
+    }
+
     public int getChapterReadId() {
         return chapterReadId;
     }

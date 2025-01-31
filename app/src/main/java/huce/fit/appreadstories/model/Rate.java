@@ -4,16 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Rate extends Account {
 
-	public Rate() {
-	}
-
-	public Rate(int rateId, int ratePoint, String rate, int success) {
-		this.rateId = rateId;
-		this.ratePoint = ratePoint;
-		this.rate = rate;
-		this.success = success;
-	}
-
 	@SerializedName("madanhgia")
 	private int rateId;
 
@@ -21,10 +11,25 @@ public class Rate extends Account {
 	private int ratePoint;
 
 	@SerializedName("danhgia")
-	private String rate;
+	private String rateContent;
 
 	@SerializedName("ratesuccess")
-	private int success;
+	private int rateSuccess;
+
+	public Rate() {}
+
+	public Rate(Rate rate) {
+		this.rateId = rate.rateId;
+		this.ratePoint = rate.ratePoint;
+		this.rateContent = rate.rateContent;
+		this.rateSuccess = rate.rateSuccess;
+	}
+
+	public Rate(int rateId, int ratePoint, String rateContent) {
+		this.rateId = rateId;
+		this.ratePoint = ratePoint;
+		this.rateContent = rateContent;
+	}
 
 	public int getRateId() {
 		return rateId;
@@ -42,20 +47,19 @@ public class Rate extends Account {
 		this.ratePoint = ratePoint;
 	}
 
-	public String getRate() {
-		return rate;
+	public String getRateContent() {
+		return rateContent;
 	}
 
-	public void setRate(String rate) {
-		this.rate = rate;
+	public void setRateContent(String rate) {
+		this.rateContent = rateContent;
 	}
 
-	@Override
-	public int getSuccess() {
-		return success;
+	public int getRateSuccess() {
+		return rateSuccess;
 	}
 
-	public void setSuccess(int success) {
-		this.success = success;
+	public void setRateSuccess(int success) {
+		rateSuccess = success;
 	}
 }

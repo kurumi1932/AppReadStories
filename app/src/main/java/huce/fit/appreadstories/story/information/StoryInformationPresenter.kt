@@ -1,28 +1,27 @@
-package huce.fit.appreadstories.story.information;
+package huce.fit.appreadstories.story.information
 
-import huce.fit.appreadstories.story.list.BaseStoryListPresenter;
+import huce.fit.appreadstories.model.Story
 
-public interface StoryInformationPresenter extends BaseStoryListPresenter {
+interface StoryInformationPresenter {
+    fun start()
+    fun showRate(ratePoint: Int)
+    fun getDataOffline(storyDao: Story)
+    fun checkAge(): Boolean
+    fun checkInteractive()
+    fun checkFollowStory()
+    fun checkFollowStoryDownload()
+    fun likeStory()
+    fun followStory()
+    fun readStory()
+    fun readStoryDownload()
 
-    void start();
-    int getStoryId();
-    void showRate(int ratePoint);
-    void getDataOffline();
-    boolean checkAge();
-    void checkInteractive();
-    void checkFollowStory();
-    void checkFollowStoryDownload();
-    void likeStory();
-    void followStory();
-    void readStory();
-    void readStoryDownload();
-
-    void checkRateOfAccount();
-    void addRate(int ratePoint, String rate);
-    void updateRate(int ratePoint, String rate);
-    void deleteRate();
-    void enterComment();
-    void enterDownload();
-    void enterChapter();
-    void enterReadStory();
+    fun checkRateOfAccount()
+    fun setRateId(rateId: Int)
+    fun addRate(ratePoint: Int, rate: String)
+    fun updateRate(ratePoint: Int, rate: String)
+    fun deleteRate()
+    fun enterComment()
+    fun enterDownload()
+    fun enterChapter()
+    fun enterReadStory()
 }

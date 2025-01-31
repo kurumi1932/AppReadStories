@@ -1,8 +1,7 @@
-package huce.fit.appreadstories.story.list.download;
+package huce.fit.appreadstories.story.list.download
 
-import huce.fit.appreadstories.story.list.BaseStoryListPresenter;
+import huce.fit.appreadstories.story.list.BaseStoryListPresenter
 
-public interface StoryDownloadPresenter extends BaseStoryListPresenter {
-
-    void getData();
+interface StoryDownloadPresenter : BaseStoryListPresenter {
+    fun getData()
 }

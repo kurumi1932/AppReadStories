@@ -1,10 +1,9 @@
-package huce.fit.appreadstories.main;
+package huce.fit.appreadstories.main
 
-public interface MainPresenter {
-
-    void addFragment(int id);
-    void changeFragment(int id);
-    int backPressed();
-    int getId();
-    void removeCount();
+interface MainPresenter {
+    fun addFragment(id: Int)
+    fun changeFragment(id: Int)
+    fun backPressed(): Int
+    fun getId(): Int
+    fun removeCount()
 }

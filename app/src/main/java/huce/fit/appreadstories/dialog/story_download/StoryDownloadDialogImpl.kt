@@ -1,25 +1,15 @@
-package huce.fit.appreadstories.dialog.story_download;
+package huce.fit.appreadstories.dialog.story_download
 
-import android.content.Context;
+import android.content.Context
+import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
+import huce.fit.appreadstories.sqlite.AppDatabase
 
-import huce.fit.appreadstories.shared_preferences.StorySharedPreferences;
-import huce.fit.appreadstories.sqlite.AppDao;
-import huce.fit.appreadstories.sqlite.AppDatabase;
+class StoryDownloadDialogImpl(val context: Context) : StoryDownloadDialogPresenter {
 
-public class StoryDownloadDialogImpl implements StoryDownloadDialogPresenter{
-
-    private final Context mContext;
-    private final AppDao mAppDao;
-
-    public StoryDownloadDialogImpl(Context context) {
-        mContext = context;
-        mAppDao = AppDatabase.getInstance(context).appDao();
+    override fun getStoryName(): String {
+        val storySharedPreferences = StorySharedPreferences(context)
+        storySharedPreferences.setSharedPreferences("Story", Context.MODE_PRIVATE)
+        val appDao = AppDatabase.getInstance(context).appDao()
+        return appDao.getStory(storySharedPreferences.getStoryId()).storyName
     }
-
-    @Override
-    public String getStoryName(){
-        StorySharedPreferences storySharedPreferences = new StorySharedPreferences(mContext);
-        storySharedPreferences.setSharedPreferences("Story", Context.MODE_PRIVATE);
-        return mAppDao.getStory(storySharedPreferences.getStoryId()).getStoryName();
-    };
 }

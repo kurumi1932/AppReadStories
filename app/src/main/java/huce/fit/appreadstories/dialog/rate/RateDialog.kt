@@ -1,141 +1,126 @@
-package huce.fit.appreadstories.dialog.rate;
+package huce.fit.appreadstories.dialog.rate
 
-import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import huce.fit.appreadstories.R
+import huce.fit.appreadstories.dialog.BaseDialog
+import huce.fit.appreadstories.model.Rate
+import huce.fit.appreadstories.story.information.StoryInformationView
+import huce.fit.appreadstories.util.AppUtil
+import java.util.Locale
 
-import java.util.Locale;
+class RateDialog(private val storyInformationView: StoryInformationView) :
+    BaseDialog(storyInformationView as Context), RateDialogView {
 
-import huce.fit.appreadstories.R;
-import huce.fit.appreadstories.dialog.BaseDialog;
-import huce.fit.appreadstories.dialog.confirm.ConfirmEditRateDialog;
-import huce.fit.appreadstories.model.Rate;
-import huce.fit.appreadstories.story.information.StoryInformationView;
-
-public class RateDialog extends BaseDialog implements RateDialogView {
-
-    private final StoryInformationView mStoryInformationView;
-    private final RateDialogPresenter mRateDialogPresenter;
-    private ImageView ivClose, ivRate1, ivRate2, ivRate3, ivRate4, ivRate5;
-    private Button btRate, btDeleteRate;
-    private EditText etRate;
-    private TextView tvNumberTextRate;
-    private static final int[] RATE = {R.id.ivRate1, R.id.ivRate2, R.id.ivRate3, R.id.ivRate4, R.id.ivRate5};
-
-    public RateDialog(StoryInformationView storyInformationView, Context context) {
-        super(context);
-        mStoryInformationView = storyInformationView;
-        mRateDialogPresenter = new RateDialogImpl(mStoryInformationView, this);
-        setDialog(R.layout.dialog_rate);
-        setWindow(WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, Gravity.CENTER, 0);
-        init();
-        setData(mRateDialogPresenter.getRate());
-        processEvents();
+    companion object {
+        private val RATE =
+            intArrayOf(R.id.ivRate1, R.id.ivRate2, R.id.ivRate3, R.id.ivRate4, R.id.ivRate5)
     }
 
-    private void init() {
-        ivClose = mDialog.findViewById(R.id.ivClose);
-        ivRate1 = mDialog.findViewById(R.id.ivRate1);
-        ivRate2 = mDialog.findViewById(R.id.ivRate2);
-        ivRate3 = mDialog.findViewById(R.id.ivRate3);
-        ivRate4 = mDialog.findViewById(R.id.ivRate4);
-        ivRate5 = mDialog.findViewById(R.id.ivRate5);
-        etRate = mDialog.findViewById(R.id.etRate);
-        tvNumberTextRate = mDialog.findViewById(R.id.tvNumberTextRate);
-        btRate = mDialog.findViewById(R.id.btRate);
-        btDeleteRate = mDialog.findViewById(R.id.btDeleteRate);
+    private lateinit var ivClose: ImageView
+    private lateinit var ivRate1: ImageView
+    private lateinit var ivRate2: ImageView
+    private lateinit var ivRate3: ImageView
+    private lateinit var ivRate4: ImageView
+    private lateinit var ivRate5: ImageView
+    private lateinit var btRate: Button
+    private lateinit var btDeleteRate: Button
+    private lateinit var etRate: EditText
+    private lateinit var tvNumberTextRate: TextView
+
+    private val rateDialogPresenter = RateDialogImpl(storyInformationView, this)
+
+    init {
+        setDialog(R.layout.dialog_rate)
+        setWindow(
+            WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER, 0
+        )
+        init()
+        processEvents()
     }
 
-    @Override
-    public void openConfirmDiaLog(int ratePoint, String rate) {
-        dismiss();
-        ConfirmEditRateDialog confirmEditRateDialog = new ConfirmEditRateDialog(mStoryInformationView, mContext);
-        confirmEditRateDialog.setData(ratePoint, rate);
-        confirmEditRateDialog.show();
+    private fun init() {
+        ivClose = dialog.findViewById(R.id.ivClose)
+        ivRate1 = dialog.findViewById(R.id.ivRate1)
+        ivRate2 = dialog.findViewById(R.id.ivRate2)
+        ivRate3 = dialog.findViewById(R.id.ivRate3)
+        ivRate4 = dialog.findViewById(R.id.ivRate4)
+        ivRate5 = dialog.findViewById(R.id.ivRate5)
+        etRate = dialog.findViewById(R.id.etRate)
+        tvNumberTextRate = dialog.findViewById(R.id.tvNumberTextRate)
+        btRate = dialog.findViewById(R.id.btRate)
+        btDeleteRate = dialog.findViewById(R.id.btDeleteRate)
     }
 
-    @Override
-    public void setData(Rate rate) {
-        if (rate.getSuccess() == 1) {
-            setRatePoint(rate.getRatePoint());
-            etRate.setText(rate.getRate());
-            tvNumberTextRate.setText(String.format(Locale.getDefault(), "%d/400", rate.getRate().length()));
-            btDeleteRate.setVisibility(View.VISIBLE);
+    override fun setData(rate: Rate) {
+        if (rate.rateSuccess == 1) {
+            setRatePoint(rate.ratePoint)
+            etRate.setText(rate.rateContent)
+            tvNumberTextRate.text =
+                String.format(Locale.getDefault(), "%d/400", rate.rateContent.length)
+            btDeleteRate.visibility = View.VISIBLE
         } else {
-            btDeleteRate.setVisibility(View.GONE);
+            btDeleteRate.visibility = View.GONE
         }
     }
 
-    private void processEvents() {
-        ivClose.setOnClickListener(view -> mDialog.dismiss());
-        ivRate1.setOnClickListener(view -> {
-            setRatePoint(1);
-        });
-        ivRate2.setOnClickListener(view -> {
-            setRatePoint(2);
-        });
-        ivRate3.setOnClickListener(view -> {
-            setRatePoint(3);
-        });
-        ivRate4.setOnClickListener(view -> {
-            setRatePoint(4);
-        });
-        ivRate5.setOnClickListener(view -> {
-            setRatePoint(5);
-        });
+    private fun processEvents() {
+        ivClose.setOnClickListener { dialog.dismiss() }
+        ivRate1.setOnClickListener { setRatePoint(1) }
+        ivRate2.setOnClickListener { setRatePoint(2) }
+        ivRate3.setOnClickListener { setRatePoint(3) }
+        ivRate4.setOnClickListener { setRatePoint(4) }
+        ivRate5.setOnClickListener { setRatePoint(5) }
 
-        etRate.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        etRate.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (etRate.getLineCount() > 7) {
-                    Toast.makeText(mContext, "Vượt quá sô dòng giới hạn đánh giá!", Toast.LENGTH_SHORT).show();
-                    etRate.getText().delete(etRate.getText().length() - 1, etRate.getText().length());
+            override fun afterTextChanged(s: Editable) {
+                if (etRate.lineCount > 7) {
+                    AppUtil.setToast(context, "Vượt quá sô dòng giới hạn đánh giá!")
+                    etRate.text.delete(etRate.text.length - 1, etRate.text.length)
                 }
-                tvNumberTextRate.setText(String.format(Locale.getDefault(), "%d/400", s.toString().length()));
+                tvNumberTextRate.text =
+                    String.format(Locale.getDefault(), "%d/400", s.toString().length)
             }
-        });
+        })
 
-        btDeleteRate.setOnClickListener(view -> {//delete rate
-            mStoryInformationView.deleteRate();
-            dismiss();
-        });
-
-        btRate.setOnClickListener(view -> {
-            mRateDialogPresenter.rate(etRate.getText().toString().trim());
-        });
-    }
-
-    @Override
-    public void noRatePoint(){
-        Toast.makeText(mContext, "Vui lòng cho điểm dánh giá!", Toast.LENGTH_SHORT).show();
-    }
-
-    private void setRatePoint(int ratePoint) {
-        mRateDialogPresenter.setRatePoint(ratePoint);
-        for (int i = 0; i < ratePoint; i++) {
-            ImageView ivRate = mDialog.findViewById(RATE[i]);
-            ivRate.setImageResource(R.drawable.ic_rate);
+        btDeleteRate.setOnClickListener {//delete rate
+            storyInformationView.deleteRate()
+            dismiss()
         }
-        for (int i = ratePoint; i < 5; i++) {
-            ImageView ivRate = mDialog.findViewById(RATE[i]);
-            ivRate.setImageResource(R.drawable.ic_not_rate);
+
+        btRate.setOnClickListener {
+            rateDialogPresenter.rate(etRate.text.toString().trim { it <= ' ' })
+        }
+    }
+
+    override fun noRatePoint() {
+        AppUtil.setToast(context, "Vui lòng cho điểm dánh giá!")
+    }
+
+    private fun setRatePoint(ratePoint: Int) {
+        rateDialogPresenter.setRatePoint(ratePoint)
+        for (i in 0 until ratePoint) {
+            val ivRate: ImageView = dialog.findViewById(RATE[i])
+            ivRate.setImageResource(R.drawable.ic_rate)
+        }
+        for (i in ratePoint..4) {
+            val ivRate: ImageView = dialog.findViewById(RATE[i])
+            ivRate.setImageResource(R.drawable.ic_not_rate)
         }
     }
 }

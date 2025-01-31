@@ -8,6 +8,7 @@ import huce.fit.appreadstories.R
 class GuideActivity: AppCompatActivity() {
 
     private lateinit var ivBack: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guide)

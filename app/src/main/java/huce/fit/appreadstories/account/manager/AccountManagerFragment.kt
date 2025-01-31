@@ -21,12 +21,10 @@ class AccountManagerFragment : Fragment(), AccountManagerView {
     private lateinit var tvEditAccount: TextView
     private lateinit var tvGuide: TextView
     private lateinit var tvLogOut: TextView
-    private lateinit var mAccountManagerPresenter: AccountManagerPresenter
+    private lateinit var accountManagerPresenter: AccountManagerPresenter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view: View = inflater.inflate(R.layout.fragment_account_manager, container, false)
         init(view)
@@ -34,20 +32,19 @@ class AccountManagerFragment : Fragment(), AccountManagerView {
         return view
     }
 
-    fun init(view: View) {
+    private fun init(view: View) {
         tvName = view.findViewById(R.id.tvName)
         tvEditAccount = view.findViewById(R.id.tvEditAccount)
         tvGuide = view.findViewById(R.id.tvGuide)
         tvLogOut = view.findViewById(R.id.tvLogOut)
-
-        mAccountManagerPresenter = AccountManagerImpl(this, requireActivity())
+        accountManagerPresenter = AccountManagerImpl(this, requireActivity())
     }
 
     override fun setName(name: String) {
         tvName.text = name
     }
 
-    fun processEvents() {
+    private fun processEvents() {
         tvEditAccount.setOnClickListener {
             val intent = Intent(requireActivity(), AccountUpdateActivity::class.java)
             startActivity(intent)
@@ -57,10 +54,10 @@ class AccountManagerFragment : Fragment(), AccountManagerView {
             startActivity(intent)
         }
         tvLogOut.setOnClickListener {
-            mAccountManagerPresenter.logout()
+            accountManagerPresenter.logout()
             val intent = Intent(requireActivity(), AccountLoginActivity::class.java)
             startActivity(intent)
-            val mainView: MainView = MainActivity()
+            val mainView = MainActivity()
             mainView.closeMain()
         }
     }

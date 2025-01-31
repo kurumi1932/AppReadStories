@@ -1,47 +1,37 @@
-package huce.fit.appreadstories.main;
+package huce.fit.appreadstories.main
 
-import android.content.Context;
+class MainImpl : MainPresenter {
 
-import java.util.HashMap;
-
-public class MainImpl implements MainPresenter {
-
-    private static final String TAG = "MainImpl";
-    private final HashMap<Integer, Integer> mFragmentOld = new HashMap<>();
-    private final int NUMBER = 1;
-    int mCount = NUMBER;
-
-    public MainImpl(MainView mainView) {
+    companion object {
+        private const val TAG: String = "MainImpl"
+        private const val NUMBER = 1
     }
 
+    private val fragmentOld = HashMap<Int, Int>()
+    private var count = NUMBER
 
-    @Override
-    public void addFragment(int id) {
-        mFragmentOld.put(mCount, id);
+    override fun addFragment(id: Int) {
+        fragmentOld[count] = id
     }
 
-    @Override
-    public void changeFragment(int id) {
-        if (mCount == 0) {
-            mCount = NUMBER;
+    override fun changeFragment(id: Int) {
+        if (count == 0) {
+            count = NUMBER
         }
-        mFragmentOld.put(++mCount, id);
+        fragmentOld[++count] = id
     }
 
-    @Override
-    public int backPressed() {
-        return --mCount;
+    override fun backPressed(): Int {
+        return --count
     }
 
-    @Override
-    public int getId() {
-        return mFragmentOld.get(mCount);
+    override fun getId(): Int {
+        return fragmentOld[count]!!
     }
 
-    @Override
-    public void removeCount() {
-        if (mCount != NUMBER) {
-            mFragmentOld.remove(mCount);
+    override fun removeCount() {
+        if (count != NUMBER) {
+            fragmentOld.remove(count)
         }
     }
 }

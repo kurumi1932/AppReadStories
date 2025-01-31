@@ -1,12 +1,9 @@
-package huce.fit.appreadstories.story.list.download;
+package huce.fit.appreadstories.story.list.download
 
-import java.util.List;
+import huce.fit.appreadstories.model.Story
 
-import huce.fit.appreadstories.model.Story;
-
-public interface StoryDownloadView {
-
-    void setData(List<Story> storyList);
-    void openStoryDownload();
-    void deleteStoryDownload();
+interface StoryDownloadView {
+    fun setData(storyList: List<Story>)
+    fun openStoryDownload()
+    fun deleteStoryDownload()
 }

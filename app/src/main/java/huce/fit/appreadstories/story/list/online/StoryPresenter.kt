@@ -1,13 +1,12 @@
-package huce.fit.appreadstories.story.list.online;
+package huce.fit.appreadstories.story.list.online
 
-import huce.fit.appreadstories.story.list.BaseStoryListPresenter;
+import huce.fit.appreadstories.story.list.BaseStoryListPresenter
 
-public interface StoryPresenter extends BaseStoryListPresenter {
-
-    void totalPage();
-    void getStory(int page);
-    void loadNextPage();
-    boolean isLoading();
-    boolean isLastPage();
-    void swipeData();
+interface StoryPresenter : BaseStoryListPresenter {
+    fun totalPage()
+    fun getStory(page: Int)
+    fun loadNextPage()
+    fun isLoading(): Boolean
+    fun isLastPage(): Boolean
+    fun swipeData()
 }

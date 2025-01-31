@@ -19,8 +19,8 @@ class StorySearchActivity : AppCompatActivity(), StorySearchView {
 
     private lateinit var ivBack: ImageView
     private lateinit var svStory: SearchView
-    private lateinit var mStoryAdapter: StoryAdapter
-    private lateinit var mStorySearchPresenter: StorySearchPresenter
+    private lateinit var storyAdapter: StoryAdapter
+    private lateinit var storySearchPresenter: StorySearchPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,24 +30,23 @@ class StorySearchActivity : AppCompatActivity(), StorySearchView {
     }
 
     fun init() {
-        mStorySearchPresenter = StorySearchImpl(this, this)
+        storySearchPresenter = StorySearchImpl(this, this)
         ivBack = findViewById(R.id.ivBack)
         svStory = findViewById(R.id.svStory)
-        mStoryAdapter = StoryAdapter()
+        storyAdapter = StoryAdapter()
 
         val rcViewStory: RecyclerView = findViewById(R.id.rcViewStory)
         rcViewStory.setLayoutManager(LinearLayoutManager(this))
         //Đổ dữ liệu lên adpter
-        rcViewStory.setAdapter(mStoryAdapter)
+        rcViewStory.setAdapter(storyAdapter)
         //đường kẻ giữa các icon
-        val itemDecoration: ItemDecoration =
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         rcViewStory.addItemDecoration(itemDecoration)
     }
 
     fun processEvents() {
-        mStoryAdapter.setClickListener { position: Int, _: View?, _: Boolean ->
-            mStorySearchPresenter.setStoryId(position)
+        storyAdapter.setClickListener { position: Int, _: View?, _: Boolean ->
+            storySearchPresenter.setStoryId(position)
             val intent = Intent(this, StoryInformationActivity::class.java)
             startActivity(intent)
         }
@@ -59,7 +58,7 @@ class StorySearchActivity : AppCompatActivity(), StorySearchView {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 if (newText.isNotEmpty()) {
-                    mStorySearchPresenter.getStoryListSearch(newText)
+                    storySearchPresenter.getStoryListSearch(newText)
                 }
                 return false
             }
@@ -67,6 +66,6 @@ class StorySearchActivity : AppCompatActivity(), StorySearchView {
     }
 
     override fun setData(storyList: List<Story>) {
-        mStoryAdapter.setDataStory(storyList.toMutableList())
+        storyAdapter.setDataStory(storyList.toMutableList())
     }
 }

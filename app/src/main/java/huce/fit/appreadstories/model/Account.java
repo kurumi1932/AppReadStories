@@ -23,7 +23,7 @@ public class Account {
 	private String birthday;
 
 	@SerializedName("accountsuccess")
-	private int success;
+	private int accountSuccess;
 
 	public int getAccountId() {
 		return accountId;
@@ -49,7 +49,7 @@ public class Account {
 		this.birthday = birthday;
 	}
 
-	public int getSuccess() {
-		return success;
+	public int getAccountSuccess() {
+		return accountSuccess;
 	}
 }

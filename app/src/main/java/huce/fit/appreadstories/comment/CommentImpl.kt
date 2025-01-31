@@ -2,12 +2,12 @@ package huce.fit.appreadstories.comment
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import huce.fit.appreadstories.api.Api
 import huce.fit.appreadstories.dialog.confirm.ConfirmEditOrDeleteCommentDialog
 import huce.fit.appreadstories.model.Comment
 import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 import huce.fit.appreadstories.shared_preferences.StorySharedPreferences
+import huce.fit.appreadstories.util.AppUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,14 +18,14 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
         private const val TAG = "CommentImpl"
     }
 
-    private var mContext: Context = commentView as Context
-    private val mCommentList: MutableList<Comment> = ArrayList()
+    private var context = commentView as Context
+    private val commentList: MutableList<Comment> = ArrayList()
 
-    private var mStoryId = 0
-    private var mAccountId: Int = 0
-    private var mCommentId: Int = 0
-    private var mAccountName: String = ""
-    private var mComment: String = ""
+    private var storyId = 0
+    private var accountId = 0
+    private var commentId = 0
+    private var accountName = ""
+    private var comment = ""
 
     init {
         getStory()
@@ -34,28 +34,26 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
     }
 
     private fun getStory() {
-        val story = StorySharedPreferences(mContext)
+        val story = StorySharedPreferences(context)
         story.getSharedPreferences("Story", Context.MODE_PRIVATE)
-        mStoryId = story.getStoryId()
+        storyId = story.getStoryId()
     }
 
     private fun getAccount() {
-        val account = AccountSharedPreferences(mContext)
+        val account = AccountSharedPreferences(context)
         account.getSharedPreferences("Account", Context.MODE_PRIVATE)
-        mAccountId = account.getAccountId()
-        mAccountName = account.getName()!!
+        accountId = account.getAccountId()
+        accountName = account.getName()
     }
 
     override fun getCommentList() {
-        Api().apiInterface().getCommentList(mStoryId).enqueue(object : Callback<List<Comment>> {
-            override fun onResponse(
-                call: Call<List<Comment>>,
-                response: Response<List<Comment>>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    mCommentList.clear()
-                    mCommentList.addAll(response.body()!!)
-                    commentView.setData(mCommentList)
+        Api().apiInterface().getCommentList(storyId).enqueue(object : Callback<List<Comment>> {
+            override fun onResponse(call: Call<List<Comment>>, response: Response<List<Comment>>) {
+                val commentListServer = response.body()
+                if (response.isSuccessful && commentListServer != null) {
+                    commentList.clear()
+                    commentList.addAll(commentListServer)
+                    commentView.setData(commentList)
                 }
                 Log.e(TAG, "api getCommentList: success")
             }
@@ -67,24 +65,25 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
     }
 
     override fun enterSent(comment: String) {
-        if (mCommentId == 0) {
+        if (commentId == 0) {
             addComment(comment)
         } else {
             updateComment(comment)
-            mCommentId = 0
+            commentId = 0
         }
     }
 
-    private fun addComment(comment: String) {
-        Log.e(TAG, "NHT mStoryId: $mStoryId")
-        Log.e(TAG, "NHT mAccountId: $mAccountId")
-        Log.e(TAG, "NHT mAccountName: $mAccountName")
-        Log.e(TAG, "NHT comment: $comment")
-        Api().apiInterface().addCommnet(mStoryId, mAccountId, mAccountName, comment)
+    private fun addComment(commentContent: String) {
+        Log.e(TAG, "NHT storyId: $storyId")
+        Log.e(TAG, "NHT accountId: $accountId")
+        Log.e(TAG, "NHT accountName: $accountName")
+        Log.e(TAG, "NHT comment: $commentContent")
+        Api().apiInterface().addCommnet(storyId, accountId, accountName, commentContent)
             .enqueue(object : Callback<Comment> {
                 override fun onResponse(call: Call<Comment>, response: Response<Comment>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        if (response.body()!!.success == 1) {
+                    val commentServer = response.body()
+                    if (response.isSuccessful && commentServer != null) {
+                        if (commentServer.commentSuccess == 1) {
                             getCommentList()
                         }
                     }
@@ -97,21 +96,20 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
             })
     }
 
-    private fun updateComment(comment: String) {
-        Log.e(TAG, "NHT mCommentId: $mCommentId")
-        Log.e(TAG, "NHT comment: $comment")
-        Api().apiInterface().updateCommnet(mCommentId, comment).enqueue(object : Callback<Comment> {
+    private fun updateComment(commentContent: String) {
+        Log.e(TAG, "NHT commentId: $commentId")
+        Log.e(TAG, "NHT comment: $commentContent")
+        Api().apiInterface().updateCommnet(commentId, commentContent).enqueue(object : Callback<Comment> {
             override fun onResponse(call: Call<Comment>, response: Response<Comment>) {
-                if (response.isSuccessful && response.body() != null) {
-                    when (response.body()!!.success) {
+                val commentServer = response.body()
+                if (response.isSuccessful && commentServer != null) {
+                    when (commentServer.commentSuccess) {
                         1 -> {
-                            Toast.makeText(mContext, "Bình luận đã được sửa", Toast.LENGTH_SHORT)
-                                .show()
+                            AppUtil.setToast(context, "Bình luận đã được sửa")
                             getCommentList()
                         }
 
-                        2 -> Toast.makeText(mContext, "Lỗi sửa bình luận!", Toast.LENGTH_SHORT)
-                            .show()
+                        2 -> AppUtil.setToast(context, "Lỗi sửa bình luận!")
                     }
                 }
             }
@@ -124,19 +122,18 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
 
     override fun deleteComment() {
         Log.e(TAG, "NHT deleteComment")
-        Log.e(TAG, "NHT commentId: $mCommentId")
-        Api().apiInterface().deleteComment(mCommentId).enqueue(object : Callback<Comment> {
+        Log.e(TAG, "NHT commentId: $commentId")
+        Api().apiInterface().deleteComment(commentId).enqueue(object : Callback<Comment> {
             override fun onResponse(call: Call<Comment>, response: Response<Comment>) {
-                if (response.isSuccessful && response.body() != null) {
-                    when (response.body()!!.success) {
+                val commentServer = response.body()
+                if (response.isSuccessful && commentServer != null) {
+                    when (commentServer.commentSuccess) {
                         1 -> {
-                            Toast.makeText(mContext, "Bình luận đã được xóa", Toast.LENGTH_SHORT)
-                                .show()
+                            AppUtil.setToast(context, "Bình luận đã được xóa")
                             getCommentList()
                         }
 
-                        2 -> Toast.makeText(mContext, "Lỗi xóa bình luận!", Toast.LENGTH_SHORT)
-                            .show()
+                        2 -> AppUtil.setToast(context, "Lỗi xóa bình luận!")
                     }
                 }
             }
@@ -147,21 +144,21 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
         })
     }
 
-    override fun checkCommentOfAccount(commentId: Int) {
+    override fun checkCommentOfAccount(cId: Int) {
         Log.e(TAG, "NHT checkCommentOfAccount")
-        Log.e(TAG, "NHT commentId: $commentId")
-        Log.e(TAG, "NHT mAccountId: $mAccountId")
-        Api().apiInterface().checkCommentOfAccount(commentId, mAccountId)
+        Log.e(TAG, "NHT commentId: $cId")
+        Log.e(TAG, "NHT accountId: $accountId")
+        Api().apiInterface().checkCommentOfAccount(cId, accountId)
             .enqueue(object : Callback<Comment> {
                 override fun onResponse(call: Call<Comment>, response: Response<Comment>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val comment = response.body()
-                        Log.e(TAG, "NHT Success: " + comment!!.success)
-                        if (comment.success == 1) {
-                            mCommentId = commentId
-                            mComment = comment.comment
+                    val commentServer = response.body()
+                    if (response.isSuccessful && commentServer != null) {
+                        Log.e(TAG, "NHT Success: " + commentServer.commentSuccess)
+                        if (commentServer.commentSuccess == 1) {
+                            commentId = cId
+                            comment = commentServer.commentContent
                             val confirmEditOrDeleteCommentDialog =
-                                ConfirmEditOrDeleteCommentDialog(commentView, mContext)
+                                ConfirmEditOrDeleteCommentDialog(commentView)
                             confirmEditOrDeleteCommentDialog.show()
                         }
                     }
@@ -173,7 +170,5 @@ class CommentImpl(private val commentView: CommentView) : CommentPresenter {
             })
     }
 
-    override fun getComment(): String {
-        return mComment
-    }
+    override fun getComment() = comment
 }
