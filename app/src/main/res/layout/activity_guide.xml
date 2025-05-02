@@ -92,5 +92,4 @@
                 tools:ignore="contentDescription" />
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

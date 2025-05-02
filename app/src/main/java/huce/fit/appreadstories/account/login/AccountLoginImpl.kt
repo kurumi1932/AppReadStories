@@ -6,7 +6,6 @@ import huce.fit.appreadstories.account.BaseAccountImpl
 import huce.fit.appreadstories.api.Api
 import huce.fit.appreadstories.checknetwork.isConnecting
 import huce.fit.appreadstories.model.Account
-import huce.fit.appreadstories.shared_preferences.AccountSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
